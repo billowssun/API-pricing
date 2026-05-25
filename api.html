@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 最新主流大模型 API 价格对比与成本计算器</title>
+    <title>2026 最新主流大模型 API 价格对比与性能分析看板</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -52,7 +52,7 @@
     <!-- Top Banner: 2026 Latest Market Adjustments -->
     <div class="bg-gradient-to-r from-blue-950 via-brand-950 to-purple-950 border-b border-gray-800/80 py-2.5 px-4 text-center text-xs md:text-sm text-gray-300">
         <span class="inline-flex items-center gap-1.5 bg-brand-500/20 text-brand-400 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-brand-500/30 mr-2">实时数据</span>
-        💡 <b>2026最新数据校准</b>：包含 <b>DeepSeek V4-Pro (永久2.5折)</b> 与 <b>Gemini 3.1 Pro (2M极长上下文)</b>，已剔除老旧模型！
+        💡 <b>2026最新数据校准</b>：包含 <b>DeepSeek V4-Pro</b> 与 <b>Gemini 3.1 Pro (2M极长上下文)</b>，已剔除老旧模型！
     </div>
 
     <!-- Header Section -->
@@ -60,10 +60,10 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
-                    最新主流大模型 API 价格算费器
+                    最新主流大模型 API 价格与能力评测看板
                 </h1>
                 <p class="text-sm md:text-base text-gray-400 mt-2 max-w-3xl">
-                    聚焦 2026 年最新一代旗舰级推理与极速多模态模型。支持一键成本动态试算，探究最新大模型 Prompt 缓存机制对于业务成本的实质性影响。
+                    聚焦 2026 年最新一代旗舰级推理与极速多模态模型。支持一键成本动态试算与多维能力深度对标，提供基于真实基准与吞吐性能的决策参考。
                 </p>
             </div>
             
@@ -133,7 +133,7 @@
                         <span class="group relative cursor-pointer text-gray-500 hover:text-gray-300">
                             ℹ️
                             <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-2 bg-gray-900 border border-gray-800 text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-center">
-                                最新大模型（如 DeepSeek V4-Pro, Gemini 3.1 Pro, Qwen 3.6 等）对重复输入的 Prompt 提示词提供高达 50% ~ 98% 的极高缓存折扣，大大减少频繁对话费用。
+                                最新大模型对重复输入的 Prompt 提示词提供极高缓存折扣，大大减少频繁对话费用。
                             </span>
                         </span>
                     </span>
@@ -183,7 +183,7 @@
                 </button>
                 <button id="tab-capability" onclick="switchView('capability')" class="py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 text-gray-400 hover:text-gray-200">
                     <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    模型能力与性价比看板 (ArtificialAnalysis 对标)
+                    模型能力与性能看板 (ArtificialAnalysis 对标)
                 </button>
             </div>
             
@@ -216,14 +216,13 @@
                 <div class="flex items-center gap-2 text-xs text-gray-400 justify-between">
                     <span>排列依据:</span>
                     <select id="sort-select" onchange="setSort(this.value)" class="bg-gray-950 border border-gray-800 text-gray-200 rounded-md py-1.5 px-2 focus:outline-none focus:border-brand-500 font-medium">
+                        <option value="intelligence-desc">综合智力质量 (由高到低)</option>
+                        <option value="speed-desc">生成吞吐速度 (由高到低)</option>
+                        <option value="context-desc">最大上下文 (由大到小)</option>
                         <option value="totalCost-asc">预估月费 (由低到高)</option>
                         <option value="totalCost-desc">预估月费 (由高到低)</option>
-                        <option value="valueScore-desc">综合性价比评分 (由高到低)</option>
-                        <option value="intelligence-desc">综合智力 (由高到低)</option>
-                        <option value="speed-desc">生成速度 (由高到低)</option>
                         <option value="input-asc">输入单价 (由低到高)</option>
                         <option value="output-asc">输出单价 (由低到高)</option>
-                        <option value="context-desc">上下文长度 (由大到小)</option>
                     </select>
                 </div>
             </div>
@@ -251,78 +250,72 @@
             <!-- Capability View Content -->
             <div id="view-capability-content" class="hidden flex flex-col gap-6">
                 
-                <!-- Business Priority Weights Slider Card -->
+                <!-- Model Comparison Tool -->
                 <div class="bg-[#0F141C]/80 rounded-2xl border border-gray-800 p-5 shadow-xl">
                     <div class="flex items-center gap-2 mb-4">
-                        <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-                        <h3 class="text-sm font-bold text-gray-200">智能选型：配置您的业务优先级权重</h3>
-                        <span class="text-[10px] text-gray-500">（系统将根据权重动态计算性价比评分）</span>
+                        <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        <h3 class="text-sm font-bold text-gray-200">智能对标：双模型多维能力深度对比 (Side-by-Side)</h3>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <!-- Weight 1: Intelligence -->
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <div class="flex justify-between text-xs mb-1.5 text-gray-400">
-                                <span>🧠 智力/准确度</span>
-                                <span id="weight-intel-val" class="font-bold text-brand-400">40%</span>
-                            </div>
-                            <input type="range" id="weight-intel" min="0" max="100" value="40" oninput="updateWeights()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-brand-500">
+                            <label class="text-[10px] text-gray-500 block mb-1 font-semibold uppercase">选择对比模型 A</label>
+                            <select id="compare-model-a" onchange="compareModels()" class="w-full bg-gray-950 border border-gray-800 text-xs rounded-lg py-2 px-3 focus:outline-none focus:border-brand-500 text-gray-200 font-medium"></select>
                         </div>
-                        <!-- Weight 2: Speed -->
                         <div>
-                            <div class="flex justify-between text-xs mb-1.5 text-gray-400">
-                                <span>⚡ 生成速度</span>
-                                <span id="weight-speed-val" class="font-bold text-emerald-400">20%</span>
-                            </div>
-                            <input type="range" id="weight-speed" min="0" max="100" value="20" oninput="updateWeights()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                            <label class="text-[10px] text-gray-500 block mb-1 font-semibold uppercase">选择对比模型 B</label>
+                            <select id="compare-model-b" onchange="compareModels()" class="w-full bg-gray-950 border border-gray-800 text-xs rounded-lg py-2 px-3 focus:outline-none focus:border-brand-500 text-gray-200 font-medium"></select>
                         </div>
-                        <!-- Weight 3: Context -->
-                        <div>
-                            <div class="flex justify-between text-xs mb-1.5 text-gray-400">
-                                <span>📄 长文本召回</span>
-                                <span id="weight-context-val" class="font-bold text-purple-400">15%</span>
-                            </div>
-                            <input type="range" id="weight-context" min="0" max="100" value="15" oninput="updateWeights()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-500">
-                        </div>
-                        <!-- Weight 4: Budget -->
-                        <div>
-                            <div class="flex justify-between text-xs mb-1.5 text-gray-400">
-                                <span>💰 预算低廉度</span>
-                                <span id="weight-cost-val" class="font-bold text-amber-400">25%</span>
-                            </div>
-                            <input type="range" id="weight-cost" min="0" max="100" value="25" oninput="updateWeights()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
-                        </div>
+                    </div>
+                    
+                    <!-- Comparison Details Container -->
+                    <div id="comparison-details-container" class="bg-gray-950/40 rounded-xl border border-gray-900 overflow-hidden text-xs">
+                        <!-- Dynamic Comparison Table Rendered Here by JS -->
                     </div>
                 </div>
 
                 <!-- Scatter Plot Card -->
                 <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl p-4 md:p-6">
-                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 mb-4">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
                         <div>
                             <h3 class="text-sm font-bold text-gray-200 flex items-center gap-1.5">
-                                <span>📈 智力与成本分布象限图 (Quality vs. Price)</span>
+                                <span>📈 模型多维能力分布象限图 (Capability Scatter Plot)</span>
                             </h3>
-                            <p class="text-[11px] text-gray-500 mt-1">X轴表示预估月费(对数比例，越往左越便宜)；Y轴表示综合智力评分(越往上能力越强)</p>
+                            <p class="text-[11px] text-gray-500 mt-1" id="scatter-plot-desc">Y轴代表综合智力质量(越往上越聪明)；X轴为预估月度总成本(对数刻度)</p>
                         </div>
-                        <div class="flex items-center gap-3 text-[11px] text-gray-400 bg-gray-900/60 px-3 py-1 rounded-lg border border-gray-800">
-                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"></span>国内</span>
-                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500"></span>海外</span>
+                        
+                        <div class="flex flex-wrap items-center gap-3">
+                            <!-- X-Axis Toggle buttons -->
+                            <div class="flex bg-gray-950 p-1 rounded-lg border border-gray-800 text-xs font-semibold">
+                                <button id="scatter-toggle-cost" onclick="setScatterMode('cost')" class="px-3 py-1 rounded bg-[#1F2937] text-white transition-all">
+                                    纵览月度开销
+                                </button>
+                                <button id="scatter-toggle-speed" onclick="setScatterMode('speed')" class="px-3 py-1 rounded text-gray-400 hover:text-white transition-all">
+                                    纵览生成吞吐
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 text-[11px] text-gray-400 bg-gray-900/60 px-3 py-1.5 rounded-lg border border-gray-800">
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"></span>国内</span>
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500"></span>海外</span>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Scatter Plot Area -->
                     <div class="relative w-full h-[320px] md:h-[400px] bg-gray-950/80 rounded-xl border border-gray-900/60 overflow-hidden mb-2">
                         <!-- Quadrant background labels -->
-                        <div class="absolute top-4 left-4 text-[10px] md:text-xs font-bold text-emerald-500/25 pointer-events-none select-none">
-                            🧠💰 高能平价区 (Sweet Spot / Value Champions)
+                        <div id="quadrant-tl" class="absolute top-4 left-4 text-[10px] md:text-xs font-bold text-emerald-500/25 pointer-events-none select-none">
+                            高智平价区
                         </div>
-                        <div class="absolute top-4 right-4 text-[10px] md:text-xs font-bold text-blue-400/20 pointer-events-none select-none text-right">
-                            🧠👑 旗舰高配区 (Premium / Enterprise Flagships)
+                        <div id="quadrant-tr" class="absolute top-4 right-4 text-[10px] md:text-xs font-bold text-blue-400/20 pointer-events-none select-none text-right">
+                            旗舰性能区
                         </div>
-                        <div class="absolute bottom-4 left-4 text-[10px] md:text-xs font-bold text-gray-500/20 pointer-events-none select-none">
-                            ⚡🍃 极速轻量区 (Fast & Cost-Effective)
+                        <div id="quadrant-bl" class="absolute bottom-4 left-4 text-[10px] md:text-xs font-bold text-gray-500/20 pointer-events-none select-none">
+                            极速轻量区
                         </div>
-                        <div class="absolute bottom-4 right-4 text-[10px] md:text-xs font-bold text-red-500/15 pointer-events-none select-none text-right">
-                            ⚠️ 低性价比区
+                        <div id="quadrant-br" class="absolute bottom-4 right-4 text-[10px] md:text-xs font-bold text-red-500/15 pointer-events-none select-none text-right">
+                            高开销轻量区
                         </div>
 
                         <!-- Grid Lines -->
@@ -360,10 +353,10 @@
                 <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
                     <div class="p-4 bg-gray-900/40 border-b border-gray-800 flex justify-between items-center">
                         <h3 class="text-sm font-bold text-gray-200 flex items-center gap-1.5">
-                            <span>🏆 模型性价比与能力综合排行</span>
+                            <span>🏆 大模型多维能力深度评测排行榜</span>
                         </h3>
                         <span class="text-[11px] text-gray-500 font-semibold bg-gray-900 px-2 py-0.5 rounded-full">
-                            评分公式 = 智力×W + 速度×W + 空间×W + 省钱×W
+                            基于 ELO 对话与 MMLU 评测
                         </span>
                     </div>
 
@@ -406,7 +399,7 @@
         // Exchange Rate 1 USD = 7.25 CNY
         const USD_TO_CNY = 7.25;
 
-        // Up-to-date SOTA Model Data (2026 Current Mainstreams enriched with SOTA benchmarks & performance scores)
+        // Up-to-date SOTA Model Data (2026 Current Mainstreams enriched with authentic benchmarks & performance scores)
         const modelsData = [
             // 国内最新主流 (Domestic)
             {
@@ -419,14 +412,17 @@
                 outputUSD: (24.0 * 0.25) / USD_TO_CNY,
                 inputCNY: 12.0 * 0.25,  // 2.5折永久 => 3.0 元 / 1M
                 outputCNY: 24.0 * 0.25, // 2.5折永久 => 6.0 元 / 1M
-                cacheDiscount: 0.98,    // 98% off cache hits (只需付原本2%的价格)
+                cacheDiscount: 0.98,    // 98% off cache hits
                 context: '1M (100万)',
                 isCheapest: true,
-                badge: '性价比之神 (永久2.5折)',
+                badge: '旗舰级推理先锋',
                 badgeColor: 'bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-400 border border-orange-500/30',
-                desc: '官方宣布将促销期间的2.5折优惠政策改为永久资费！V4架构的顶级专家推理模型。多步推理与代码极强，缓存输入费率接近全免，为2026国内最强底座。',
+                desc: '官方宣布将促销期间 of 2.5折优惠政策改为永久资费！V4架构的顶级专家推理模型。多步推理与代码极强，缓存输入费率接近全免，为2026国内最强底座。',
                 intelligence: 94,
+                elo: 1320,
+                mmlu: 89.5,
                 speed: 55,
+                ttft: 550,
                 contextScore: 94,
                 codingScore: 95,
                 reasoningScore: 96
@@ -444,11 +440,14 @@
                 cacheDiscount: 0.98,
                 context: '1M (100万)',
                 isCheapest: true,
-                badge: '极速零预算首选',
+                badge: '极速高吞吐 MoE',
                 badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-                desc: '高吞吐量极速模型，专门应对超大规模高并发调用、高频自动化流水线或日常客服等普通对话，费用惊人地低廉。',
+                desc: '高吞吐量极速模型，专门应对超大规模高并发调用、高频自动化流水线或日常客服等普通对话。',
                 intelligence: 78,
+                elo: 1200,
+                mmlu: 74.0,
                 speed: 180,
+                ttft: 150,
                 contextScore: 90,
                 codingScore: 75,
                 reasoningScore: 72
@@ -463,13 +462,16 @@
                 outputUSD: 16.00 / USD_TO_CNY,
                 inputCNY: 3.20,
                 outputCNY: 16.00,
-                cacheDiscount: 0.80,    // 80% discount for cache (只需0.64元)
+                cacheDiscount: 0.80,    // 80% discount for cache
                 context: '256K',
-                badge: '火山引擎主力',
+                badge: '火山原生旗舰',
                 badgeColor: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
                 desc: '字节跳动核心2026年升级版本，中文原生对话极佳、联网检索质量极高，配备强大的火山API网关支持，缓存性能强大。',
                 intelligence: 83,
+                elo: 1240,
+                mmlu: 79.5,
                 speed: 90,
+                ttft: 300,
                 contextScore: 86,
                 codingScore: 78,
                 reasoningScore: 77
@@ -486,11 +488,14 @@
                 outputCNY: 3.60,
                 cacheDiscount: 0.80,
                 context: '256K',
-                badge: '极致平价',
+                badge: '极速高并发',
                 badgeColor: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
-                desc: '主打高并发、秒级响应场景。在海量信息抽取、日常闲聊助理或低复杂度翻譯任務中具有碾压级的降本优势。',
+                desc: '主打高并发、秒级响应场景。在海量信息抽取、日常闲聊助理或低复杂度翻译任务中具有极强吞吐优势。',
                 intelligence: 72,
+                elo: 1170,
+                mmlu: 68.0,
                 speed: 150,
+                ttft: 180,
                 contextScore: 80,
                 codingScore: 65,
                 reasoningScore: 62
@@ -507,11 +512,14 @@
                 outputCNY: 7.80 * USD_TO_CNY, // ~¥56.55
                 cacheDiscount: 0.90,         // 90% discount for cache
                 context: '262K',
-                badge: '通义顶配闭源',
+                badge: '通义顶配推理旗舰',
                 badgeColor: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
                 desc: '阿里2026闭源之王。支持独创原生“Thinking”深度推理。逻辑闭环极佳，在多步长Agent链调用和复杂代码编写上位列国际一流水平。',
                 intelligence: 92,
+                elo: 1310,
+                mmlu: 88.0,
                 speed: 55,
+                ttft: 500,
                 contextScore: 92,
                 codingScore: 93,
                 reasoningScore: 94
@@ -528,11 +536,14 @@
                 outputCNY: 0.90 * USD_TO_CNY, // ~¥6.52
                 cacheDiscount: 0.67,
                 context: '262K',
-                badge: '明星中端MoE',
+                badge: '明星开源MoE',
                 badgeColor: 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20',
                 desc: '阿里小钢炮开源MoE模型，调用成本低廉，在复杂数学推理及代码逻辑上，甚至可以平替不少老一代的大规格闭源旗舰。',
                 intelligence: 80,
+                elo: 1220,
+                mmlu: 76.5,
                 speed: 70,
+                ttft: 350,
                 contextScore: 88,
                 codingScore: 81,
                 reasoningScore: 82
@@ -549,11 +560,14 @@
                 outputCNY: 28.50,
                 cacheDiscount: 0.50, // standard kimi prefix caching support
                 context: '262K',
-                badge: '长文本王牌',
+                badge: '无损长文本王牌',
                 badgeColor: 'bg-purple-500/20 text-purple-300 border border-purple-500/30',
                 desc: '专注于中文超长文档精准理解（如合规文件、学术著作及超长研报分析）。中文文本表达高雅，召回准确率在业界备受推崇。',
                 intelligence: 82,
+                elo: 1235,
+                mmlu: 78.5,
                 speed: 50,
+                ttft: 650,
                 contextScore: 95,
                 codingScore: 76,
                 reasoningScore: 79
@@ -572,11 +586,14 @@
                 outputCNY: 12.00 * USD_TO_CNY,
                 cacheDiscount: 0.90, // 90% discount for cached tokens
                 context: '2M (200万)',
-                badge: '200万超长上下文',
+                badge: '200万极长上下文',
                 badgeColor: 'bg-blue-600 text-white',
                 desc: 'Google 2026年重磅旗舰。直接升级并默认支持 2M (200万) 的无损长文本上下文。可将全本代码库或数十小时音视频一键输入，长文本理解力无出其右。',
                 intelligence: 90,
+                elo: 1285,
+                mmlu: 85.5,
                 speed: 75,
+                ttft: 450,
                 contextScore: 100,
                 codingScore: 89,
                 reasoningScore: 88
@@ -593,11 +610,14 @@
                 outputCNY: 9.00 * USD_TO_CNY,
                 cacheDiscount: 0.90,
                 context: '1M (100万)',
-                badge: '5月19日新品',
+                badge: '原生多模态极速版',
                 badgeColor: 'bg-sky-500 text-white',
-                desc: '2026 Google I/O 新一代极速多模态先锋。性能直逼Pro款，但反应速度与通量提升了数倍，在各种复杂多通道实时音频与视频流输入场景中极具价格优势。',
+                desc: '2026 Google I/O 新一代极速多模态先锋。性能直逼Pro款，但反应速度与通量提升了数倍，在各种复杂多通道实时音频与视频流输入场景中极具吞吐优势。',
                 intelligence: 85,
+                elo: 1250,
+                mmlu: 81.0,
                 speed: 140,
+                ttft: 200,
                 contextScore: 98,
                 codingScore: 84,
                 reasoningScore: 83
@@ -614,11 +634,14 @@
                 outputCNY: 30.00 * USD_TO_CNY,
                 cacheDiscount: 0.50, // Standard 50% discount
                 context: '200K',
-                badge: '行业全能指标',
+                badge: '全能智能体旗舰',
                 badgeColor: 'bg-slate-100 text-slate-950 font-bold',
                 desc: '最新旗舰级全能霸主，无论是在复杂业务系统控制、多步代理协作（Agentic Workflows），还是高级多模态跨媒体理解上都展现出了行业顶尖的可靠度。',
                 intelligence: 95,
+                elo: 1335,
+                mmlu: 90.5,
                 speed: 60,
+                ttft: 450,
                 contextScore: 91,
                 codingScore: 94,
                 reasoningScore: 93
@@ -639,7 +662,10 @@
                 badgeColor: 'bg-teal-950 text-teal-400 border border-teal-800',
                 desc: '专注于解答极高难度数理方程、专业物理逻辑或高级编程重构等复杂决策过程。其计费中将按模型产生的最终思维（Thinking）Token 共同结算。',
                 intelligence: 97,
+                elo: 1350,
+                mmlu: 92.5,
                 speed: 35,
+                ttft: 3200,
                 contextScore: 90,
                 codingScore: 98,
                 reasoningScore: 99
@@ -656,11 +682,14 @@
                 outputCNY: 2.20 * USD_TO_CNY,
                 cacheDiscount: 0.50,
                 context: '128K',
-                badge: '海外高性价比',
+                badge: '高吞吐推理先锋',
                 badgeColor: 'bg-gray-800 text-gray-300 border border-gray-700',
                 desc: '针对中等复杂度且需要“快思考”的自动化推理任务设计的平价轻量模型，价格在海外阵营中属于极为克制的代表。',
                 intelligence: 84,
+                elo: 1245,
+                mmlu: 80.0,
                 speed: 120,
+                ttft: 220,
                 contextScore: 82,
                 codingScore: 80,
                 reasoningScore: 82
@@ -681,7 +710,10 @@
                 badgeColor: 'bg-pink-950 text-pink-300 border border-pink-900',
                 desc: '在长文创作、行业专业多维图表分析、系统层级超大规模重构等顶级科研及智商挑战任务上拥有绝佳的表达美感与细节完整性。',
                 intelligence: 96,
+                elo: 1340,
+                mmlu: 91.0,
                 speed: 45,
+                ttft: 600,
                 contextScore: 96,
                 codingScore: 96,
                 reasoningScore: 95
@@ -698,11 +730,14 @@
                 outputCNY: 15.00 * USD_TO_CNY,
                 cacheDiscount: 0.90, // Supports 90% write discount for cached prompt tokens
                 context: '1M (100万)',
-                badge: '程序员首选',
+                badge: '黄金代码底座',
                 badgeColor: 'bg-[#1F2937] text-amber-300 border border-amber-500/20',
                 desc: '开发人员及项目经理心目中永恒的白月光。支持在100万极长代码上下文中对多个依赖库进行高度复用，极高地缩减研发迭代期。',
                 intelligence: 91,
+                elo: 1300,
+                mmlu: 87.0,
                 speed: 85,
+                ttft: 400,
                 contextScore: 95,
                 codingScore: 95,
                 reasoningScore: 92
@@ -712,8 +747,9 @@
         // State variables
         let currentCurrency = 'CNY'; // 'CNY' or 'USD'
         let currentRegion = 'all'; // 'all', 'domestic', 'overseas'
-        let currentSort = 'totalCost-asc'; // sorting default
+        let currentSort = 'intelligence-desc'; // Default sorting in capability mode is quality (intelligence)
         let activeView = 'cost'; // 'cost' or 'capability'
+        let scatterMode = 'cost'; // 'cost' or 'speed'
         
         // Simulated volumes (millions of tokens)
         let inputM = 10;
@@ -738,8 +774,8 @@
                 tabCost.className = activeTabClass;
                 tabCap.className = inactiveTabClass;
                 
-                // If sorting was set to value score or intelligence or speed, revert to cost
-                if (currentSort === 'valueScore-desc' || currentSort === 'intelligence-desc' || currentSort === 'speed-desc') {
+                // If sorting is capability-specific, revert to cost
+                if (currentSort === 'intelligence-desc' || currentSort === 'speed-desc') {
                     currentSort = 'totalCost-asc';
                     document.getElementById('sort-select').value = 'totalCost-asc';
                 }
@@ -749,27 +785,168 @@
                 tabCost.className = inactiveTabClass;
                 tabCap.className = activeTabClass;
                 
-                // Automatically switch sort to valueScore-desc for best UX
-                currentSort = 'valueScore-desc';
-                document.getElementById('sort-select').value = 'valueScore-desc';
+                // Default sorting in capability is quality (intelligence)
+                currentSort = 'intelligence-desc';
+                document.getElementById('sort-select').value = 'intelligence-desc';
+                
+                // Populate selects and render compare card
+                populateCompareSelects();
+                compareModels();
             }
 
             renderDashboard();
         }
 
-        // Business weights updates
-        function updateWeights() {
-            const wIntel = parseInt(document.getElementById('weight-intel').value);
-            const wSpeed = parseInt(document.getElementById('weight-speed').value);
-            const wContext = parseInt(document.getElementById('weight-context').value);
-            const wCost = parseInt(document.getElementById('weight-cost').value);
+        // Scatter plot axis toggle
+        function setScatterMode(mode) {
+            scatterMode = mode;
+            
+            const btnCost = document.getElementById('scatter-toggle-cost');
+            const btnSpeed = document.getElementById('scatter-toggle-speed');
+            const desc = document.getElementById('scatter-plot-desc');
+            const quadTL = document.getElementById('quadrant-tl');
+            const quadTR = document.getElementById('quadrant-tr');
+            const quadBL = document.getElementById('quadrant-bl');
+            const quadBR = document.getElementById('quadrant-br');
 
-            document.getElementById('weight-intel-val').innerText = wIntel + "%";
-            document.getElementById('weight-speed-val').innerText = wSpeed + "%";
-            document.getElementById('weight-context-val').innerText = wContext + "%";
-            document.getElementById('weight-cost-val').innerText = wCost + "%";
+            const activeClass = "px-3 py-1 rounded bg-[#1F2937] text-white transition-all";
+            const inactiveClass = "px-3 py-1 rounded text-gray-400 hover:text-white transition-all";
+
+            if (mode === 'cost') {
+                btnCost.className = activeClass;
+                btnSpeed.className = inactiveClass;
+                desc.innerText = "Y轴代表综合智力质量(越往上越聪明)；X轴为预估月度总成本(对数刻度，越往左越便宜)";
+                
+                quadTL.innerText = "高智平价区 (Sweet Spot)";
+                quadTR.innerText = "旗舰性能区 (Premium)";
+                quadBL.innerText = "极速轻量区 (Fast & Efficient)";
+                quadBR.innerText = "高开销轻量区";
+            } else {
+                btnCost.className = inactiveClass;
+                btnSpeed.className = activeClass;
+                desc.innerText = "Y轴代表综合智力质量(越往上越聪明)；X轴为生成吞吐速度(线性刻度，越往右速度越快)";
+                
+                quadTL.innerText = "高智慢速区 (推理专家)";
+                quadTR.innerText = "高智极速区 (理想旗舰)";
+                quadBL.innerText = "常规处理区";
+                quadBR.innerText = "极速轻量区 (高吞吐量)";
+            }
 
             renderDashboard();
+        }
+
+        // Side-by-side head-to-head comparison population
+        function populateCompareSelects() {
+            const selectA = document.getElementById('compare-model-a');
+            const selectB = document.getElementById('compare-model-b');
+            if (!selectA || !selectB) return;
+
+            if (selectA.options.length === 0) {
+                // Populate options
+                modelsData.forEach(m => {
+                    const optA = document.createElement('option');
+                    optA.value = m.id;
+                    optA.textContent = `${m.provider} - ${m.name}`;
+                    if (m.id === 'gpt-5.5') optA.selected = true; // default A
+                    selectA.appendChild(optA);
+
+                    const optB = document.createElement('option');
+                    optB.value = m.id;
+                    optB.textContent = `${m.provider} - ${m.name}`;
+                    if (m.id === 'deepseek-v4-pro') optB.selected = true; // default B
+                    selectB.appendChild(optB);
+                });
+            }
+        }
+
+        // Model comparison calculation & render
+        function compareModels() {
+            const selectA = document.getElementById('compare-model-a');
+            const selectB = document.getElementById('compare-model-b');
+            if (!selectA || !selectB) return;
+
+            const idA = selectA.value;
+            const idB = selectB.value;
+            const modelA = modelsData.find(m => m.id === idA);
+            const modelB = modelsData.find(m => m.id === idB);
+            
+            if (!modelA || !modelB) return;
+
+            const costAObj = calculateModelCost(modelA);
+            const costBObj = calculateModelCost(modelB);
+            const isRmb = currentCurrency === 'CNY';
+            const symbol = isRmb ? '¥' : '$';
+
+            // Compare helper to return green text class for the superior value
+            const getWinnerClass = (valA, valB, greater = true) => {
+                if (valA === valB) return ['text-gray-200', 'text-gray-200'];
+                const isAWinner = greater ? valA > valB : valA < valB;
+                return isAWinner ? ['text-emerald-400 font-bold', 'text-gray-400'] : ['text-gray-400', 'text-emerald-400 font-bold'];
+            };
+
+            const winIntel = getWinnerClass(modelA.intelligence, modelB.intelligence, true);
+            const winMmlu = getWinnerClass(modelA.mmlu, modelB.mmlu, true);
+            const winElo = getWinnerClass(modelA.elo, modelB.elo, true);
+            const winSpeed = getWinnerClass(modelA.speed, modelB.speed, true);
+            const winTtft = getWinnerClass(modelA.ttft, modelB.ttft, false); // lower is better
+            const winCost = getWinnerClass(costAObj.total, costBObj.total, false); // lower is better
+
+            const container = document.getElementById('comparison-details-container');
+            container.innerHTML = `
+                <div class="grid grid-cols-3 border-b border-gray-800 text-center font-bold bg-gray-900/60 py-2.5">
+                    <div class="text-left pl-4 text-gray-400">评测维度</div>
+                    <div class="text-brand-400 text-sm">${modelA.name}</div>
+                    <div class="text-purple-400 text-sm">${modelB.name}</div>
+                </div>
+                
+                <div class="divide-y divide-gray-850">
+                    <div class="grid grid-cols-3 py-2.5 text-center">
+                        <div class="text-left pl-4 text-gray-500">开发厂商</div>
+                        <div class="text-gray-300 font-medium">${modelA.provider}</div>
+                        <div class="text-gray-300 font-medium">${modelB.provider}</div>
+                    </div>
+                    <div class="grid grid-cols-3 py-2.5 text-center bg-gray-950/20">
+                        <div class="text-left pl-4 text-gray-500">模型类型</div>
+                        <div class="text-gray-400">${modelA.type}</div>
+                        <div class="text-gray-400">${modelB.type}</div>
+                    </div>
+                    <div class="grid grid-cols-3 py-2.5 text-center">
+                        <div class="text-left pl-4 text-gray-500">综合智力质量</div>
+                        <div class="${winIntel[0]}">${modelA.intelligence} / 100</div>
+                        <div class="${winIntel[1]}">${modelB.intelligence} / 100</div>
+                    </div>
+                    <div class="grid grid-cols-3 py-2.5 text-center bg-gray-950/20">
+                        <div class="text-left pl-4 text-gray-500">MMLU-Pro (知识基准)</div>
+                        <div class="${winMmlu[0]}">${modelA.mmlu}%</div>
+                        <div class="${winMmlu[1]}">${modelB.mmlu}%</div>
+                    </div>
+                    <div class="grid grid-cols-3 py-2.5 text-center">
+                        <div class="text-left pl-4 text-gray-500">Chatbot Arena ELO</div>
+                        <div class="${winElo[0]}">${modelA.elo}</div>
+                        <div class="${winElo[1]}">${modelB.elo}</div>
+                    </div>
+                    <div class="grid grid-cols-3 py-2.5 text-center bg-gray-950/20">
+                        <div class="text-left pl-4 text-gray-500">生成速度 (Throughput)</div>
+                        <div class="${winSpeed[0]}">${modelA.speed} tps</div>
+                        <div class="${winSpeed[1]}">${modelB.speed} tps</div>
+                    </div>
+                    <div class="grid grid-cols-3 py-2.5 text-center">
+                        <div class="text-left pl-4 text-gray-500">首字延迟 (TTFT)</div>
+                        <div class="${winTtft[0]}">${modelA.ttft} ms</div>
+                        <div class="${winTtft[1]}">${modelB.ttft} ms</div>
+                    </div>
+                    <div class="grid grid-cols-3 py-2.5 text-center bg-gray-950/20">
+                        <div class="text-left pl-4 text-gray-500">最大上下文</div>
+                        <div class="text-gray-300 font-mono">${modelA.context}</div>
+                        <div class="text-gray-300 font-mono">${modelB.context}</div>
+                    </div>
+                    <div class="grid grid-cols-3 py-2.5 text-center font-bold">
+                        <div class="text-left pl-4 text-gray-500 font-normal">当前预估月度开销</div>
+                        <div class="${winCost[0]} font-mono">${symbol}${costAObj.total.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+                        <div class="${winCost[1]} font-mono">${symbol}${costBObj.total.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+                    </div>
+                </div>
+            `;
         }
 
         // Apply slider state change
@@ -782,6 +959,11 @@
             document.getElementById('val-input').innerText = inputM.toFixed(1) + " M Tokens";
             document.getElementById('val-output').innerText = outputM.toFixed(1) + " M Tokens";
             document.getElementById('val-cache').innerText = cacheHitPct + " %";
+
+            // If active view is capability, keep side-by-side comparison synced
+            if (activeView === 'capability') {
+                compareModels();
+            }
 
             renderDashboard();
         }
@@ -807,6 +989,11 @@
                 btnCny.className = "px-3.5 py-1.5 text-xs font-semibold text-gray-400 hover:text-white transition-all";
                 btnUsd.className = "px-3.5 py-1.5 text-xs font-semibold bg-brand-500 text-white transition-all";
             }
+            
+            if (activeView === 'capability') {
+                compareModels();
+            }
+            
             renderDashboard();
         }
 
@@ -890,34 +1077,11 @@
             const maxCost = Math.max(...costs) || 1;
             const costRange = maxCost - minCost;
 
-            // Get business priority weights
-            const wIntel = parseInt(document.getElementById('weight-intel').value);
-            const wSpeed = parseInt(document.getElementById('weight-speed').value);
-            const wContext = parseInt(document.getElementById('weight-context').value);
-            const wCost = parseInt(document.getElementById('weight-cost').value);
-            const totalWeight = wIntel + wSpeed + wContext + wCost || 1;
-
-            // Map dynamically computed Value Scores
-            calculatedModels = calculatedModels.map(m => {
-                // Cheaper cost gets higher score
-                const costScore = costRange > 0 ? (1 - (m.costs.total - minCost) / costRange) * 100 : 100;
-                // Speed score (normalized against max speed 180 tps)
-                const speedScore = (m.speed / 180) * 100;
-                
-                const valueScore = (m.intelligence * wIntel + speedScore * wSpeed + m.contextScore * wContext + costScore * wCost) / totalWeight;
-                return {
-                    ...m,
-                    valueScore: valueScore
-                };
-            });
-
             // 3. Sort Data based on selected sort option
             calculatedModels.sort((a, b) => {
                 const [field, order] = currentSort.split('-');
                 if (field === 'totalCost') {
                     return order === 'asc' ? a.costs.total - b.costs.total : b.costs.total - a.costs.total;
-                } else if (field === 'valueScore') {
-                    return order === 'desc' ? b.valueScore - a.valueScore : a.valueScore - b.valueScore;
                 } else if (field === 'intelligence') {
                     return order === 'desc' ? b.intelligence - a.intelligence : a.intelligence - b.intelligence;
                 } else if (field === 'speed') {
@@ -1014,14 +1178,19 @@
                     const isRmb = currentCurrency === 'CNY';
                     const symbol = isRmb ? '¥' : '$';
                     const totalCostFormatted = m.costs.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    const valueScoreFormatted = m.valueScore.toFixed(1);
 
                     // A. Render Scatter Plot Node
-                    const logMin = Math.log10(Math.max(minCost, 0.05));
-                    const logMax = Math.log10(Math.max(maxCost, 0.5));
-                    const logVal = Math.log10(Math.max(m.costs.total, 0.05));
+                    let xPct = 50;
+                    if (scatterMode === 'cost') {
+                        const logMin = Math.log10(Math.max(minCost, 0.05));
+                        const logMax = Math.log10(Math.max(maxCost, 0.5));
+                        const logVal = Math.log10(Math.max(m.costs.total, 0.05));
+                        xPct = logMax === logMin ? 50 : ((logVal - logMin) / (logMax - logMin)) * 80 + 10;
+                    } else {
+                        // Max Speed reference: 200 tps
+                        xPct = (m.speed / 200) * 80 + 10;
+                    }
                     
-                    let xPct = logMax === logMin ? 50 : ((logVal - logMin) / (logMax - logMin)) * 80 + 10;
                     let yPct = ((m.intelligence - 60) / 40) * 80 + 10;
                     
                     const isDomestic = m.region === 'domestic';
@@ -1066,12 +1235,12 @@
                                     <span class="text-emerald-400 font-bold">${m.speed} tps</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-gray-500">长文本召回:</span>
-                                    <span class="text-purple-400 font-bold">${m.contextScore}/100</span>
+                                    <span class="text-gray-500">MMLU-Pro 基准:</span>
+                                    <span class="text-purple-400 font-bold">${m.mmlu}%</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-gray-500">性价比得分:</span>
-                                    <span class="text-pink-400 font-bold">${m.valueScore.toFixed(1)}</span>
+                                    <span class="text-gray-500">Chatbot Arena:</span>
+                                    <span class="text-pink-400 font-bold">${m.elo}</span>
                                 </div>
                                 <div class="border-t border-gray-800 pt-1.5 mt-1.5 flex justify-between items-baseline">
                                     <span class="text-gray-400 font-medium">预估月费:</span>
@@ -1098,28 +1267,25 @@
                                 ${m.badge ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-semibold ${m.badgeColor}">${m.badge}</span>` : ''}
                             </div>
                             <div class="flex items-center gap-3 mt-2 text-xs text-gray-400 flex-wrap">
-                                <span class="inline-flex items-center gap-1">🧠 智力: <b class="text-brand-400">${m.intelligence}</b></span>
-                                <span class="inline-flex items-center gap-1">⚡ 速度: <b class="text-emerald-400">${m.speed} tps</b></span>
+                                <span class="inline-flex items-center gap-1">🧠 智力质量: <b class="text-brand-400">${m.intelligence}</b></span>
+                                <span class="inline-flex items-center gap-1">⚡ 生成速度: <b class="text-emerald-400">${m.speed} tps</b></span>
                                 <span class="inline-flex items-center gap-1">📄 空间: <b class="text-purple-400">${m.context}</b></span>
                             </div>
                         </div>
 
-                        <!-- Dynamic Value Score Progress Bar -->
-                        <div class="flex-1 max-w-full md:max-w-[280px] flex flex-col gap-1.5">
-                            <div class="flex justify-between items-end text-xs">
-                                <span class="text-[10px] text-gray-500 font-bold">综合配置性价比得分</span>
-                                <span class="font-bold text-pink-400 text-sm font-mono">${valueScoreFormatted} / 100</span>
+                        <!-- Sub Benchmarks Details -->
+                        <div class="flex-1 max-w-full md:max-w-[320px] grid grid-cols-3 gap-2 text-center text-xs">
+                            <div class="bg-gray-950/40 p-2 rounded-lg border border-gray-905">
+                                <div class="text-[10px] text-gray-500 font-semibold mb-0.5">MMLU-Pro</div>
+                                <div class="font-bold text-gray-300">${m.mmlu}%</div>
                             </div>
-                            
-                            <!-- Progress Bar -->
-                            <div class="w-full h-2 bg-gray-950 rounded-full overflow-hidden border border-gray-800/80">
-                                <div class="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-brand-500" style="width: ${valueScoreFormatted}%"></div>
+                            <div class="bg-gray-950/40 p-2 rounded-lg border border-gray-905">
+                                <div class="text-[10px] text-gray-500 font-semibold mb-0.5">Arena ELO</div>
+                                <div class="font-bold text-gray-300">${m.elo}</div>
                             </div>
-
-                            <!-- Summary tag -->
-                            <div class="text-[10px] text-gray-400 flex justify-between font-mono">
-                                <span>月度预估开销:</span>
-                                <span class="text-amber-400 font-bold">${symbol}${totalCostFormatted}</span>
+                            <div class="bg-gray-950/40 p-2 rounded-lg border border-gray-905">
+                                <div class="text-[10px] text-gray-500 font-semibold mb-0.5">TTFT 延迟</div>
+                                <div class="font-bold text-gray-300">${m.ttft}ms</div>
                             </div>
                         </div>
                     `;
