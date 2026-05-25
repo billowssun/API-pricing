@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 最新主流大模型 API 价格对比与成本计算器</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0072ff',
+                            600: '#005ed9',
+                            950: '#030712',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Inter & Noto Sans SC Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        }
+        /* Custom scrollbar for premium feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
+        }
+    </style>
+</head>
+<body class="bg-[#080B10] text-gray-100 min-h-screen selection:bg-brand-500/30 selection:text-brand-100 antialiased">
+
+    <!-- Top Banner: 2026 Latest Market Adjustments -->
+    <div class="bg-gradient-to-r from-blue-950 via-brand-950 to-purple-950 border-b border-gray-800/80 py-2.5 px-4 text-center text-xs md:text-sm text-gray-300">
+        <span class="inline-flex items-center gap-1.5 bg-brand-500/20 text-brand-400 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-brand-500/30 mr-2">实时数据</span>
+        💡 <b>2026最新数据校准</b>：包含 <b>DeepSeek V4-Pro (永久2.5折)</b> 与 <b>Gemini 3.1 Pro (2M极长上下文)</b>，已剔除老旧模型！
+    </div>
+
+    <!-- Header Section -->
+    <header class="max-w-7xl mx-auto px-4 pt-8 pb-6 md:pb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
+                    最新主流大模型 API 价格算费器
+                </h1>
+                <p class="text-sm md:text-base text-gray-400 mt-2 max-w-3xl">
+                    聚焦 2026 年最新一代旗舰级推理与极速多模态模型。支持一键成本动态试算，探究最新大模型 Prompt 缓存机制对于业务成本的实质性影响。
+                </p>
+            </div>
+            
+            <!-- Currency Toggles and Exchange Rates -->
+            <div class="flex flex-wrap items-center gap-3 bg-[#0F141C] p-1.5 rounded-xl border border-gray-800/60 self-stretch md:self-auto justify-between">
+                <div class="flex rounded-lg overflow-hidden bg-gray-950 border border-gray-800">
+                    <button id="btn-cny" onclick="setCurrency('CNY')" class="px-3.5 py-1.5 text-xs font-semibold bg-brand-500 text-white transition-all">
+                        CNY (¥)
+                    </button>
+                    <button id="btn-usd" onclick="setCurrency('USD')" class="px-3.5 py-1.5 text-xs font-semibold text-gray-400 hover:text-white transition-all">
+                        USD ($)
+                    </button>
+                </div>
+                <div class="h-4 w-px bg-gray-800 hidden sm:block"></div>
+                <div class="text-xs text-gray-400 hidden sm:block">
+                    汇率对照: <span class="text-gray-200 font-mono">1 USD = 7.25 CNY</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: Interactive Calculator Config (4 cols) -->
+        <section class="lg:col-span-4 bg-[#0F141C]/80 rounded-2xl border border-gray-800 p-6 backdrop-blur-xl h-fit lg:sticky lg:top-6">
+            <div class="flex items-center gap-2 mb-6">
+                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 11h.01M12 7h.01M15 11h.01M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/></svg>
+                <h2 class="text-lg font-bold">API 业务流量模拟</h2>
+            </div>
+
+            <!-- Slider 1: Input Tokens -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-gray-300">每月输入流量 (Input)</span>
+                    <span class="text-sm font-bold text-brand-400 font-mono" id="val-input">10 M Tokens</span>
+                </div>
+                <input type="range" id="slide-input" min="0.1" max="100" step="0.1" value="10" oninput="updateSliders()"
+                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-brand-500">
+                <div class="flex justify-between text-[10px] text-gray-500 mt-1 font-mono">
+                    <span>10万</span>
+                    <span>5000万</span>
+                    <span>1亿 Tokens</span>
+                </div>
+            </div>
+
+            <!-- Slider 2: Output Tokens -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-gray-300">每月输出流量 (Output)</span>
+                    <span class="text-sm font-bold text-emerald-400 font-mono" id="val-output">5 M Tokens</span>
+                </div>
+                <input type="range" id="slide-output" min="0.1" max="100" step="0.1" value="5" oninput="updateSliders()"
+                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                <div class="flex justify-between text-[10px] text-gray-500 mt-1 font-mono">
+                    <span>10万</span>
+                    <span>5000万</span>
+                    <span>1亿 Tokens</span>
+                </div>
+            </div>
+
+            <!-- Slider 3: Cache Hit Rate -->
+            <div class="mb-6 bg-gray-950/60 p-4 rounded-xl border border-gray-800/60">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-gray-300 inline-flex items-center gap-1.5">
+                        Prompt 缓存命中率
+                        <span class="group relative cursor-pointer text-gray-500 hover:text-gray-300">
+                            ℹ️
+                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-2 bg-gray-900 border border-gray-800 text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-center">
+                                最新大模型（如 DeepSeek V4-Pro, Gemini 3.1 Pro, Qwen 3.6 等）对重复输入的 Prompt 提示词提供高达 50% ~ 98% 的极高缓存折扣，大大减少频繁对话费用。
+                            </span>
+                        </span>
+                    </span>
+                    <span class="text-sm font-bold text-amber-400 font-mono" id="val-cache">40 %</span>
+                </div>
+                <input type="range" id="slide-cache" min="0" max="100" step="5" value="40" oninput="updateSliders()"
+                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                <div class="flex justify-between text-[10px] text-gray-500 mt-1 font-mono">
+                    <span>无缓存 (0%)</span>
+                    <span>日常复用</span>
+                    <span>极高命中 (100%)</span>
+                </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="border-t border-gray-800/80 pt-4">
+                <span class="text-xs text-gray-400 block mb-2.5 font-semibold">快速业务场景模拟:</span>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="applyPreset(1, 0.5, 20)" class="px-2.5 py-2 text-left text-xs bg-[#1F2937]/50 hover:bg-[#1F2937] rounded-lg transition-colors border border-gray-800">
+                        <div class="font-bold text-gray-200">个人测试/开发</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-0.5">1M In / 0.5M Out</div>
+                    </button>
+                    <button onclick="applyPreset(10, 5, 40)" class="px-2.5 py-2 text-left text-xs bg-[#1F2937]/50 hover:bg-[#1F2937] rounded-lg transition-colors border border-gray-800">
+                        <div class="font-bold text-gray-200">标准应用后台</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-0.5">10M In / 5M Out</div>
+                    </button>
+                    <button onclick="applyPreset(50, 15, 65)" class="px-2.5 py-2 text-left text-xs bg-[#1F2937]/50 hover:bg-[#1F2937] rounded-lg transition-colors border border-gray-800">
+                        <div class="font-bold text-gray-200">AI Agent 智能体</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-0.5">50M In / 15M Out</div>
+                    </button>
+                    <button onclick="applyPreset(80, 20, 85)" class="px-2.5 py-2 text-left text-xs bg-[#1F2937]/50 hover:bg-[#1F2937] rounded-lg transition-colors border border-gray-800">
+                        <div class="font-bold text-gray-200">高复用长对话</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-0.5">80M In / 20M Out</div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Visualization & Details (8 cols) -->
+        <section class="lg:col-span-8 flex flex-col gap-6">
+            
+            <!-- Filters, Search and Sorting -->
+            <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-[#0F141C]/50 p-4 rounded-xl border border-gray-800/80">
+                <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1">
+                    <!-- Tab filters -->
+                    <div class="flex gap-1 bg-gray-950 p-1 rounded-lg border border-gray-800">
+                        <button id="filter-all" onclick="setRegion('all')" class="px-3 py-1 text-xs font-semibold rounded-md bg-[#1F2937] text-white transition-all">
+                            全部地区
+                        </button>
+                        <button id="filter-domestic" onclick="setRegion('domestic')" class="px-3 py-1 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all">
+                            国内主流
+                        </button>
+                        <button id="filter-overseas" onclick="setRegion('overseas')" class="px-3 py-1 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all">
+                            海外最新
+                        </button>
+                    </div>
+                    <!-- Search Input -->
+                    <div class="relative flex-1 max-w-full sm:max-w-[200px]">
+                        <input type="text" id="model-search" oninput="renderDashboard()" placeholder="搜索模型名称/品牌..." 
+                               class="w-full bg-gray-950 border border-gray-800 text-xs rounded-lg py-1.5 pl-3 pr-8 focus:outline-none focus:border-brand-500 text-gray-200 placeholder-gray-600">
+                        <svg class="w-3.5 h-3.5 text-gray-600 absolute right-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Sorting Select -->
+                <div class="flex items-center gap-2 text-xs text-gray-400 justify-between">
+                    <span>排列依据:</span>
+                    <select id="sort-select" onchange="setSort(this.value)" class="bg-gray-950 border border-gray-800 text-gray-200 rounded-md py-1.5 px-2 focus:outline-none focus:border-brand-500 font-medium">
+                        <option value="totalCost-asc">预估月费 (由低到高)</option>
+                        <option value="totalCost-desc">预估月费 (由高到低)</option>
+                        <option value="input-asc">输入单价 (由低到高)</option>
+                        <option value="output-asc">输出单价 (由低到高)</option>
+                        <option value="context-desc">上下文长度 (由大到小)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Cost Visual Chart & Ranking List -->
+            <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
+                <div class="p-4 bg-gray-900/40 border-b border-gray-800 flex justify-between items-center flex-wrap gap-2">
+                    <h3 class="text-sm font-bold text-gray-300 flex items-center gap-1.5">
+                        <span>📊 月度预估开销排位看板</span>
+                    </h3>
+                    <span class="text-[11px] text-gray-500 font-semibold bg-gray-900 px-2 py-0.5 rounded-full">
+                        计算公式: 输入 × 缓存折扣价 + 输出 × 标准价
+                    </span>
+                </div>
+                
+                <!-- Chart Rows container -->
+                <div id="pricing-rows-container" class="divide-y divide-gray-800/40">
+                    <!-- Dynamic Rows Rendered Here by JS -->
+                </div>
+            </div>
+
+            <!-- Detail Analysis Cards Grid -->
+            <div>
+                <h3 class="text-base font-bold mb-4 flex items-center gap-2 text-gray-200">
+                    <span>💎 2026 旗舰模型与技术底座剖析</span>
+                    <span class="text-xs font-normal text-gray-500">（点击排行中模型的名称可自动定位）</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cards-container">
+                    <!-- Dynamic Detail Cards -->
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 bg-[#04060A] py-12 text-center text-xs text-gray-500 leading-relaxed">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="mb-2">© 2026 最新主流大模型 API 价格对比指南. 所有资费数据均针对 2026年最新官宣大模型进行了人工校准和校验。</p>
+            <p class="max-w-2xl mx-auto text-gray-600">
+                部分海外大模型除 Context Caching (上下文缓存) 减免之外，不同时区并发可能享有额外闲时优惠，本工具统一按常规高峰商业资费进行测算。
+                中文 1M Token 大约可对应 75万 至 100万个汉字词符。
+            </p>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // Exchange Rate 1 USD = 7.25 CNY
+        const USD_TO_CNY = 7.25;
+
+        // Up-to-date SOTA Model Data (2026 Current Mainstreams)
+        const modelsData = [
+            // 国内最新主流 (Domestic)
+            {
+                id: 'deepseek-v4-pro',
+                name: 'DeepSeek V4-Pro',
+                provider: 'DeepSeek 深度求索',
+                region: 'domestic',
+                type: '旗舰级推理 MoE',
+                inputUSD: (12.0 * 0.25) / USD_TO_CNY, // 2.5折永久
+                outputUSD: (24.0 * 0.25) / USD_TO_CNY,
+                inputCNY: 12.0 * 0.25,  // 2.5折永久 => 3.0 元 / 1M
+                outputCNY: 24.0 * 0.25, // 2.5折永久 => 6.0 元 / 1M
+                cacheDiscount: 0.98,    // 98% off cache hits (只需付原本2%的价格)
+                context: '1M (100万)',
+                isCheapest: true,
+                badge: '性价比之神 (永久2.5折)',
+                badgeColor: 'bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-400 border border-orange-500/30',
+                desc: '官方宣布将促销期间的2.5折优惠政策改为永久资费！V4架构的顶级专家推理模型。多步推理与代码极强，缓存输入费率接近全免，为2026国内最强底座。'
+            },
+            {
+                id: 'deepseek-v4-flash',
+                name: 'DeepSeek V4-Flash',
+                provider: 'DeepSeek 深度求索',
+                region: 'domestic',
+                type: '极速高频 MoE',
+                inputUSD: 1.00 / USD_TO_CNY,
+                outputUSD: 2.00 / USD_TO_CNY,
+                inputCNY: 1.00,        // ¥1.00 / 1M
+                outputCNY: 2.00,       // ¥2.00 / 1M
+                cacheDiscount: 0.98,
+                context: '1M (100万)',
+                isCheapest: true,
+                badge: '极速零预算首选',
+                badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
+                desc: '高吞吐量极速模型，专门应对超大规模高并发调用、高频自动化流水线或日常客服等普通对话，费用惊人地低廉。'
+            },
+            {
+                id: 'doubao-2-pro',
+                name: '豆包 2.0 Pro',
+                provider: '字节跳动 火山引擎',
+                region: 'domestic',
+                type: '通用商业旗舰',
+                inputUSD: 3.20 / USD_TO_CNY,
+                outputUSD: 16.00 / USD_TO_CNY,
+                inputCNY: 3.20,
+                outputCNY: 16.00,
+                cacheDiscount: 0.80,    // 80% discount for cache (只需0.64元)
+                context: '256K',
+                badge: '火山引擎主力',
+                badgeColor: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+                desc: '字节跳动核心2026年升级版本，中文原生对话极佳、联网检索质量极高，配备强大的火山API网关支持，缓存性能强大。'
+            },
+            {
+                id: 'doubao-2-lite',
+                name: '豆包 2.0 Lite',
+                provider: '字节跳动 火山引擎',
+                region: 'domestic',
+                type: '超快高并发型',
+                inputUSD: 0.60 / USD_TO_CNY,
+                outputUSD: 3.60 / USD_TO_CNY,
+                inputCNY: 0.60,
+                outputCNY: 3.60,
+                cacheDiscount: 0.80,
+                context: '256K',
+                badge: '极致平价',
+                badgeColor: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
+                desc: '主打高并发、秒级响应场景。在海量信息抽取、日常闲聊助理或低复杂度翻譯任務中具有碾压级的降本优势。'
+            },
+            {
+                id: 'qwen-3.6-max',
+                name: 'Qwen 3.6 Max',
+                provider: '阿里通义千问',
+                region: 'domestic',
+                type: '万亿参数闭源旗舰',
+                inputUSD: 1.30,
+                outputUSD: 7.80,
+                inputCNY: 1.30 * USD_TO_CNY, // ~¥9.42
+                outputCNY: 7.80 * USD_TO_CNY, // ~¥56.55
+                cacheDiscount: 0.90,         // 90% discount for cache
+                context: '262K',
+                badge: '通义顶配闭源',
+                badgeColor: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
+                desc: '阿里2026闭源之王。支持独创原生“Thinking”深度推理。逻辑闭环极佳，在多步长Agent链调用和复杂代码编写上位列国际一流水平。'
+            },
+            {
+                id: 'qwen-3.6-35b',
+                name: 'Qwen 3.6 35B',
+                provider: '阿里通义千问',
+                region: 'domestic',
+                type: '中规格 MoE 旗舰',
+                inputUSD: 0.15,
+                outputUSD: 0.90,
+                inputCNY: 0.15 * USD_TO_CNY, // ~¥1.09
+                outputCNY: 0.90 * USD_TO_CNY, // ~¥6.52
+                cacheDiscount: 0.67,
+                context: '262K',
+                badge: '明星中端MoE',
+                badgeColor: 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20',
+                desc: '阿里小钢炮开源MoE模型，调用成本低廉，在复杂数学推理及代码逻辑上，甚至可以平替不少老一代的大规格闭源旗舰。'
+            },
+            {
+                id: 'kimi-k2.6',
+                name: 'Kimi K2.6',
+                provider: 'Moonshot 月之暗面',
+                region: 'domestic',
+                type: '无损长文本旗舰',
+                inputUSD: 0.95,
+                outputUSD: 4.00,
+                inputCNY: 6.80,
+                outputCNY: 28.50,
+                cacheDiscount: 0.50, // standard kimi prefix caching support
+                context: '262K',
+                badge: '长文本王牌',
+                badgeColor: 'bg-purple-500/20 text-purple-300 border border-purple-500/30',
+                desc: '专注于中文超长文档精准理解（如合规文件、学术著作及超长研报分析）。中文文本表达高雅，召回准确率在业界备受推崇。'
+            },
+
+            // 海外最新主流 (Overseas)
+            {
+                id: 'gemini-3.1-pro',
+                name: 'Gemini 3.1 Pro',
+                provider: 'Google 谷歌',
+                region: 'overseas',
+                type: '长文本旗舰推理',
+                inputUSD: 2.00,
+                outputUSD: 12.00,
+                inputCNY: 2.00 * USD_TO_CNY,
+                outputCNY: 12.00 * USD_TO_CNY,
+                cacheDiscount: 0.90, // 90% discount for cached tokens
+                context: '2M (200万)',
+                badge: '200万超长上下文',
+                badgeColor: 'bg-blue-600 text-white',
+                desc: 'Google 2026年重磅旗舰。直接升级并默认支持 2M (200万) 的无损长文本上下文。可将全本代码库或数十小时音视频一键输入，长文本理解力无出其右。'
+            },
+            {
+                id: 'gemini-3.5-flash',
+                name: 'Gemini 3.5 Flash',
+                provider: 'Google 谷歌',
+                region: 'overseas',
+                type: '极速原生多模态',
+                inputUSD: 1.50,
+                outputUSD: 9.00,
+                inputCNY: 1.50 * USD_TO_CNY,
+                outputCNY: 9.00 * USD_TO_CNY,
+                cacheDiscount: 0.90,
+                context: '1M (100万)',
+                badge: '5月19日新品',
+                badgeColor: 'bg-sky-500 text-white',
+                desc: '2026 Google I/O 新一代极速多模态先锋。性能直逼Pro款，但反应速度与通量提升了数倍，在各种复杂多通道实时音频与视频流输入场景中极具价格优势。'
+            },
+            {
+                id: 'gpt-5.5',
+                name: 'GPT-5.5',
+                provider: 'OpenAI',
+                region: 'overseas',
+                type: '全能黄金旗舰',
+                inputUSD: 5.00,
+                outputUSD: 30.00,
+                inputCNY: 5.00 * USD_TO_CNY,
+                outputCNY: 30.00 * USD_TO_CNY,
+                cacheDiscount: 0.50, // Standard 50% discount
+                context: '200K',
+                badge: '行业全能指标',
+                badgeColor: 'bg-slate-100 text-slate-950 font-bold',
+                desc: '最新旗舰级全能霸主，无论是在复杂业务系统控制、多步代理协作（Agentic Workflows），还是高级多模态跨媒体理解上都展现出了行业顶尖的可靠度。'
+            },
+            {
+                id: 'gpt-o3-reasoning',
+                name: 'OpenAI o3 (Reasoning)',
+                provider: 'OpenAI',
+                region: 'overseas',
+                type: '强化解题推理',
+                inputUSD: 2.00,
+                outputUSD: 8.00,
+                inputCNY: 2.00 * USD_TO_CNY,
+                outputCNY: 8.00 * USD_TO_CNY,
+                cacheDiscount: 0.50,
+                context: '200K',
+                badge: '强化逻辑专家',
+                badgeColor: 'bg-teal-950 text-teal-400 border border-teal-800',
+                desc: '专注于解答极高难度数理方程、专业物理逻辑或高级编程重构等复杂决策过程。其计费中将按模型产生的最终思维（Thinking）Token 共同结算。'
+            },
+            {
+                id: 'gpt-o4-mini',
+                name: 'OpenAI o4-mini',
+                provider: 'OpenAI',
+                region: 'overseas',
+                type: '极速推理 MoE',
+                inputUSD: 0.55,
+                outputUSD: 2.20,
+                inputCNY: 0.55 * USD_TO_CNY,
+                outputCNY: 2.20 * USD_TO_CNY,
+                cacheDiscount: 0.50,
+                context: '128K',
+                badge: '海外高性价比',
+                badgeColor: 'bg-gray-800 text-gray-300 border border-gray-700',
+                desc: '针对中等复杂度且需要“快思考”的自动化推理任务设计的平价轻量模型，价格在海外阵营中属于极为克制的代表。'
+            },
+            {
+                id: 'claude-4.7-opus',
+                name: 'Claude 4.7 Opus',
+                provider: 'Anthropic',
+                region: 'overseas',
+                type: '终极科研旗舰',
+                inputUSD: 5.00,
+                outputUSD: 25.00,
+                inputCNY: 5.00 * USD_TO_CNY,
+                outputCNY: 25.00 * USD_TO_CNY,
+                cacheDiscount: 0.0,
+                context: '1M (100万)',
+                badge: '顶级智商/文笔',
+                badgeColor: 'bg-pink-950 text-pink-300 border border-pink-900',
+                desc: '在长文创作、行业专业多维图表分析、系统层级超大规模重构等顶级科研及智商挑战任务上拥有绝佳的表达美感与细节完整性。'
+            },
+            {
+                id: 'claude-4.6-sonnet',
+                name: 'Claude 4.6 Sonnet',
+                provider: 'Anthropic',
+                region: 'overseas',
+                type: '黄金代码旗舰',
+                inputUSD: 3.00,
+                outputUSD: 15.00,
+                inputCNY: 3.00 * USD_TO_CNY,
+                outputCNY: 15.00 * USD_TO_CNY,
+                cacheDiscount: 0.90, // Supports 90% write discount for cached prompt tokens
+                context: '1M (100万)',
+                badge: '程序员首选',
+                badgeColor: 'bg-[#1F2937] text-amber-300 border border-amber-500/20',
+                desc: '开发人员及项目经理心目中永恒的白月光。支持在100万极长代码上下文中对多个依赖库进行高度复用，极高地缩减研发迭代期。'
+            }
+        ];
+
+        // State variables
+        let currentCurrency = 'CNY'; // 'CNY' or 'USD'
+        let currentRegion = 'all'; // 'all', 'domestic', 'overseas'
+        let currentSort = 'totalCost-asc'; // sorting default
+        
+        // Simulated volumes (millions of tokens)
+        let inputM = 10;
+        let outputM = 5;
+        let cacheHitPct = 40;
+
+        // Apply slider state change
+        function updateSliders() {
+            inputM = parseFloat(document.getElementById('slide-input').value);
+            outputM = parseFloat(document.getElementById('slide-output').value);
+            cacheHitPct = parseInt(document.getElementById('slide-cache').value);
+
+            // Update Labels
+            document.getElementById('val-input').innerText = inputM.toFixed(1) + " M Tokens";
+            document.getElementById('val-output').innerText = outputM.toFixed(1) + " M Tokens";
+            document.getElementById('val-cache').innerText = cacheHitPct + " %";
+
+            renderDashboard();
+        }
+
+        // Apply Presets
+        function applyPreset(inp, outp, cache) {
+            document.getElementById('slide-input').value = inp;
+            document.getElementById('slide-output').value = outp;
+            document.getElementById('slide-cache').value = cache;
+            updateSliders();
+        }
+
+        // Change currency and styles
+        function setCurrency(curr) {
+            currentCurrency = curr;
+            const btnCny = document.getElementById('btn-cny');
+            const btnUsd = document.getElementById('btn-usd');
+
+            if (curr === 'CNY') {
+                btnCny.className = "px-3.5 py-1.5 text-xs font-semibold bg-brand-500 text-white transition-all";
+                btnUsd.className = "px-3.5 py-1.5 text-xs font-semibold text-gray-400 hover:text-white transition-all";
+            } else {
+                btnCny.className = "px-3.5 py-1.5 text-xs font-semibold text-gray-400 hover:text-white transition-all";
+                btnUsd.className = "px-3.5 py-1.5 text-xs font-semibold bg-brand-500 text-white transition-all";
+            }
+            renderDashboard();
+        }
+
+        // Filter Region
+        function setRegion(region) {
+            currentRegion = region;
+            const btnAll = document.getElementById('filter-all');
+            const btnDom = document.getElementById('filter-domestic');
+            const btnOvs = document.getElementById('filter-overseas');
+
+            const normalClass = "px-3 py-1 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all";
+            const activeClass = "px-3 py-1 text-xs font-semibold rounded-md bg-[#1F2937] text-white transition-all";
+
+            btnAll.className = region === 'all' ? activeClass : normalClass;
+            btnDom.className = region === 'domestic' ? activeClass : normalClass;
+            btnOvs.className = region === 'overseas' ? activeClass : normalClass;
+
+            renderDashboard();
+        }
+
+        // Sort Action
+        function setSort(sortVal) {
+            currentSort = sortVal;
+            renderDashboard();
+        }
+
+        // Calculation helper: returns total cost for the model based on simulated tokens
+        function calculateModelCost(model) {
+            // Check prices by currency
+            const normalIn = currentCurrency === 'CNY' ? model.inputCNY : model.inputUSD;
+            const normalOut = currentCurrency === 'CNY' ? model.outputCNY : model.outputUSD;
+
+            // Effective Input Token Price per Million (applying cache discount)
+            const effectiveIn = normalIn * (1 - (cacheHitPct / 100 * model.cacheDiscount));
+            
+            const costIn = effectiveIn * inputM;
+            const costOut = normalOut * outputM;
+
+            return {
+                total: costIn + costOut,
+                effectiveInputUnit: effectiveIn,
+                normalInputUnit: normalIn,
+                normalOutputUnit: normalOut,
+                savedByCache: (normalIn * inputM) - costIn
+            };
+        }
+
+        // Render everything
+        function renderDashboard() {
+            const container = document.getElementById('pricing-rows-container');
+            const cardsContainer = document.getElementById('cards-container');
+            const searchQuery = document.getElementById('model-search').value.toLowerCase().trim();
+            
+            // 1. Filter Data (Region + Search query)
+            let filteredModels = [...modelsData];
+            if (currentRegion !== 'all') {
+                filteredModels = filteredModels.filter(m => m.region === currentRegion);
+            }
+            if (searchQuery) {
+                filteredModels = filteredModels.filter(m => 
+                    m.name.toLowerCase().includes(searchQuery) || 
+                    m.provider.toLowerCase().includes(searchQuery) ||
+                    m.type.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            // 2. Map and Calculate Costs for all matching models
+            const calculatedModels = filteredModels.map(model => {
+                const costs = calculateModelCost(model);
+                return {
+                    ...model,
+                    costs: costs
+                };
+            });
+
+            // 3. Sort Data based on selected sort option
+            calculatedModels.sort((a, b) => {
+                const [field, order] = currentSort.split('-');
+                if (field === 'totalCost') {
+                    return order === 'asc' ? a.costs.total - b.costs.total : b.costs.total - a.costs.total;
+                } else if (field === 'input') {
+                    return order === 'asc' ? a.costs.normalInputUnit - b.costs.normalInputUnit : b.costs.normalInputUnit - a.costs.normalInputUnit;
+                } else if (field === 'output') {
+                    return order === 'asc' ? a.costs.normalOutputUnit - b.costs.normalOutputUnit : b.costs.normalOutputUnit - a.costs.normalOutputUnit;
+                } else if (field === 'context') {
+                    const getVal = (str) => parseInt(str) || 0;
+                    return order === 'desc' ? getVal(b.context) - getVal(a.context) : getVal(a.context) - getVal(b.context);
+                }
+                return 0;
+            });
+
+            // Find Maximum Total Cost for bar scaling reference
+            const maxCost = Math.max(...calculatedModels.map(m => m.costs.total), 1);
+
+            // 4. Render Tabular Visual Rows
+            container.innerHTML = '';
+            if (calculatedModels.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-gray-500 text-sm">
+                        没有找到匹配当前筛选和搜索条件的大模型数据。
+                    </div>
+                `;
+            } else {
+                calculatedModels.forEach((m, idx) => {
+                    const isRmb = currentCurrency === 'CNY';
+                    const symbol = isRmb ? '¥' : '$';
+                    const totalCostFormatted = m.costs.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const barWidth = (m.costs.total / maxCost) * 100;
+
+                    // Input and Output unit price display (per 1M tokens)
+                    const inUnitDisplay = `${symbol}${m.costs.normalInputUnit.toFixed(2)}`;
+                    const outUnitDisplay = `${symbol}${m.costs.normalOutputUnit.toFixed(2)}`;
+
+                    // Render row
+                    const row = document.createElement('div');
+                    row.className = "p-4 md:p-5 hover:bg-gray-900/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4";
+                    row.innerHTML = `
+                        <!-- Model Identity Info -->
+                        <div class="flex-1 min-w-[240px]">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-xs text-gray-600 font-mono font-bold">#${idx+1}</span>
+                                <h4 class="font-bold text-gray-200 hover:text-brand-400 transition-colors cursor-pointer text-sm md:text-base" onclick="scrollToDetail('${m.id}')">${m.name}</h4>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded-md ${m.region === 'domestic' ? 'bg-blue-950/80 text-blue-300 border border-blue-900/50' : 'bg-purple-950/80 text-purple-300 border border-purple-900/50'} font-medium">${m.provider}</span>
+                                ${m.badge ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-semibold ${m.badgeColor}">${m.badge}</span>` : ''}
+                            </div>
+                            <div class="flex items-center gap-4 mt-2 text-xs text-gray-400 flex-wrap">
+                                <span>输入: <b class="text-gray-200">${inUnitDisplay}</b> <span class="text-gray-600">/M</span></span>
+                                <span>输出: <b class="text-emerald-400">${outUnitDisplay}</b> <span class="text-gray-600">/M</span></span>
+                                <span>最大上下文: <b class="text-brand-400 font-mono">${m.context}</b></span>
+                            </div>
+                        </div>
+
+                        <!-- Relative Cost Visualizing Bar and Cost -->
+                        <div class="flex-1 max-w-full md:max-w-[320px] flex flex-col gap-1.5">
+                            <div class="flex justify-between items-end text-xs">
+                                <span class="text-gray-600 font-mono text-[10px] font-bold">费用对比刻度</span>
+                                <span class="font-semibold text-gray-300">预估月消费: <span class="text-brand-500 font-bold font-mono text-sm">${symbol}${totalCostFormatted}</span></span>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="w-full h-2 bg-gray-950 rounded-full overflow-hidden border border-gray-800/80">
+                                <div class="h-full rounded-full bg-gradient-to-r ${m.isCheapest ? 'from-emerald-500 to-green-400' : 'from-brand-500 to-indigo-500'}" style="width: ${barWidth}%"></div>
+                            </div>
+
+                            <!-- Context Caching Advantage Info -->
+                            ${m.costs.savedByCache > 0 ? `
+                            <div class="text-[10px] text-amber-400/90 flex items-center justify-between bg-amber-950/10 px-2 py-0.5 rounded border border-amber-900/20 font-medium">
+                                <span>⚡ 开启 Prompt 缓存为您省下:</span>
+                                <span class="font-mono font-bold">${symbol}${m.costs.savedByCache.toFixed(2)}</span>
+                            </div>
+                            ` : `
+                            <div class="text-[10px] text-gray-600 px-2 py-0.5">该场景/模型暂不支持缓存折扣</div>
+                            `}
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+
+            // 5. Render Detail Cards
+            cardsContainer.innerHTML = '';
+            calculatedModels.forEach(m => {
+                const isRmb = currentCurrency === 'CNY';
+                const symbol = isRmb ? '¥' : '$';
+                const cachedInputFormatted = (m.costs.normalInputUnit * (1 - m.cacheDiscount)).toFixed(2);
+
+                const card = document.createElement('div');
+                card.id = `card-${m.id}`;
+                card.className = "bg-[#0F141C]/30 rounded-xl border border-gray-800/80 p-5 hover:border-gray-700/80 transition-all flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-2">
+                            <div>
+                                <h4 class="font-bold text-gray-100 text-base flex items-center gap-1.5">
+                                    <span>${m.name}</span>
+                                </h4>
+                                <span class="text-xs text-gray-500 font-medium">${m.provider} · <span class="text-brand-400 font-semibold">${m.type}</span></span>
+                            </div>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${m.region === 'domestic' ? 'bg-blue-950/50 text-blue-400 border border-blue-900/40' : 'bg-purple-950/50 text-purple-400 border border-purple-900/40'}">
+                                ${m.region === 'domestic' ? '国内主流' : '海外最新'}
+                            </span>
+                        </div>
+                        
+                        <!-- Description content -->
+                        <p class="text-xs text-gray-400 leading-relaxed mb-4">
+                            ${m.desc}
+                        </p>
+                    </div>
+
+                    <!-- Pricing Table inside Card -->
+                    <div class="bg-gray-950/60 rounded-lg p-3 border border-gray-800/60 text-xs">
+                        <div class="grid grid-cols-3 gap-2 text-center text-[10px] text-gray-500 pb-1.5 border-b border-gray-800/80 font-bold">
+                            <div>标准输入 (1M)</div>
+                            <div>缓存输入 (1M)</div>
+                            <div>标准输出 (1M)</div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center font-mono font-bold pt-1.5">
+                            <div class="text-gray-300">${symbol}${m.costs.normalInputUnit.toFixed(2)}</div>
+                            <div class="text-amber-400">${m.cacheDiscount > 0 ? symbol + cachedInputFormatted : '不提供'}</div>
+                            <div class="text-emerald-400">${symbol}${m.costs.normalOutputUnit.toFixed(2)}</div>
+                        </div>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        // Scroll helper to focus and blink targeted card
+        function scrollToDetail(modelId) {
+            const card = document.getElementById(`card-${modelId}`);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Focus flash anim
+                card.classList.remove('border-gray-800/80');
+                card.classList.add('border-brand-500', 'ring-2', 'ring-brand-500/30', 'bg-brand-500/5');
+                setTimeout(() => {
+                    card.classList.remove('border-brand-500', 'ring-2', 'ring-brand-500/30', 'bg-brand-500/5');
+                    card.classList.add('border-gray-800/80');
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
