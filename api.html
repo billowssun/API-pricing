@@ -175,6 +175,18 @@
         <!-- Right Column: Visualization & Details (8 cols) -->
         <section class="lg:col-span-8 flex flex-col gap-6">
             
+            <!-- View Switcher -->
+            <div class="grid grid-cols-2 p-1 bg-gray-950/80 rounded-xl border border-gray-800/85 shadow-md">
+                <button id="tab-cost" onclick="switchView('cost')" class="py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 bg-[#1F2937] text-white">
+                    <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 01-18 0z"/></svg>
+                    月度预估开销算费器
+                </button>
+                <button id="tab-capability" onclick="switchView('capability')" class="py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 text-gray-400 hover:text-gray-200">
+                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    模型能力与性价比看板 (ArtificialAnalysis 对标)
+                </button>
+            </div>
+            
             <!-- Filters, Search and Sorting -->
             <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-[#0F141C]/50 p-4 rounded-xl border border-gray-800/80">
                 <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1">
@@ -206,6 +218,9 @@
                     <select id="sort-select" onchange="setSort(this.value)" class="bg-gray-950 border border-gray-800 text-gray-200 rounded-md py-1.5 px-2 focus:outline-none focus:border-brand-500 font-medium">
                         <option value="totalCost-asc">预估月费 (由低到高)</option>
                         <option value="totalCost-desc">预估月费 (由高到低)</option>
+                        <option value="valueScore-desc">综合性价比评分 (由高到低)</option>
+                        <option value="intelligence-desc">综合智力 (由高到低)</option>
+                        <option value="speed-desc">生成速度 (由高到低)</option>
                         <option value="input-asc">输入单价 (由低到高)</option>
                         <option value="output-asc">输出单价 (由低到高)</option>
                         <option value="context-desc">上下文长度 (由大到小)</option>
@@ -213,21 +228,151 @@
                 </div>
             </div>
 
-            <!-- Cost Visual Chart & Ranking List -->
-            <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
-                <div class="p-4 bg-gray-900/40 border-b border-gray-800 flex justify-between items-center flex-wrap gap-2">
-                    <h3 class="text-sm font-bold text-gray-300 flex items-center gap-1.5">
-                        <span>📊 月度预估开销排位看板</span>
-                    </h3>
-                    <span class="text-[11px] text-gray-500 font-semibold bg-gray-900 px-2 py-0.5 rounded-full">
-                        计算公式: 输入 × 缓存折扣价 + 输出 × 标准价
-                    </span>
+            <!-- Cost View Content -->
+            <div id="view-cost-content" class="flex flex-col gap-6">
+                <!-- Cost Visual Chart & Ranking List -->
+                <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
+                    <div class="p-4 bg-gray-900/40 border-b border-gray-800 flex justify-between items-center flex-wrap gap-2">
+                        <h3 class="text-sm font-bold text-gray-300 flex items-center gap-1.5">
+                            <span>📊 月度预估开销排位看板</span>
+                        </h3>
+                        <span class="text-[11px] text-gray-500 font-semibold bg-gray-900 px-2 py-0.5 rounded-full">
+                            计算公式: 输入 × 缓存折扣价 + 输出 × 标准价
+                        </span>
+                    </div>
+                    
+                    <!-- Chart Rows container -->
+                    <div id="pricing-rows-container" class="divide-y divide-gray-800/40">
+                        <!-- Dynamic Rows Rendered Here by JS -->
+                    </div>
                 </div>
+            </div>
+
+            <!-- Capability View Content -->
+            <div id="view-capability-content" class="hidden flex flex-col gap-6">
                 
-                <!-- Chart Rows container -->
-                <div id="pricing-rows-container" class="divide-y divide-gray-800/40">
-                    <!-- Dynamic Rows Rendered Here by JS -->
+                <!-- Business Priority Weights Slider Card -->
+                <div class="bg-[#0F141C]/80 rounded-2xl border border-gray-800 p-5 shadow-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                        <h3 class="text-sm font-bold text-gray-200">智能选型：配置您的业务优先级权重</h3>
+                        <span class="text-[10px] text-gray-500">（系统将根据权重动态计算性价比评分）</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Weight 1: Intelligence -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5 text-gray-400">
+                                <span>🧠 智力/准确度</span>
+                                <span id="weight-intel-val" class="font-bold text-brand-400">40%</span>
+                            </div>
+                            <input type="range" id="weight-intel" min="0" max="100" value="40" oninput="updateWeights()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-brand-500">
+                        </div>
+                        <!-- Weight 2: Speed -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5 text-gray-400">
+                                <span>⚡ 生成速度</span>
+                                <span id="weight-speed-val" class="font-bold text-emerald-400">20%</span>
+                            </div>
+                            <input type="range" id="weight-speed" min="0" max="100" value="20" oninput="updateWeights()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                        </div>
+                        <!-- Weight 3: Context -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5 text-gray-400">
+                                <span>📄 长文本召回</span>
+                                <span id="weight-context-val" class="font-bold text-purple-400">15%</span>
+                            </div>
+                            <input type="range" id="weight-context" min="0" max="100" value="15" oninput="updateWeights()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                        </div>
+                        <!-- Weight 4: Budget -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1.5 text-gray-400">
+                                <span>💰 预算低廉度</span>
+                                <span id="weight-cost-val" class="font-bold text-amber-400">25%</span>
+                            </div>
+                            <input type="range" id="weight-cost" min="0" max="100" value="25" oninput="updateWeights()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Scatter Plot Card -->
+                <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl p-4 md:p-6">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 mb-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-200 flex items-center gap-1.5">
+                                <span>📈 智力与成本分布象限图 (Quality vs. Price)</span>
+                            </h3>
+                            <p class="text-[11px] text-gray-500 mt-1">X轴表示预估月费(对数比例，越往左越便宜)；Y轴表示综合智力评分(越往上能力越强)</p>
+                        </div>
+                        <div class="flex items-center gap-3 text-[11px] text-gray-400 bg-gray-900/60 px-3 py-1 rounded-lg border border-gray-800">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"></span>国内</span>
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500"></span>海外</span>
+                        </div>
+                    </div>
+
+                    <!-- Scatter Plot Area -->
+                    <div class="relative w-full h-[320px] md:h-[400px] bg-gray-950/80 rounded-xl border border-gray-900/60 overflow-hidden mb-2">
+                        <!-- Quadrant background labels -->
+                        <div class="absolute top-4 left-4 text-[10px] md:text-xs font-bold text-emerald-500/25 pointer-events-none select-none">
+                            🧠💰 高能平价区 (Sweet Spot / Value Champions)
+                        </div>
+                        <div class="absolute top-4 right-4 text-[10px] md:text-xs font-bold text-blue-400/20 pointer-events-none select-none text-right">
+                            🧠👑 旗舰高配区 (Premium / Enterprise Flagships)
+                        </div>
+                        <div class="absolute bottom-4 left-4 text-[10px] md:text-xs font-bold text-gray-500/20 pointer-events-none select-none">
+                            ⚡🍃 极速轻量区 (Fast & Cost-Effective)
+                        </div>
+                        <div class="absolute bottom-4 right-4 text-[10px] md:text-xs font-bold text-red-500/15 pointer-events-none select-none text-right">
+                            ⚠️ 低性价比区
+                        </div>
+
+                        <!-- Grid Lines -->
+                        <div class="absolute inset-0 grid grid-cols-4 grid-rows-4 pointer-events-none opacity-[0.03]">
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
+                            <div class="border-b border-gray-100"></div>
+                            <div class="border-r border-gray-100"></div>
+                            <div class="border-r border-gray-100"></div>
+                            <div class="border-r border-gray-100"></div>
+                            <div></div>
+                        </div>
+
+                        <!-- Quadrant Center Crosshair -->
+                        <div class="absolute inset-y-0 left-1/2 w-px border-l border-dashed border-gray-800/40 pointer-events-none"></div>
+                        <div class="absolute inset-x-0 top-1/2 h-px border-t border-dashed border-gray-800/40 pointer-events-none"></div>
+
+                        <!-- Chart Nodes Container -->
+                        <div id="scatter-nodes-container" class="absolute inset-0">
+                            <!-- Dynamic absolute positioned nodes -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Capability Leaderboard / Value Table -->
+                <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
+                    <div class="p-4 bg-gray-900/40 border-b border-gray-800 flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-gray-200 flex items-center gap-1.5">
+                            <span>🏆 模型性价比与能力综合排行</span>
+                        </h3>
+                        <span class="text-[11px] text-gray-500 font-semibold bg-gray-900 px-2 py-0.5 rounded-full">
+                            评分公式 = 智力×W + 速度×W + 空间×W + 省钱×W
+                        </span>
+                    </div>
+
+                    <!-- Capability rows container -->
+                    <div id="capability-rows-container" class="divide-y divide-gray-800/40">
+                        <!-- Dynamic Rows Rendered Here by JS -->
+                    </div>
+                </div>
+
             </div>
 
             <!-- Detail Analysis Cards Grid -->
@@ -261,7 +406,7 @@
         // Exchange Rate 1 USD = 7.25 CNY
         const USD_TO_CNY = 7.25;
 
-        // Up-to-date SOTA Model Data (2026 Current Mainstreams)
+        // Up-to-date SOTA Model Data (2026 Current Mainstreams enriched with SOTA benchmarks & performance scores)
         const modelsData = [
             // 国内最新主流 (Domestic)
             {
@@ -279,7 +424,12 @@
                 isCheapest: true,
                 badge: '性价比之神 (永久2.5折)',
                 badgeColor: 'bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-400 border border-orange-500/30',
-                desc: '官方宣布将促销期间的2.5折优惠政策改为永久资费！V4架构的顶级专家推理模型。多步推理与代码极强，缓存输入费率接近全免，为2026国内最强底座。'
+                desc: '官方宣布将促销期间的2.5折优惠政策改为永久资费！V4架构的顶级专家推理模型。多步推理与代码极强，缓存输入费率接近全免，为2026国内最强底座。',
+                intelligence: 94,
+                speed: 55,
+                contextScore: 94,
+                codingScore: 95,
+                reasoningScore: 96
             },
             {
                 id: 'deepseek-v4-flash',
@@ -296,7 +446,12 @@
                 isCheapest: true,
                 badge: '极速零预算首选',
                 badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-                desc: '高吞吐量极速模型，专门应对超大规模高并发调用、高频自动化流水线或日常客服等普通对话，费用惊人地低廉。'
+                desc: '高吞吐量极速模型，专门应对超大规模高并发调用、高频自动化流水线或日常客服等普通对话，费用惊人地低廉。',
+                intelligence: 78,
+                speed: 180,
+                contextScore: 90,
+                codingScore: 75,
+                reasoningScore: 72
             },
             {
                 id: 'doubao-2-pro',
@@ -312,7 +467,12 @@
                 context: '256K',
                 badge: '火山引擎主力',
                 badgeColor: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
-                desc: '字节跳动核心2026年升级版本，中文原生对话极佳、联网检索质量极高，配备强大的火山API网关支持，缓存性能强大。'
+                desc: '字节跳动核心2026年升级版本，中文原生对话极佳、联网检索质量极高，配备强大的火山API网关支持，缓存性能强大。',
+                intelligence: 83,
+                speed: 90,
+                contextScore: 86,
+                codingScore: 78,
+                reasoningScore: 77
             },
             {
                 id: 'doubao-2-lite',
@@ -328,7 +488,12 @@
                 context: '256K',
                 badge: '极致平价',
                 badgeColor: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
-                desc: '主打高并发、秒级响应场景。在海量信息抽取、日常闲聊助理或低复杂度翻譯任務中具有碾压级的降本优势。'
+                desc: '主打高并发、秒级响应场景。在海量信息抽取、日常闲聊助理或低复杂度翻譯任務中具有碾压级的降本优势。',
+                intelligence: 72,
+                speed: 150,
+                contextScore: 80,
+                codingScore: 65,
+                reasoningScore: 62
             },
             {
                 id: 'qwen-3.6-max',
@@ -344,7 +509,12 @@
                 context: '262K',
                 badge: '通义顶配闭源',
                 badgeColor: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
-                desc: '阿里2026闭源之王。支持独创原生“Thinking”深度推理。逻辑闭环极佳，在多步长Agent链调用和复杂代码编写上位列国际一流水平。'
+                desc: '阿里2026闭源之王。支持独创原生“Thinking”深度推理。逻辑闭环极佳，在多步长Agent链调用和复杂代码编写上位列国际一流水平。',
+                intelligence: 92,
+                speed: 55,
+                contextScore: 92,
+                codingScore: 93,
+                reasoningScore: 94
             },
             {
                 id: 'qwen-3.6-35b',
@@ -360,7 +530,12 @@
                 context: '262K',
                 badge: '明星中端MoE',
                 badgeColor: 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20',
-                desc: '阿里小钢炮开源MoE模型，调用成本低廉，在复杂数学推理及代码逻辑上，甚至可以平替不少老一代的大规格闭源旗舰。'
+                desc: '阿里小钢炮开源MoE模型，调用成本低廉，在复杂数学推理及代码逻辑上，甚至可以平替不少老一代的大规格闭源旗舰。',
+                intelligence: 80,
+                speed: 70,
+                contextScore: 88,
+                codingScore: 81,
+                reasoningScore: 82
             },
             {
                 id: 'kimi-k2.6',
@@ -376,7 +551,12 @@
                 context: '262K',
                 badge: '长文本王牌',
                 badgeColor: 'bg-purple-500/20 text-purple-300 border border-purple-500/30',
-                desc: '专注于中文超长文档精准理解（如合规文件、学术著作及超长研报分析）。中文文本表达高雅，召回准确率在业界备受推崇。'
+                desc: '专注于中文超长文档精准理解（如合规文件、学术著作及超长研报分析）。中文文本表达高雅，召回准确率在业界备受推崇。',
+                intelligence: 82,
+                speed: 50,
+                contextScore: 95,
+                codingScore: 76,
+                reasoningScore: 79
             },
 
             // 海外最新主流 (Overseas)
@@ -394,7 +574,12 @@
                 context: '2M (200万)',
                 badge: '200万超长上下文',
                 badgeColor: 'bg-blue-600 text-white',
-                desc: 'Google 2026年重磅旗舰。直接升级并默认支持 2M (200万) 的无损长文本上下文。可将全本代码库或数十小时音视频一键输入，长文本理解力无出其右。'
+                desc: 'Google 2026年重磅旗舰。直接升级并默认支持 2M (200万) 的无损长文本上下文。可将全本代码库或数十小时音视频一键输入，长文本理解力无出其右。',
+                intelligence: 90,
+                speed: 75,
+                contextScore: 100,
+                codingScore: 89,
+                reasoningScore: 88
             },
             {
                 id: 'gemini-3.5-flash',
@@ -410,7 +595,12 @@
                 context: '1M (100万)',
                 badge: '5月19日新品',
                 badgeColor: 'bg-sky-500 text-white',
-                desc: '2026 Google I/O 新一代极速多模态先锋。性能直逼Pro款，但反应速度与通量提升了数倍，在各种复杂多通道实时音频与视频流输入场景中极具价格优势。'
+                desc: '2026 Google I/O 新一代极速多模态先锋。性能直逼Pro款，但反应速度与通量提升了数倍，在各种复杂多通道实时音频与视频流输入场景中极具价格优势。',
+                intelligence: 85,
+                speed: 140,
+                contextScore: 98,
+                codingScore: 84,
+                reasoningScore: 83
             },
             {
                 id: 'gpt-5.5',
@@ -426,7 +616,12 @@
                 context: '200K',
                 badge: '行业全能指标',
                 badgeColor: 'bg-slate-100 text-slate-950 font-bold',
-                desc: '最新旗舰级全能霸主，无论是在复杂业务系统控制、多步代理协作（Agentic Workflows），还是高级多模态跨媒体理解上都展现出了行业顶尖的可靠度。'
+                desc: '最新旗舰级全能霸主，无论是在复杂业务系统控制、多步代理协作（Agentic Workflows），还是高级多模态跨媒体理解上都展现出了行业顶尖的可靠度。',
+                intelligence: 95,
+                speed: 60,
+                contextScore: 91,
+                codingScore: 94,
+                reasoningScore: 93
             },
             {
                 id: 'gpt-o3-reasoning',
@@ -442,7 +637,12 @@
                 context: '200K',
                 badge: '强化逻辑专家',
                 badgeColor: 'bg-teal-950 text-teal-400 border border-teal-800',
-                desc: '专注于解答极高难度数理方程、专业物理逻辑或高级编程重构等复杂决策过程。其计费中将按模型产生的最终思维（Thinking）Token 共同结算。'
+                desc: '专注于解答极高难度数理方程、专业物理逻辑或高级编程重构等复杂决策过程。其计费中将按模型产生的最终思维（Thinking）Token 共同结算。',
+                intelligence: 97,
+                speed: 35,
+                contextScore: 90,
+                codingScore: 98,
+                reasoningScore: 99
             },
             {
                 id: 'gpt-o4-mini',
@@ -458,7 +658,12 @@
                 context: '128K',
                 badge: '海外高性价比',
                 badgeColor: 'bg-gray-800 text-gray-300 border border-gray-700',
-                desc: '针对中等复杂度且需要“快思考”的自动化推理任务设计的平价轻量模型，价格在海外阵营中属于极为克制的代表。'
+                desc: '针对中等复杂度且需要“快思考”的自动化推理任务设计的平价轻量模型，价格在海外阵营中属于极为克制的代表。',
+                intelligence: 84,
+                speed: 120,
+                contextScore: 82,
+                codingScore: 80,
+                reasoningScore: 82
             },
             {
                 id: 'claude-4.7-opus',
@@ -474,7 +679,12 @@
                 context: '1M (100万)',
                 badge: '顶级智商/文笔',
                 badgeColor: 'bg-pink-950 text-pink-300 border border-pink-900',
-                desc: '在长文创作、行业专业多维图表分析、系统层级超大规模重构等顶级科研及智商挑战任务上拥有绝佳的表达美感与细节完整性。'
+                desc: '在长文创作、行业专业多维图表分析、系统层级超大规模重构等顶级科研及智商挑战任务上拥有绝佳的表达美感与细节完整性。',
+                intelligence: 96,
+                speed: 45,
+                contextScore: 96,
+                codingScore: 96,
+                reasoningScore: 95
             },
             {
                 id: 'claude-4.6-sonnet',
@@ -490,7 +700,12 @@
                 context: '1M (100万)',
                 badge: '程序员首选',
                 badgeColor: 'bg-[#1F2937] text-amber-300 border border-amber-500/20',
-                desc: '开发人员及项目经理心目中永恒的白月光。支持在100万极长代码上下文中对多个依赖库进行高度复用，极高地缩减研发迭代期。'
+                desc: '开发人员及项目经理心目中永恒的白月光。支持在100万极长代码上下文中对多个依赖库进行高度复用，极高地缩减研发迭代期。',
+                intelligence: 91,
+                speed: 85,
+                contextScore: 95,
+                codingScore: 95,
+                reasoningScore: 92
             }
         ];
 
@@ -498,11 +713,64 @@
         let currentCurrency = 'CNY'; // 'CNY' or 'USD'
         let currentRegion = 'all'; // 'all', 'domestic', 'overseas'
         let currentSort = 'totalCost-asc'; // sorting default
+        let activeView = 'cost'; // 'cost' or 'capability'
         
         // Simulated volumes (millions of tokens)
         let inputM = 10;
         let outputM = 5;
         let cacheHitPct = 40;
+
+        // View Toggling
+        function switchView(viewName) {
+            activeView = viewName;
+            
+            const viewCostContent = document.getElementById('view-cost-content');
+            const viewCapContent = document.getElementById('view-capability-content');
+            const tabCost = document.getElementById('tab-cost');
+            const tabCap = document.getElementById('tab-capability');
+
+            const activeTabClass = "py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 bg-[#1F2937] text-white";
+            const inactiveTabClass = "py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 text-gray-400 hover:text-gray-200";
+
+            if (viewName === 'cost') {
+                viewCostContent.classList.remove('hidden');
+                viewCapContent.classList.add('hidden');
+                tabCost.className = activeTabClass;
+                tabCap.className = inactiveTabClass;
+                
+                // If sorting was set to value score or intelligence or speed, revert to cost
+                if (currentSort === 'valueScore-desc' || currentSort === 'intelligence-desc' || currentSort === 'speed-desc') {
+                    currentSort = 'totalCost-asc';
+                    document.getElementById('sort-select').value = 'totalCost-asc';
+                }
+            } else {
+                viewCostContent.classList.add('hidden');
+                viewCapContent.classList.remove('hidden');
+                tabCost.className = inactiveTabClass;
+                tabCap.className = activeTabClass;
+                
+                // Automatically switch sort to valueScore-desc for best UX
+                currentSort = 'valueScore-desc';
+                document.getElementById('sort-select').value = 'valueScore-desc';
+            }
+
+            renderDashboard();
+        }
+
+        // Business weights updates
+        function updateWeights() {
+            const wIntel = parseInt(document.getElementById('weight-intel').value);
+            const wSpeed = parseInt(document.getElementById('weight-speed').value);
+            const wContext = parseInt(document.getElementById('weight-context').value);
+            const wCost = parseInt(document.getElementById('weight-cost').value);
+
+            document.getElementById('weight-intel-val').innerText = wIntel + "%";
+            document.getElementById('weight-speed-val').innerText = wSpeed + "%";
+            document.getElementById('weight-context-val').innerText = wContext + "%";
+            document.getElementById('weight-cost-val').innerText = wCost + "%";
+
+            renderDashboard();
+        }
 
         // Apply slider state change
         function updateSliders() {
@@ -588,7 +856,9 @@
 
         // Render everything
         function renderDashboard() {
-            const container = document.getElementById('pricing-rows-container');
+            const pricingContainer = document.getElementById('pricing-rows-container');
+            const capabilityContainer = document.getElementById('capability-rows-container');
+            const scatterContainer = document.getElementById('scatter-nodes-container');
             const cardsContainer = document.getElementById('cards-container');
             const searchQuery = document.getElementById('model-search').value.toLowerCase().trim();
             
@@ -606,11 +876,38 @@
             }
 
             // 2. Map and Calculate Costs for all matching models
-            const calculatedModels = filteredModels.map(model => {
+            let calculatedModels = filteredModels.map(model => {
                 const costs = calculateModelCost(model);
                 return {
                     ...model,
                     costs: costs
+                };
+            });
+
+            // Find Min and Max Cost among matching models for normalization
+            const costs = calculatedModels.map(m => m.costs.total);
+            const minCost = Math.min(...costs) || 0;
+            const maxCost = Math.max(...costs) || 1;
+            const costRange = maxCost - minCost;
+
+            // Get business priority weights
+            const wIntel = parseInt(document.getElementById('weight-intel').value);
+            const wSpeed = parseInt(document.getElementById('weight-speed').value);
+            const wContext = parseInt(document.getElementById('weight-context').value);
+            const wCost = parseInt(document.getElementById('weight-cost').value);
+            const totalWeight = wIntel + wSpeed + wContext + wCost || 1;
+
+            // Map dynamically computed Value Scores
+            calculatedModels = calculatedModels.map(m => {
+                // Cheaper cost gets higher score
+                const costScore = costRange > 0 ? (1 - (m.costs.total - minCost) / costRange) * 100 : 100;
+                // Speed score (normalized against max speed 180 tps)
+                const speedScore = (m.speed / 180) * 100;
+                
+                const valueScore = (m.intelligence * wIntel + speedScore * wSpeed + m.contextScore * wContext + costScore * wCost) / totalWeight;
+                return {
+                    ...m,
+                    valueScore: valueScore
                 };
             });
 
@@ -619,6 +916,12 @@
                 const [field, order] = currentSort.split('-');
                 if (field === 'totalCost') {
                     return order === 'asc' ? a.costs.total - b.costs.total : b.costs.total - a.costs.total;
+                } else if (field === 'valueScore') {
+                    return order === 'desc' ? b.valueScore - a.valueScore : a.valueScore - b.valueScore;
+                } else if (field === 'intelligence') {
+                    return order === 'desc' ? b.intelligence - a.intelligence : a.intelligence - b.intelligence;
+                } else if (field === 'speed') {
+                    return order === 'desc' ? b.speed - a.speed : a.speed - b.speed;
                 } else if (field === 'input') {
                     return order === 'asc' ? a.costs.normalInputUnit - b.costs.normalInputUnit : b.costs.normalInputUnit - a.costs.normalInputUnit;
                 } else if (field === 'output') {
@@ -630,13 +933,13 @@
                 return 0;
             });
 
-            // Find Maximum Total Cost for bar scaling reference
-            const maxCost = Math.max(...calculatedModels.map(m => m.costs.total), 1);
+            // Find Maximum Total Cost for bar scaling reference in Cost View
+            const maxCostForScaling = Math.max(...calculatedModels.map(m => m.costs.total), 1);
 
-            // 4. Render Tabular Visual Rows
-            container.innerHTML = '';
+            // 4. Render Cost View tabular visual rows
+            pricingContainer.innerHTML = '';
             if (calculatedModels.length === 0) {
-                container.innerHTML = `
+                pricingContainer.innerHTML = `
                     <div class="p-8 text-center text-gray-500 text-sm">
                         没有找到匹配当前筛选和搜索条件的大模型数据。
                     </div>
@@ -646,13 +949,11 @@
                     const isRmb = currentCurrency === 'CNY';
                     const symbol = isRmb ? '¥' : '$';
                     const totalCostFormatted = m.costs.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    const barWidth = (m.costs.total / maxCost) * 100;
+                    const barWidth = (m.costs.total / maxCostForScaling) * 100;
 
-                    // Input and Output unit price display (per 1M tokens)
                     const inUnitDisplay = `${symbol}${m.costs.normalInputUnit.toFixed(2)}`;
                     const outUnitDisplay = `${symbol}${m.costs.normalOutputUnit.toFixed(2)}`;
 
-                    // Render row
                     const row = document.createElement('div');
                     row.className = "p-4 md:p-5 hover:bg-gray-900/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4";
                     row.innerHTML = `
@@ -694,11 +995,139 @@
                             `}
                         </div>
                     `;
-                    container.appendChild(row);
+                    pricingContainer.appendChild(row);
                 });
             }
 
-            // 5. Render Detail Cards
+            // 5. Render Capability View elements (Scatter nodes & Leaderboard rows)
+            scatterContainer.innerHTML = '';
+            capabilityContainer.innerHTML = '';
+            
+            if (calculatedModels.length === 0) {
+                capabilityContainer.innerHTML = `
+                    <div class="p-8 text-center text-gray-500 text-sm">
+                        没有找到匹配当前筛选和搜索条件的大模型数据。
+                    </div>
+                `;
+            } else {
+                calculatedModels.forEach((m, idx) => {
+                    const isRmb = currentCurrency === 'CNY';
+                    const symbol = isRmb ? '¥' : '$';
+                    const totalCostFormatted = m.costs.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const valueScoreFormatted = m.valueScore.toFixed(1);
+
+                    // A. Render Scatter Plot Node
+                    const logMin = Math.log10(Math.max(minCost, 0.05));
+                    const logMax = Math.log10(Math.max(maxCost, 0.5));
+                    const logVal = Math.log10(Math.max(m.costs.total, 0.05));
+                    
+                    let xPct = logMax === logMin ? 50 : ((logVal - logMin) / (logMax - logMin)) * 80 + 10;
+                    let yPct = ((m.intelligence - 60) / 40) * 80 + 10;
+                    
+                    const isDomestic = m.region === 'domestic';
+                    const nodeColor = isDomestic ? 'from-blue-600 to-cyan-500 ring-blue-500/30' : 'from-purple-600 to-pink-500 ring-purple-500/30';
+
+                    const node = document.createElement('div');
+                    node.style.left = `${xPct}%`;
+                    node.style.bottom = `${yPct}%`;
+                    node.className = "absolute -translate-x-1/2 translate-y-1/2 group cursor-pointer transition-all duration-500 ease-out z-10 hover:z-50 w-4 h-4";
+                    node.innerHTML = `
+                        <!-- Pulsing node -->
+                        <div class="relative flex items-center justify-center w-4 h-4">
+                            <div class="w-4 h-4 rounded-full bg-gradient-to-br ${nodeColor} border-2 border-white shadow-lg group-hover:scale-125 transition-transform duration-300"></div>
+                            <!-- Mini Pulse Effect -->
+                            <span class="absolute inline-flex h-6 w-6 rounded-full bg-current opacity-0 group-hover:opacity-10 group-hover:animate-ping ${isDomestic ? 'text-blue-400' : 'text-purple-400'}"></span>
+                        </div>
+
+                        <!-- Label -->
+                        <span class="absolute top-6 left-1/2 -translate-x-1/2 text-[9px] font-extrabold text-gray-400 whitespace-nowrap bg-gray-950/90 px-1.5 py-0.5 rounded border border-gray-800 group-hover:text-white group-hover:border-gray-600 transition-colors shadow-md">
+                            ${m.name}
+                        </span>
+
+                        <!-- Glassmorphic Tooltip on Hover -->
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden group-hover:block z-50 w-64 bg-[#0F141C]/95 backdrop-blur-md p-4 rounded-xl border border-gray-700 shadow-2xl pointer-events-none text-left">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-bold text-sm text-white">${m.name}</div>
+                                    <div class="text-[10px] text-gray-400 mt-0.5">${m.provider}</div>
+                                </div>
+                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${isDomestic ? 'bg-blue-950/80 text-blue-300 border border-blue-900/50' : 'bg-purple-950/80 text-purple-300 border border-purple-900/50'}">
+                                    ${isDomestic ? '国内' : '海外'}
+                                </span>
+                            </div>
+                            <div class="border-t border-gray-800 my-2"></div>
+                            <div class="space-y-1.5 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">综合智力:</span>
+                                    <span class="text-brand-400 font-bold">${m.intelligence}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">生成速度:</span>
+                                    <span class="text-emerald-400 font-bold">${m.speed} tps</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">长文本召回:</span>
+                                    <span class="text-purple-400 font-bold">${m.contextScore}/100</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">性价比得分:</span>
+                                    <span class="text-pink-400 font-bold">${m.valueScore.toFixed(1)}</span>
+                                </div>
+                                <div class="border-t border-gray-800 pt-1.5 mt-1.5 flex justify-between items-baseline">
+                                    <span class="text-gray-400 font-medium">预估月费:</span>
+                                    <span class="text-amber-400 font-black text-sm">${symbol}${totalCostFormatted}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    node.addEventListener('click', () => {
+                        scrollToDetail(m.id);
+                    });
+                    scatterContainer.appendChild(node);
+
+                    // B. Render Leaderboard Row
+                    const capRow = document.createElement('div');
+                    capRow.className = "p-4 md:p-5 hover:bg-gray-900/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4";
+                    capRow.innerHTML = `
+                        <!-- Identity & Rank -->
+                        <div class="flex-1 min-w-[220px]">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-xs text-purple-400 font-mono font-bold">#${idx+1}</span>
+                                <h4 class="font-bold text-gray-200 hover:text-brand-400 transition-colors cursor-pointer text-sm md:text-base" onclick="scrollToDetail('${m.id}')">${m.name}</h4>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded-md ${isDomestic ? 'bg-blue-950/80 text-blue-300 border border-blue-900/50' : 'bg-purple-950/80 text-purple-300 border border-purple-900/50'} font-medium">${m.provider}</span>
+                                ${m.badge ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-semibold ${m.badgeColor}">${m.badge}</span>` : ''}
+                            </div>
+                            <div class="flex items-center gap-3 mt-2 text-xs text-gray-400 flex-wrap">
+                                <span class="inline-flex items-center gap-1">🧠 智力: <b class="text-brand-400">${m.intelligence}</b></span>
+                                <span class="inline-flex items-center gap-1">⚡ 速度: <b class="text-emerald-400">${m.speed} tps</b></span>
+                                <span class="inline-flex items-center gap-1">📄 空间: <b class="text-purple-400">${m.context}</b></span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Value Score Progress Bar -->
+                        <div class="flex-1 max-w-full md:max-w-[280px] flex flex-col gap-1.5">
+                            <div class="flex justify-between items-end text-xs">
+                                <span class="text-[10px] text-gray-500 font-bold">综合配置性价比得分</span>
+                                <span class="font-bold text-pink-400 text-sm font-mono">${valueScoreFormatted} / 100</span>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="w-full h-2 bg-gray-950 rounded-full overflow-hidden border border-gray-800/80">
+                                <div class="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-brand-500" style="width: ${valueScoreFormatted}%"></div>
+                            </div>
+
+                            <!-- Summary tag -->
+                            <div class="text-[10px] text-gray-400 flex justify-between font-mono">
+                                <span>月度预估开销:</span>
+                                <span class="text-amber-400 font-bold">${symbol}${totalCostFormatted}</span>
+                            </div>
+                        </div>
+                    `;
+                    capabilityContainer.appendChild(capRow);
+                });
+            }
+
+            // 6. Render Detail Cards
             cardsContainer.innerHTML = '';
             calculatedModels.forEach(m => {
                 const isRmb = currentCurrency === 'CNY';
@@ -726,6 +1155,50 @@
                         <p class="text-xs text-gray-400 leading-relaxed mb-4">
                             ${m.desc}
                         </p>
+
+                        <!-- Capability Metrics Grid -->
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-2 mb-4 bg-gray-950/40 p-3 rounded-lg border border-gray-900 text-[11px]">
+                            <!-- Metric 1: Intelligence -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-gray-400">
+                                    <span>🧠 综合智力</span>
+                                    <span class="font-bold text-gray-200">${m.intelligence}</span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-brand-500" style="width: ${m.intelligence}%"></div>
+                                </div>
+                            </div>
+                            <!-- Metric 2: Speed -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-gray-400">
+                                    <span>⚡ 生成速度</span>
+                                    <span class="font-bold text-emerald-400">${m.speed} tps</span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500" style="width: ${(m.speed/180)*100}%"></div>
+                                </div>
+                            </div>
+                            <!-- Metric 3: Reasoning -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-gray-400">
+                                    <span>🧩 推理深度</span>
+                                    <span class="font-bold text-purple-400">${m.reasoningScore}</span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-purple-500" style="width: ${m.reasoningScore}%"></div>
+                                </div>
+                            </div>
+                            <!-- Metric 4: Coding -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-gray-400">
+                                    <span>💻 代码能力</span>
+                                    <span class="font-bold text-amber-400">${m.codingScore}</span>
+                                </div>
+                                <div class="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-amber-500" style="width: ${m.codingScore}%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Pricing Table inside Card -->
@@ -760,6 +1233,11 @@
                 }, 1500);
             }
         }
+
+        // Trigger initial dashboard rendering on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderDashboard();
+        });
     </script>
 </body>
 </html>
