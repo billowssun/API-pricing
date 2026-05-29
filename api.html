@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 最新主流大模型 API 价格对比与性能分析看板</title>
-    <!-- Tailwind CSS CDN -->
+    <title>主流大模型 API 官方价格看板</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -12,1397 +12,444 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0f7ff',
-                            100: '#e0effe',
-                            500: '#0072ff',
-                            600: '#005ed9',
-                            950: '#030712',
+                        slate: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155'
                         }
                     }
                 }
             }
-        }
+        };
     </script>
-    <!-- Inter & Noto Sans SC Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        :root {
+            --theme-color-primary: #3b82f6;
+            --theme-color-hover: #2563eb;
+            --theme-color-glow: rgba(59, 130, 246, 0.15);
         }
-        /* Custom scrollbar for premium feel */
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background-color: #0B0F19;
+        }
+        /* 简约商务表格滚动条 */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 4px;
+            height: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: #030712;
+            background: #0B0F19;
         }
         ::-webkit-scrollbar-thumb {
-            background: #1f2937;
-            border-radius: 9999px;
+            background: #1E293B;
+            border-radius: 2px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #374151;
+
+        /* 动态主题色辅助类 */
+        .text-theme {
+            color: var(--theme-color-primary) !important;
+        }
+        .bg-theme {
+            background-color: var(--theme-color-primary) !important;
+        }
+        .border-theme {
+            border-color: var(--theme-color-primary) !important;
+        }
+        
+        /* 覆盖输入框 focus */
+        input:focus {
+            border-color: var(--theme-color-primary) !important;
+        }
+
+        /* 覆盖币种切换高亮按钮 */
+        .btn-active-theme {
+            background-color: var(--theme-color-primary) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 6px -1px var(--theme-color-glow), 0 2px 4px -1px var(--theme-color-glow) !important;
         }
     </style>
 </head>
-<body class="bg-[#080B10] text-gray-100 min-h-screen selection:bg-brand-500/30 selection:text-brand-100 antialiased">
+<body class="min-h-screen text-slate-100 antialiased py-10 px-4 md:px-8">
 
-    <!-- Top Banner: 2026 Latest Market Adjustments -->
-    <div class="bg-gradient-to-r from-blue-950 via-brand-950 to-purple-950 border-b border-gray-800/80 py-2.5 px-4 text-center text-xs md:text-sm text-gray-300">
-        <span class="inline-flex items-center gap-1.5 bg-brand-500/20 text-brand-400 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-brand-500/30 mr-2">实时数据</span>
-        💡 <b>2026最新数据校准</b>：包含 <b>DeepSeek V4-Pro</b> 与 <b>Gemini 3.1 Pro (2M极长上下文)</b>，已剔除老旧模型！
-    </div>
-
-    <!-- Header Section -->
-    <header class="max-w-7xl mx-auto px-4 pt-8 pb-6 md:pb-8">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
-                    最新主流大模型 API 价格与能力评测看板
+    <div class="mx-auto max-w-6xl">
+        <!-- 商务极简头部 -->
+        <header class="mb-10 flex flex-col md:flex-row md:items-end md:justify-between border-b border-slate-800/80 pb-6 gap-6">
+            <div class="space-y-1.5">
+                <h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                    <span class="h-5 w-1 rounded-full bg-theme"></span>
+                    主流大模型 API 官方价格看板
                 </h1>
-                <p class="text-sm md:text-base text-gray-400 mt-2 max-w-3xl">
-                    聚焦 2026 年最新一代旗舰级推理与极速多模态模型。支持一键成本动态试算与多维能力深度对标，提供基于真实基准与吞吐性能的决策参考。
+                <p class="text-xs text-slate-400">
+                    单纯列举最新主流商业及开源大模型官方 API 价格，排除干扰，一键切换汇率。
                 </p>
             </div>
             
-            <!-- Currency Toggles and Exchange Rates -->
-            <div class="flex flex-wrap items-center gap-3 bg-[#0F141C] p-1.5 rounded-xl border border-gray-800/60 self-stretch md:self-auto justify-between">
-                <div class="flex rounded-lg overflow-hidden bg-gray-950 border border-gray-800">
-                    <button id="btn-cny" onclick="setCurrency('CNY')" class="px-3.5 py-1.5 text-xs font-semibold bg-brand-500 text-white transition-all">
-                        CNY (¥)
-                    </button>
-                    <button id="btn-usd" onclick="setCurrency('USD')" class="px-3.5 py-1.5 text-xs font-semibold text-gray-400 hover:text-white transition-all">
-                        USD ($)
-                    </button>
+            <div class="flex flex-wrap items-center gap-4 shrink-0 text-xs">
+                <!-- 极简商务主题色切换 -->
+                <div class="flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/50 px-3 py-1.5 text-slate-400">
+                    <span class="text-slate-500">主题:</span>
+                    <button id="theme-btn-blue" onclick="setTheme('blue', '#3b82f6', '#2563eb')" class="h-3 w-3 rounded-full bg-blue-500 border border-slate-950 transition-all hover:scale-125 cursor-pointer animate-none outline-none" title="经典蓝"></button>
+                    <button id="theme-btn-emerald" onclick="setTheme('emerald', '#10b981', '#059669')" class="h-3 w-3 rounded-full bg-emerald-500 border border-slate-950 transition-all hover:scale-125 cursor-pointer animate-none outline-none" title="翡翠绿"></button>
+                    <button id="theme-btn-indigo" onclick="setTheme('indigo', '#6366f1', '#4f46e5')" class="h-3 w-3 rounded-full bg-indigo-500 border border-slate-950 transition-all hover:scale-125 cursor-pointer animate-none outline-none" title="深靛蓝"></button>
+                    <button id="theme-btn-amber" onclick="setTheme('amber', '#f59e0b', '#d97706')" class="h-3 w-3 rounded-full bg-amber-500 border border-slate-950 transition-all hover:scale-125 cursor-pointer animate-none outline-none" title="琥珀金"></button>
+                    <button id="theme-btn-slate" onclick="setTheme('slate', '#64748b', '#475569')" class="h-3 w-3 rounded-full bg-slate-500 border border-slate-950 transition-all hover:scale-125 cursor-pointer animate-none outline-none" title="商务灰"></button>
                 </div>
-                <div class="h-4 w-px bg-gray-800 hidden sm:block"></div>
-                <div class="text-xs text-gray-400 hidden sm:block">
-                    汇率对照: <span class="text-gray-200 font-mono">1 USD = 7.25 CNY</span>
+                <div class="rounded-full border border-slate-800 bg-slate-900/50 px-3 py-1.5 text-slate-400">
+                    汇率假设: <span class="font-mono text-slate-200">1 USD = 7.25 CNY</span>
                 </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content Grid -->
-    <main class="max-w-7xl mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Left Column: Interactive Calculator Config (4 cols) -->
-        <section class="lg:col-span-4 bg-[#0F141C]/80 rounded-2xl border border-gray-800 p-6 backdrop-blur-xl h-fit lg:sticky lg:top-6">
-            <div class="flex items-center gap-2 mb-6">
-                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 11h.01M12 7h.01M15 11h.01M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/></svg>
-                <h2 class="text-lg font-bold">API 业务流量模拟</h2>
-            </div>
-
-            <!-- Slider 1: Input Tokens -->
-            <div class="mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium text-gray-300">每月输入流量 (Input)</span>
-                    <span class="text-sm font-bold text-brand-400 font-mono" id="val-input">10 M Tokens</span>
-                </div>
-                <input type="range" id="slide-input" min="0.1" max="100" step="0.1" value="10" oninput="updateSliders()"
-                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-brand-500">
-                <div class="flex justify-between text-[10px] text-gray-500 mt-1 font-mono">
-                    <span>10万</span>
-                    <span>5000万</span>
-                    <span>1亿 Tokens</span>
+                <div class="rounded-full border border-slate-800 bg-slate-900/50 px-3 py-1.5 text-slate-400">
+                    数据更新时间: <span class="font-mono text-slate-200">2026-05-26</span>
                 </div>
             </div>
+        </header>
 
-            <!-- Slider 2: Output Tokens -->
-            <div class="mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium text-gray-300">每月输出流量 (Output)</span>
-                    <span class="text-sm font-bold text-emerald-400 font-mono" id="val-output">5 M Tokens</span>
-                </div>
-                <input type="range" id="slide-output" min="0.1" max="100" step="0.1" value="5" oninput="updateSliders()"
-                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-                <div class="flex justify-between text-[10px] text-gray-500 mt-1 font-mono">
-                    <span>10万</span>
-                    <span>5000万</span>
-                    <span>1亿 Tokens</span>
-                </div>
+        <!-- 工具栏：过滤、搜索与币种切换 -->
+        <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <!-- 厂商过滤 Tab -->
+            <div id="provider-tabs" class="flex flex-wrap gap-1 border-b border-slate-800/40 pb-2 sm:pb-0 sm:border-0">
+                <!-- 动态渲染 -->
             </div>
 
-            <!-- Slider 3: Cache Hit Rate -->
-            <div class="mb-6 bg-gray-950/60 p-4 rounded-xl border border-gray-800/60">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium text-gray-300 inline-flex items-center gap-1.5">
-                        Prompt 缓存命中率
-                        <span class="group relative cursor-pointer text-gray-500 hover:text-gray-300">
-                            ℹ️
-                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-2 bg-gray-900 border border-gray-800 text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-center">
-                                最新大模型对重复输入的 Prompt 提示词提供极高缓存折扣，大大减少频繁对话费用。
-                            </span>
-                        </span>
-                    </span>
-                    <span class="text-sm font-bold text-amber-400 font-mono" id="val-cache">40 %</span>
-                </div>
-                <input type="range" id="slide-cache" min="0" max="100" step="5" value="40" oninput="updateSliders()"
-                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
-                <div class="flex justify-between text-[10px] text-gray-500 mt-1 font-mono">
-                    <span>无缓存 (0%)</span>
-                    <span>日常复用</span>
-                    <span>极高命中 (100%)</span>
-                </div>
-            </div>
-
-            <!-- Quick Presets -->
-            <div class="border-t border-gray-800/80 pt-4">
-                <span class="text-xs text-gray-400 block mb-2.5 font-semibold">快速业务场景模拟:</span>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="applyPreset(1, 0.5, 20)" class="px-2.5 py-2 text-left text-xs bg-[#1F2937]/50 hover:bg-[#1F2937] rounded-lg transition-colors border border-gray-800">
-                        <div class="font-bold text-gray-200">个人测试/开发</div>
-                        <div class="text-[10px] text-gray-400 font-mono mt-0.5">1M In / 0.5M Out</div>
-                    </button>
-                    <button onclick="applyPreset(10, 5, 40)" class="px-2.5 py-2 text-left text-xs bg-[#1F2937]/50 hover:bg-[#1F2937] rounded-lg transition-colors border border-gray-800">
-                        <div class="font-bold text-gray-200">标准应用后台</div>
-                        <div class="text-[10px] text-gray-400 font-mono mt-0.5">10M In / 5M Out</div>
-                    </button>
-                    <button onclick="applyPreset(50, 15, 65)" class="px-2.5 py-2 text-left text-xs bg-[#1F2937]/50 hover:bg-[#1F2937] rounded-lg transition-colors border border-gray-800">
-                        <div class="font-bold text-gray-200">AI Agent 智能体</div>
-                        <div class="text-[10px] text-gray-400 font-mono mt-0.5">50M In / 15M Out</div>
-                    </button>
-                    <button onclick="applyPreset(80, 20, 85)" class="px-2.5 py-2 text-left text-xs bg-[#1F2937]/50 hover:bg-[#1F2937] rounded-lg transition-colors border border-gray-800">
-                        <div class="font-bold text-gray-200">高复用长对话</div>
-                        <div class="text-[10px] text-gray-400 font-mono mt-0.5">80M In / 20M Out</div>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Right Column: Visualization & Details (8 cols) -->
-        <section class="lg:col-span-8 flex flex-col gap-6">
-            
-            <!-- View Switcher -->
-            <div class="grid grid-cols-2 p-1 bg-gray-950/80 rounded-xl border border-gray-800/85 shadow-md">
-                <button id="tab-cost" onclick="switchView('cost')" class="py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 bg-[#1F2937] text-white">
-                    <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 01-18 0z"/></svg>
-                    月度预估开销算费器
-                </button>
-                <button id="tab-capability" onclick="switchView('capability')" class="py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 text-gray-400 hover:text-gray-200">
-                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    模型能力与性能看板 (ArtificialAnalysis 对标)
-                </button>
-            </div>
-            
-            <!-- Filters, Search and Sorting -->
-            <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-[#0F141C]/50 p-4 rounded-xl border border-gray-800/80">
-                <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1">
-                    <!-- Tab filters -->
-                    <div class="flex gap-1 bg-gray-950 p-1 rounded-lg border border-gray-800">
-                        <button id="filter-all" onclick="setRegion('all')" class="px-3 py-1 text-xs font-semibold rounded-md bg-[#1F2937] text-white transition-all">
-                            全部地区
-                        </button>
-                        <button id="filter-domestic" onclick="setRegion('domestic')" class="px-3 py-1 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all">
-                            国内主流
-                        </button>
-                        <button id="filter-overseas" onclick="setRegion('overseas')" class="px-3 py-1 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all">
-                            海外最新
-                        </button>
-                    </div>
-                    <!-- Search Input -->
-                    <div class="relative flex-1 max-w-full sm:max-w-[200px]">
-                        <input type="text" id="model-search" oninput="renderDashboard()" placeholder="搜索模型名称/品牌..." 
-                               class="w-full bg-gray-950 border border-gray-800 text-xs rounded-lg py-1.5 pl-3 pr-8 focus:outline-none focus:border-brand-500 text-gray-200 placeholder-gray-600">
-                        <svg class="w-3.5 h-3.5 text-gray-600 absolute right-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Sorting Select -->
-                <div class="flex items-center gap-2 text-xs text-gray-400 justify-between">
-                    <span>排列依据:</span>
-                    <select id="sort-select" onchange="setSort(this.value)" class="bg-gray-950 border border-gray-800 text-gray-200 rounded-md py-1.5 px-2 focus:outline-none focus:border-brand-500 font-medium">
-                        <option value="intelligence-desc">综合智力质量 (由高到低)</option>
-                        <option value="speed-desc">生成吞吐速度 (由高到低)</option>
-                        <option value="context-desc">最大上下文 (由大到小)</option>
-                        <option value="totalCost-asc">预估月费 (由低到高)</option>
-                        <option value="totalCost-desc">预估月费 (由高到低)</option>
-                        <option value="input-asc">输入单价 (由低到高)</option>
-                        <option value="output-asc">输出单价 (由低到高)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Cost View Content -->
-            <div id="view-cost-content" class="flex flex-col gap-6">
-                <!-- Cost Visual Chart & Ranking List -->
-                <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
-                    <div class="p-4 bg-gray-900/40 border-b border-gray-800 flex justify-between items-center flex-wrap gap-2">
-                        <h3 class="text-sm font-bold text-gray-300 flex items-center gap-1.5">
-                            <span>📊 月度预估开销排位看板</span>
-                        </h3>
-                        <span class="text-[11px] text-gray-500 font-semibold bg-gray-900 px-2 py-0.5 rounded-full">
-                            计算公式: 输入 × 缓存折扣价 + 输出 × 标准价
-                        </span>
-                    </div>
-                    
-                    <!-- Chart Rows container -->
-                    <div id="pricing-rows-container" class="divide-y divide-gray-800/40">
-                        <!-- Dynamic Rows Rendered Here by JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Capability View Content -->
-            <div id="view-capability-content" class="hidden flex flex-col gap-6">
+            <!-- 搜索与币种切换 -->
+            <div class="flex items-center gap-3 w-full sm:w-auto shrink-0">
+                <input id="search-input" type="text" oninput="handleSearch()" placeholder="搜索模型名称..." class="w-full sm:w-60 rounded-lg border border-slate-800 bg-slate-900/40 px-3 py-2 text-xs text-slate-200 outline-none placeholder:text-slate-600 transition-all">
                 
-                <!-- Model Comparison Tool -->
-                <div class="bg-[#0F141C]/80 rounded-2xl border border-gray-800 p-5 shadow-xl">
-                    <div class="flex items-center gap-2 mb-4">
-                        <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        <h3 class="text-sm font-bold text-gray-200">智能对标：双模型多维能力深度对比 (Side-by-Side)</h3>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="text-[10px] text-gray-500 block mb-1 font-semibold uppercase">选择对比模型 A</label>
-                            <select id="compare-model-a" onchange="compareModels()" class="w-full bg-gray-950 border border-gray-800 text-xs rounded-lg py-2 px-3 focus:outline-none focus:border-brand-500 text-gray-200 font-medium"></select>
-                        </div>
-                        <div>
-                            <label class="text-[10px] text-gray-500 block mb-1 font-semibold uppercase">选择对比模型 B</label>
-                            <select id="compare-model-b" onchange="compareModels()" class="w-full bg-gray-950 border border-gray-800 text-xs rounded-lg py-2 px-3 focus:outline-none focus:border-brand-500 text-gray-200 font-medium"></select>
-                        </div>
-                    </div>
-                    
-                    <!-- Comparison Details Container -->
-                    <div id="comparison-details-container" class="bg-gray-950/40 rounded-xl border border-gray-900 overflow-hidden text-xs">
-                        <!-- Dynamic Comparison Table Rendered Here by JS -->
-                    </div>
-                </div>
-
-                <!-- Scatter Plot Card -->
-                <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl p-4 md:p-6">
-                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
-                        <div>
-                            <h3 class="text-sm font-bold text-gray-200 flex items-center gap-1.5">
-                                <span>📈 模型多维能力分布象限图 (Capability Scatter Plot)</span>
-                            </h3>
-                            <p class="text-[11px] text-gray-500 mt-1" id="scatter-plot-desc">Y轴代表综合智力质量(越往上越聪明)；X轴为预估月度总成本(对数刻度)</p>
-                        </div>
-                        
-                        <div class="flex flex-wrap items-center gap-3">
-                            <!-- X-Axis Toggle buttons -->
-                            <div class="flex bg-gray-950 p-1 rounded-lg border border-gray-800 text-xs font-semibold">
-                                <button id="scatter-toggle-cost" onclick="setScatterMode('cost')" class="px-3 py-1 rounded bg-[#1F2937] text-white transition-all">
-                                    纵览月度开销
-                                </button>
-                                <button id="scatter-toggle-speed" onclick="setScatterMode('speed')" class="px-3 py-1 rounded text-gray-400 hover:text-white transition-all">
-                                    纵览生成吞吐
-                                </button>
-                            </div>
-                            
-                            <div class="flex items-center gap-3 text-[11px] text-gray-400 bg-gray-900/60 px-3 py-1.5 rounded-lg border border-gray-800">
-                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"></span>国内</span>
-                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500"></span>海外</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Scatter Plot Area -->
-                    <div class="relative w-full h-[320px] md:h-[400px] bg-gray-950/80 rounded-xl border border-gray-900/60 overflow-hidden mb-2">
-                        <!-- Quadrant background labels -->
-                        <div id="quadrant-tl" class="absolute top-4 left-4 text-[10px] md:text-xs font-bold text-emerald-500/25 pointer-events-none select-none">
-                            高智平价区
-                        </div>
-                        <div id="quadrant-tr" class="absolute top-4 right-4 text-[10px] md:text-xs font-bold text-blue-400/20 pointer-events-none select-none text-right">
-                            旗舰性能区
-                        </div>
-                        <div id="quadrant-bl" class="absolute bottom-4 left-4 text-[10px] md:text-xs font-bold text-gray-500/20 pointer-events-none select-none">
-                            极速轻量区
-                        </div>
-                        <div id="quadrant-br" class="absolute bottom-4 right-4 text-[10px] md:text-xs font-bold text-red-500/15 pointer-events-none select-none text-right">
-                            高开销轻量区
-                        </div>
-
-                        <!-- Grid Lines -->
-                        <div class="absolute inset-0 grid grid-cols-4 grid-rows-4 pointer-events-none opacity-[0.03]">
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100 border-b border-gray-100"></div>
-                            <div class="border-b border-gray-100"></div>
-                            <div class="border-r border-gray-100"></div>
-                            <div class="border-r border-gray-100"></div>
-                            <div class="border-r border-gray-100"></div>
-                            <div></div>
-                        </div>
-
-                        <!-- Quadrant Center Crosshair -->
-                        <div class="absolute inset-y-0 left-1/2 w-px border-l border-dashed border-gray-800/40 pointer-events-none"></div>
-                        <div class="absolute inset-x-0 top-1/2 h-px border-t border-dashed border-gray-800/40 pointer-events-none"></div>
-
-                        <!-- Chart Nodes Container -->
-                        <div id="scatter-nodes-container" class="absolute inset-0">
-                            <!-- Dynamic absolute positioned nodes -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Capability Leaderboard / Value Table -->
-                <div class="bg-[#0F141C]/40 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
-                    <div class="p-4 bg-gray-900/40 border-b border-gray-800 flex justify-between items-center">
-                        <h3 class="text-sm font-bold text-gray-200 flex items-center gap-1.5">
-                            <span>🏆 大模型多维能力深度评测排行榜</span>
-                        </h3>
-                        <span class="text-[11px] text-gray-500 font-semibold bg-gray-900 px-2 py-0.5 rounded-full">
-                            基于 ELO 对话与 MMLU 评测
-                        </span>
-                    </div>
-
-                    <!-- Capability rows container -->
-                    <div id="capability-rows-container" class="divide-y divide-gray-800/40">
-                        <!-- Dynamic Rows Rendered Here by JS -->
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Detail Analysis Cards Grid -->
-            <div>
-                <h3 class="text-base font-bold mb-4 flex items-center gap-2 text-gray-200">
-                    <span>💎 2026 旗舰模型与技术底座剖析</span>
-                    <span class="text-xs font-normal text-gray-500">（点击排行中模型的名称可自动定位）</span>
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cards-container">
-                    <!-- Dynamic Detail Cards -->
+                <div class="flex overflow-hidden rounded-lg border border-slate-800 bg-slate-950 p-0.5 shrink-0">
+                    <button id="btn-cny" onclick="setCurrency('CNY')" class="px-3 py-1.5 text-[11px] font-bold rounded-md btn-active-theme transition-all">CNY (¥)</button>
+                    <button id="btn-usd" onclick="setCurrency('USD')" class="px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-400 hover:text-white transition-all">USD ($)</button>
                 </div>
             </div>
-
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-gray-900 bg-[#04060A] py-12 text-center text-xs text-gray-500 leading-relaxed">
-        <div class="max-w-7xl mx-auto px-4">
-            <p class="mb-2">© 2026 最新主流大模型 API 价格对比指南. 所有资费数据均针对 2026年最新官宣大模型进行了人工校准和校验。</p>
-            <p class="max-w-2xl mx-auto text-gray-600">
-                部分海外大模型除 Context Caching (上下文缓存) 减免之外，不同时区并发可能享有额外闲时优惠，本工具统一按常规高峰商业资费进行测算。
-                中文 1M Token 大约可对应 75万 至 100万个汉字词符。
-            </p>
         </div>
-    </footer>
 
-    <!-- Logic Script -->
+        <!-- 主价格表格 (桌面端) -->
+        <div class="hidden md:block overflow-hidden rounded-xl border border-slate-800 bg-slate-900/20 shadow-xl shadow-black/10">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-850 bg-slate-900/30 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                        <th class="py-4 px-6 font-bold">模型名称</th>
+                        <th class="py-4 px-6 font-bold">厂商</th>
+                        <th class="py-4 px-6 text-right font-bold">标准输入单价 / 1M</th>
+                        <th class="py-4 px-6 text-right font-bold text-amber-500/80">缓存输入单价 / 1M</th>
+                        <th class="py-4 px-6 text-right font-bold text-emerald-500/80">标准输出单价 / 1M</th>
+                        <th class="py-4 px-6 font-bold">上下文窗口</th>
+                        <th class="py-4 px-6 font-bold">特点与备注</th>
+                    </tr>
+                </thead>
+                <tbody id="table-rows" class="divide-y divide-slate-800/40 text-xs text-slate-300">
+                    <!-- 动态渲染 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 极简卡片列表 (移动端) -->
+        <div id="card-list" class="block md:hidden space-y-4">
+            <!-- 动态渲染 -->
+        </div>
+
+        <!-- 极简页脚 -->
+        <footer class="mt-12 border-t border-slate-900 py-6 text-center text-[10px] text-slate-500">
+            所有单价均为官方公开数据折算，实际计费还会受到网络税费、地区差价及提供商调价影响。
+        </footer>
+    </div>
+
+    <!-- 数据源与精简业务逻辑 -->
     <script>
-        // Exchange Rate 1 USD = 7.25 CNY
-        const USD_TO_CNY = 7.25;
-
-        // Up-to-date SOTA Model Data (2026 Current Mainstreams enriched with authentic benchmarks & performance scores)
-        const modelsData = [
-            // 国内最新主流 (Domestic)
+        const apiModels = [
             {
                 id: 'deepseek-v4-pro',
-                name: 'DeepSeek V4-Pro',
-                provider: 'DeepSeek 深度求索',
-                region: 'domestic',
-                type: '旗舰级推理 MoE',
-                inputUSD: (12.0 * 0.25) / USD_TO_CNY, // 2.5折永久
-                outputUSD: (24.0 * 0.25) / USD_TO_CNY,
-                inputCNY: 12.0 * 0.25,  // 2.5折永久 => 3.0 元 / 1M
-                outputCNY: 24.0 * 0.25, // 2.5折永久 => 6.0 元 / 1M
-                cacheDiscount: 0.98,    // 98% off cache hits
-                context: '1M (100万)',
-                isCheapest: true,
-                badge: '旗舰级推理先锋',
-                badgeColor: 'bg-gradient-to-r from-red-500/20 to-orange-500/20 text-orange-400 border border-orange-500/30',
-                desc: '官方宣布将促销期间 of 2.5折优惠政策改为永久资费！V4架构的顶级专家推理模型。多步推理与代码极强，缓存输入费率接近全免，为2026国内最强底座。',
-                intelligence: 94,
-                elo: 1320,
-                mmlu: 89.5,
-                speed: 55,
-                ttft: 550,
-                contextScore: 94,
-                codingScore: 95,
-                reasoningScore: 96
+                name: 'DeepSeek V4 Pro',
+                provider: 'DeepSeek',
+                inputUSD: 0.435,
+                cachedInputUSD: 0.003625,
+                outputUSD: 0.87,
+                context: '1M (1,000K)',
+                notes: '包含官方限时折扣 75% off 口径，旗舰级推理，极具性价比。'
             },
             {
                 id: 'deepseek-v4-flash',
-                name: 'DeepSeek V4-Flash',
-                provider: 'DeepSeek 深度求索',
-                region: 'domestic',
-                type: '极速高频 MoE',
-                inputUSD: 1.00 / USD_TO_CNY,
-                outputUSD: 2.00 / USD_TO_CNY,
-                inputCNY: 1.00,        // ¥1.00 / 1M
-                outputCNY: 2.00,       // ¥2.00 / 1M
-                cacheDiscount: 0.98,
-                context: '1M (100万)',
-                isCheapest: true,
-                badge: '极速高吞吐 MoE',
-                badgeColor: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-                desc: '高吞吐量极速模型，专门应对超大规模高并发调用、高频自动化流水线或日常客服等普通对话。',
-                intelligence: 78,
-                elo: 1200,
-                mmlu: 74.0,
-                speed: 180,
-                ttft: 150,
-                contextScore: 90,
-                codingScore: 75,
-                reasoningScore: 72
+                name: 'DeepSeek V4 Flash',
+                provider: 'DeepSeek',
+                inputUSD: 0.14,
+                cachedInputUSD: 0.0028,
+                outputUSD: 0.28,
+                context: '1M (1,000K)',
+                notes: '超高吞吐模型，缓存命中价格仅官网常规价格的 2%，日常开发首选。'
             },
             {
-                id: 'doubao-2-pro',
-                name: '豆包 2.0 Pro',
-                provider: '字节跳动 火山引擎',
-                region: 'domestic',
-                type: '通用商业旗舰',
-                inputUSD: 3.20 / USD_TO_CNY,
-                outputUSD: 16.00 / USD_TO_CNY,
-                inputCNY: 3.20,
-                outputCNY: 16.00,
-                cacheDiscount: 0.80,    // 80% discount for cache
-                context: '256K',
-                badge: '火山原生旗舰',
-                badgeColor: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
-                desc: '字节跳动核心2026年升级版本，中文原生对话极佳、联网检索质量极高，配备强大的火山API网关支持，缓存性能强大。',
-                intelligence: 83,
-                elo: 1240,
-                mmlu: 79.5,
-                speed: 90,
-                ttft: 300,
-                contextScore: 86,
-                codingScore: 78,
-                reasoningScore: 77
-            },
-            {
-                id: 'doubao-2-lite',
-                name: '豆包 2.0 Lite',
-                provider: '字节跳动 火山引擎',
-                region: 'domestic',
-                type: '超快高并发型',
-                inputUSD: 0.60 / USD_TO_CNY,
-                outputUSD: 3.60 / USD_TO_CNY,
-                inputCNY: 0.60,
-                outputCNY: 3.60,
-                cacheDiscount: 0.80,
-                context: '256K',
-                badge: '极速高并发',
-                badgeColor: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
-                desc: '主打高并发、秒级响应场景。在海量信息抽取、日常闲聊助理或低复杂度翻译任务中具有极强吞吐优势。',
-                intelligence: 72,
-                elo: 1170,
-                mmlu: 68.0,
-                speed: 150,
-                ttft: 180,
-                contextScore: 80,
-                codingScore: 65,
-                reasoningScore: 62
-            },
-            {
-                id: 'qwen-3.6-max',
-                name: 'Qwen 3.6 Max',
-                provider: '阿里通义千问',
-                region: 'domestic',
-                type: '万亿参数闭源旗舰',
-                inputUSD: 1.30,
-                outputUSD: 7.80,
-                inputCNY: 1.30 * USD_TO_CNY, // ~¥9.42
-                outputCNY: 7.80 * USD_TO_CNY, // ~¥56.55
-                cacheDiscount: 0.90,         // 90% discount for cache
-                context: '262K',
-                badge: '通义顶配推理旗舰',
-                badgeColor: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
-                desc: '阿里2026闭源之王。支持独创原生“Thinking”深度推理。逻辑闭环极佳，在多步长Agent链调用和复杂代码编写上位列国际一流水平。',
-                intelligence: 92,
-                elo: 1310,
-                mmlu: 88.0,
-                speed: 55,
-                ttft: 500,
-                contextScore: 92,
-                codingScore: 93,
-                reasoningScore: 94
-            },
-            {
-                id: 'qwen-3.6-35b',
-                name: 'Qwen 3.6 35B',
-                provider: '阿里通义千问',
-                region: 'domestic',
-                type: '中规格 MoE 旗舰',
-                inputUSD: 0.15,
-                outputUSD: 0.90,
-                inputCNY: 0.15 * USD_TO_CNY, // ~¥1.09
-                outputCNY: 0.90 * USD_TO_CNY, // ~¥6.52
-                cacheDiscount: 0.67,
-                context: '262K',
-                badge: '明星开源MoE',
-                badgeColor: 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20',
-                desc: '阿里小钢炮开源MoE模型，调用成本低廉，在复杂数学推理及代码逻辑上，甚至可以平替不少老一代的大规格闭源旗舰。',
-                intelligence: 80,
-                elo: 1220,
-                mmlu: 76.5,
-                speed: 70,
-                ttft: 350,
-                contextScore: 88,
-                codingScore: 81,
-                reasoningScore: 82
-            },
-            {
-                id: 'kimi-k2.6',
-                name: 'Kimi K2.6',
-                provider: 'Moonshot 月之暗面',
-                region: 'domestic',
-                type: '无损长文本旗舰',
-                inputUSD: 0.95,
-                outputUSD: 4.00,
-                inputCNY: 6.80,
-                outputCNY: 28.50,
-                cacheDiscount: 0.50, // standard kimi prefix caching support
-                context: '262K',
-                badge: '无损长文本王牌',
-                badgeColor: 'bg-purple-500/20 text-purple-300 border border-purple-500/30',
-                desc: '专注于中文超长文档精准理解（如合规文件、学术著作及超长研报分析）。中文文本表达高雅，召回准确率在业界备受推崇。',
-                intelligence: 82,
-                elo: 1235,
-                mmlu: 78.5,
-                speed: 50,
-                ttft: 650,
-                contextScore: 95,
-                codingScore: 76,
-                reasoningScore: 79
-            },
-
-            // 海外最新主流 (Overseas)
-            {
-                id: 'gemini-3.1-pro',
-                name: 'Gemini 3.1 Pro',
-                provider: 'Google 谷歌',
-                region: 'overseas',
-                type: '长文本旗舰推理',
-                inputUSD: 2.00,
-                outputUSD: 12.00,
-                inputCNY: 2.00 * USD_TO_CNY,
-                outputCNY: 12.00 * USD_TO_CNY,
-                cacheDiscount: 0.90, // 90% discount for cached tokens
-                context: '2M (200万)',
-                badge: '200万极长上下文',
-                badgeColor: 'bg-blue-600 text-white',
-                desc: 'Google 2026年重磅旗舰。直接升级并默认支持 2M (200万) 的无损长文本上下文。可将全本代码库或数十小时音视频一键输入，长文本理解力无出其右。',
-                intelligence: 90,
-                elo: 1285,
-                mmlu: 85.5,
-                speed: 75,
-                ttft: 450,
-                contextScore: 100,
-                codingScore: 89,
-                reasoningScore: 88
-            },
-            {
-                id: 'gemini-3.5-flash',
-                name: 'Gemini 3.5 Flash',
-                provider: 'Google 谷歌',
-                region: 'overseas',
-                type: '极速原生多模态',
-                inputUSD: 1.50,
-                outputUSD: 9.00,
-                inputCNY: 1.50 * USD_TO_CNY,
-                outputCNY: 9.00 * USD_TO_CNY,
-                cacheDiscount: 0.90,
-                context: '1M (100万)',
-                badge: '原生多模态极速版',
-                badgeColor: 'bg-sky-500 text-white',
-                desc: '2026 Google I/O 新一代极速多模态先锋。性能直逼Pro款，但反应速度与通量提升了数倍，在各种复杂多通道实时音频与视频流输入场景中极具吞吐优势。',
-                intelligence: 85,
-                elo: 1250,
-                mmlu: 81.0,
-                speed: 140,
-                ttft: 200,
-                contextScore: 98,
-                codingScore: 84,
-                reasoningScore: 83
-            },
-            {
-                id: 'gpt-5.5',
-                name: 'GPT-5.5',
-                provider: 'OpenAI',
-                region: 'overseas',
-                type: '全能黄金旗舰',
-                inputUSD: 5.00,
-                outputUSD: 30.00,
-                inputCNY: 5.00 * USD_TO_CNY,
-                outputCNY: 30.00 * USD_TO_CNY,
-                cacheDiscount: 0.50, // Standard 50% discount
-                context: '200K',
-                badge: '全能智能体旗舰',
-                badgeColor: 'bg-slate-100 text-slate-950 font-bold',
-                desc: '最新旗舰级全能霸主，无论是在复杂业务系统控制、多步代理协作（Agentic Workflows），还是高级多模态跨媒体理解上都展现出了行业顶尖的可靠度。',
-                intelligence: 95,
-                elo: 1335,
-                mmlu: 90.5,
-                speed: 60,
-                ttft: 450,
-                contextScore: 91,
-                codingScore: 94,
-                reasoningScore: 93
-            },
-            {
-                id: 'gpt-o3-reasoning',
-                name: 'OpenAI o3 (Reasoning)',
-                provider: 'OpenAI',
-                region: 'overseas',
-                type: '强化解题推理',
-                inputUSD: 2.00,
-                outputUSD: 8.00,
-                inputCNY: 2.00 * USD_TO_CNY,
-                outputCNY: 8.00 * USD_TO_CNY,
-                cacheDiscount: 0.50,
-                context: '200K',
-                badge: '强化逻辑专家',
-                badgeColor: 'bg-teal-950 text-teal-400 border border-teal-800',
-                desc: '专注于解答极高难度数理方程、专业物理逻辑或高级编程重构等复杂决策过程。其计费中将按模型产生的最终思维（Thinking）Token 共同结算。',
-                intelligence: 97,
-                elo: 1350,
-                mmlu: 92.5,
-                speed: 35,
-                ttft: 3200,
-                contextScore: 90,
-                codingScore: 98,
-                reasoningScore: 99
-            },
-            {
-                id: 'gpt-o4-mini',
-                name: 'OpenAI o4-mini',
-                provider: 'OpenAI',
-                region: 'overseas',
-                type: '极速推理 MoE',
-                inputUSD: 0.55,
-                outputUSD: 2.20,
-                inputCNY: 0.55 * USD_TO_CNY,
-                outputCNY: 2.20 * USD_TO_CNY,
-                cacheDiscount: 0.50,
-                context: '128K',
-                badge: '高吞吐推理先锋',
-                badgeColor: 'bg-gray-800 text-gray-300 border border-gray-700',
-                desc: '针对中等复杂度且需要“快思考”的自动化推理任务设计的平价轻量模型，价格在海外阵营中属于极为克制的代表。',
-                intelligence: 84,
-                elo: 1245,
-                mmlu: 80.0,
-                speed: 120,
-                ttft: 220,
-                contextScore: 82,
-                codingScore: 80,
-                reasoningScore: 82
-            },
-            {
-                id: 'claude-4.7-opus',
-                name: 'Claude 4.7 Opus',
+                id: 'claude-sonnet-46',
+                name: 'Claude Sonnet 4.6',
                 provider: 'Anthropic',
-                region: 'overseas',
-                type: '终极科研旗舰',
-                inputUSD: 5.00,
-                outputUSD: 25.00,
-                inputCNY: 5.00 * USD_TO_CNY,
-                outputCNY: 25.00 * USD_TO_CNY,
-                cacheDiscount: 0.0,
-                context: '1M (100万)',
-                badge: '顶级智商/文笔',
-                badgeColor: 'bg-pink-950 text-pink-300 border border-pink-900',
-                desc: '在长文创作、行业专业多维图表分析、系统层级超大规模重构等顶级科研及智商挑战任务上拥有绝佳的表达美感与细节完整性。',
-                intelligence: 96,
-                elo: 1340,
-                mmlu: 91.0,
-                speed: 45,
-                ttft: 600,
-                contextScore: 96,
-                codingScore: 96,
-                reasoningScore: 95
-            },
-            {
-                id: 'claude-4.6-sonnet',
-                name: 'Claude 4.6 Sonnet',
-                provider: 'Anthropic',
-                region: 'overseas',
-                type: '黄金代码旗舰',
                 inputUSD: 3.00,
+                cachedInputUSD: 0.30,
                 outputUSD: 15.00,
-                inputCNY: 3.00 * USD_TO_CNY,
-                outputCNY: 15.00 * USD_TO_CNY,
-                cacheDiscount: 0.90, // Supports 90% write discount for cached prompt tokens
-                context: '1M (100万)',
-                badge: '黄金代码底座',
-                badgeColor: 'bg-[#1F2937] text-amber-300 border border-amber-500/20',
-                desc: '开发人员及项目经理心目中永恒的白月光。支持在100万极长代码上下文中对多个依赖库进行高度复用，极高地缩减研发迭代期。',
-                intelligence: 91,
-                elo: 1300,
-                mmlu: 87.0,
-                speed: 85,
-                ttft: 400,
-                contextScore: 95,
-                codingScore: 95,
-                reasoningScore: 92
+                context: '1M (1,000K)',
+                notes: '全球编码与复杂逻辑推理的黄金准线模型。'
+            },
+            {
+                id: 'claude-opus-47',
+                name: 'Claude Opus 4.7',
+                provider: 'Anthropic',
+                inputUSD: 5.00,
+                cachedInputUSD: 0.50,
+                outputUSD: 25.00,
+                context: '1M (1,000K)',
+                notes: '智能脑力峰值模型，处理极端严苛学术与架构设计。'
+            },
+            {
+                id: 'gpt-55',
+                name: 'GPT-5.5 (OpenAI Flagship)',
+                provider: 'OpenAI',
+                inputUSD: 5.00,
+                cachedInputUSD: 0.50,
+                outputUSD: 30.00,
+                context: '1.05M (>272K加价)',
+                notes: 'OpenAI 顶阶旗舰，多模态推理先驱，大上下文下会自动触发加价。'
+            },
+            {
+                id: 'gpt-54',
+                name: 'GPT-5.4',
+                provider: 'OpenAI',
+                inputUSD: 2.50,
+                cachedInputUSD: 0.25,
+                outputUSD: 15.00,
+                context: '<270K 优惠价格',
+                notes: '经济型中大型推理通用模型，性价比较高。'
+            },
+            {
+                id: 'gpt-54-mini',
+                name: 'GPT-5.4 mini',
+                provider: 'OpenAI',
+                inputUSD: 0.75,
+                cachedInputUSD: 0.075,
+                outputUSD: 4.50,
+                context: '128K',
+                notes: '轻量主力高频处理模型，具有优秀的信息提炼效率。'
+            },
+            {
+                id: 'gemini-35-flash',
+                name: 'Gemini 3.5 Flash',
+                provider: 'Google',
+                inputUSD: 1.50,
+                cachedInputUSD: 0.15,
+                outputUSD: 9.00,
+                context: '1M',
+                notes: '多模态效率旗舰，首 Token 延迟极低，执行速度极快。'
+            },
+            {
+                id: 'gemini-31-pro-preview',
+                name: 'Gemini 3.1 Pro Preview',
+                provider: 'Google',
+                inputUSD: 2.00,
+                cachedInputUSD: 0.20,
+                outputUSD: 12.00,
+                context: '200K (超量加价)',
+                notes: '预览版高级多模态模型，支持大体积音视频及图像综合分析。'
+            },
+            {
+                id: 'gemini-31-flash-lite',
+                name: 'Gemini 3.1 Flash-Lite',
+                provider: 'Google',
+                inputUSD: 0.25,
+                cachedInputUSD: 0.025,
+                outputUSD: 1.50,
+                context: '1M',
+                notes: '极低单价的超轻量多模态小模型，适合海量短信息预过滤。'
+            },
+            {
+                id: 'kimi-k26',
+                name: 'Kimi K2.6',
+                provider: 'Moonshot AI',
+                inputUSD: 0.95,
+                cachedInputUSD: 0.16,
+                outputUSD: 4.00,
+                context: '256K',
+                notes: '国内优秀长上下文模型，多轮交互缓存命中率高，适合中文长文分析。'
+            },
+            {
+                id: 'glm-51',
+                name: 'GLM-5.1',
+                provider: 'Z.AI (智谱)',
+                inputUSD: 1.40,
+                cachedInputUSD: 0.26,
+                outputUSD: 4.40,
+                context: '200K',
+                notes: '国产高频生产级大模型，在工具链集成与自动化流程中调用顺畅。'
             }
         ];
 
-        // State variables
-        let currentCurrency = 'CNY'; // 'CNY' or 'USD'
-        let currentRegion = 'all'; // 'all', 'domestic', 'overseas'
-        let currentSort = 'intelligence-desc'; // Default sorting in capability mode is quality (intelligence)
-        let activeView = 'cost'; // 'cost' or 'capability'
-        let scatterMode = 'cost'; // 'cost' or 'speed'
-        
-        // Simulated volumes (millions of tokens)
-        let inputM = 10;
-        let outputM = 5;
-        let cacheHitPct = 40;
+        // 状态变量
+        let currentCurrency = 'CNY';
+        const exchangeRate = 7.25;
+        let selectedProvider = 'ALL';
+        let searchQuery = '';
 
-        // View Toggling
-        function switchView(viewName) {
-            activeView = viewName;
+        // 提取所有唯一厂商用于生成分类Tab
+        const providers = ['ALL', ...new Set(apiModels.map(m => m.provider))];
+
+        // 主题色配置
+        function setTheme(themeName, primaryColor, hoverColor) {
+            document.documentElement.style.setProperty('--theme-color-primary', primaryColor);
+            document.documentElement.style.setProperty('--theme-color-hover', hoverColor);
             
-            const viewCostContent = document.getElementById('view-cost-content');
-            const viewCapContent = document.getElementById('view-capability-content');
-            const tabCost = document.getElementById('tab-cost');
-            const tabCap = document.getElementById('tab-capability');
+            // 动态阴影计算
+            const glowColor = primaryColor.startsWith('#') 
+                ? `rgba(${parseInt(primaryColor.slice(1,3), 16)}, ${parseInt(primaryColor.slice(3,5), 16)}, ${parseInt(primaryColor.slice(5,7), 16)}, 0.15)`
+                : 'rgba(59, 130, 246, 0.15)';
+            document.documentElement.style.setProperty('--theme-color-glow', glowColor);
 
-            const activeTabClass = "py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 bg-[#1F2937] text-white";
-            const inactiveTabClass = "py-2.5 text-xs md:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 text-gray-400 hover:text-gray-200";
+            localStorage.setItem('api_board_theme', JSON.stringify({ name: themeName, primary: primaryColor, hover: hoverColor }));
 
-            if (viewName === 'cost') {
-                viewCostContent.classList.remove('hidden');
-                viewCapContent.classList.add('hidden');
-                tabCost.className = activeTabClass;
-                tabCap.className = inactiveTabClass;
-                
-                // If sorting is capability-specific, revert to cost
-                if (currentSort === 'intelligence-desc' || currentSort === 'speed-desc') {
-                    currentSort = 'totalCost-asc';
-                    document.getElementById('sort-select').value = 'totalCost-asc';
-                }
-            } else {
-                viewCostContent.classList.add('hidden');
-                viewCapContent.classList.remove('hidden');
-                tabCost.className = inactiveTabClass;
-                tabCap.className = activeTabClass;
-                
-                // Default sorting in capability is quality (intelligence)
-                currentSort = 'intelligence-desc';
-                document.getElementById('sort-select').value = 'intelligence-desc';
-                
-                // Populate selects and render compare card
-                populateCompareSelects();
-                compareModels();
-            }
-
-            renderDashboard();
-        }
-
-        // Scatter plot axis toggle
-        function setScatterMode(mode) {
-            scatterMode = mode;
-            
-            const btnCost = document.getElementById('scatter-toggle-cost');
-            const btnSpeed = document.getElementById('scatter-toggle-speed');
-            const desc = document.getElementById('scatter-plot-desc');
-            const quadTL = document.getElementById('quadrant-tl');
-            const quadTR = document.getElementById('quadrant-tr');
-            const quadBL = document.getElementById('quadrant-bl');
-            const quadBR = document.getElementById('quadrant-br');
-
-            const activeClass = "px-3 py-1 rounded bg-[#1F2937] text-white transition-all";
-            const inactiveClass = "px-3 py-1 rounded text-gray-400 hover:text-white transition-all";
-
-            if (mode === 'cost') {
-                btnCost.className = activeClass;
-                btnSpeed.className = inactiveClass;
-                desc.innerText = "Y轴代表综合智力质量(越往上越聪明)；X轴为预估月度总成本(对数刻度，越往左越便宜)";
-                
-                quadTL.innerText = "高智平价区 (Sweet Spot)";
-                quadTR.innerText = "旗舰性能区 (Premium)";
-                quadBL.innerText = "极速轻量区 (Fast & Efficient)";
-                quadBR.innerText = "高开销轻量区";
-            } else {
-                btnCost.className = inactiveClass;
-                btnSpeed.className = activeClass;
-                desc.innerText = "Y轴代表综合智力质量(越往上越聪明)；X轴为生成吞吐速度(线性刻度，越往右速度越快)";
-                
-                quadTL.innerText = "高智慢速区 (推理专家)";
-                quadTR.innerText = "高智极速区 (理想旗舰)";
-                quadBL.innerText = "常规处理区";
-                quadBR.innerText = "极速轻量区 (高吞吐量)";
-            }
-
-            renderDashboard();
-        }
-
-        // Side-by-side head-to-head comparison population
-        function populateCompareSelects() {
-            const selectA = document.getElementById('compare-model-a');
-            const selectB = document.getElementById('compare-model-b');
-            if (!selectA || !selectB) return;
-
-            if (selectA.options.length === 0) {
-                // Populate options
-                modelsData.forEach(m => {
-                    const optA = document.createElement('option');
-                    optA.value = m.id;
-                    optA.textContent = `${m.provider} - ${m.name}`;
-                    if (m.id === 'gpt-5.5') optA.selected = true; // default A
-                    selectA.appendChild(optA);
-
-                    const optB = document.createElement('option');
-                    optB.value = m.id;
-                    optB.textContent = `${m.provider} - ${m.name}`;
-                    if (m.id === 'deepseek-v4-pro') optB.selected = true; // default B
-                    selectB.appendChild(optB);
-                });
-            }
-        }
-
-        // Model comparison calculation & render
-        function compareModels() {
-            const selectA = document.getElementById('compare-model-a');
-            const selectB = document.getElementById('compare-model-b');
-            if (!selectA || !selectB) return;
-
-            const idA = selectA.value;
-            const idB = selectB.value;
-            const modelA = modelsData.find(m => m.id === idA);
-            const modelB = modelsData.find(m => m.id === idB);
-            
-            if (!modelA || !modelB) return;
-
-            const costAObj = calculateModelCost(modelA);
-            const costBObj = calculateModelCost(modelB);
-            const isRmb = currentCurrency === 'CNY';
-            const symbol = isRmb ? '¥' : '$';
-
-            // Compare helper to return green text class for the superior value
-            const getWinnerClass = (valA, valB, greater = true) => {
-                if (valA === valB) return ['text-gray-200', 'text-gray-200'];
-                const isAWinner = greater ? valA > valB : valA < valB;
-                return isAWinner ? ['text-emerald-400 font-bold', 'text-gray-400'] : ['text-gray-400', 'text-emerald-400 font-bold'];
-            };
-
-            const winIntel = getWinnerClass(modelA.intelligence, modelB.intelligence, true);
-            const winMmlu = getWinnerClass(modelA.mmlu, modelB.mmlu, true);
-            const winElo = getWinnerClass(modelA.elo, modelB.elo, true);
-            const winSpeed = getWinnerClass(modelA.speed, modelB.speed, true);
-            const winTtft = getWinnerClass(modelA.ttft, modelB.ttft, false); // lower is better
-            const winCost = getWinnerClass(costAObj.total, costBObj.total, false); // lower is better
-
-            const container = document.getElementById('comparison-details-container');
-            container.innerHTML = `
-                <div class="grid grid-cols-3 border-b border-gray-800 text-center font-bold bg-gray-900/60 py-2.5">
-                    <div class="text-left pl-4 text-gray-400">评测维度</div>
-                    <div class="text-brand-400 text-sm">${modelA.name}</div>
-                    <div class="text-purple-400 text-sm">${modelB.name}</div>
-                </div>
-                
-                <div class="divide-y divide-gray-850">
-                    <div class="grid grid-cols-3 py-2.5 text-center">
-                        <div class="text-left pl-4 text-gray-500">开发厂商</div>
-                        <div class="text-gray-300 font-medium">${modelA.provider}</div>
-                        <div class="text-gray-300 font-medium">${modelB.provider}</div>
-                    </div>
-                    <div class="grid grid-cols-3 py-2.5 text-center bg-gray-950/20">
-                        <div class="text-left pl-4 text-gray-500">模型类型</div>
-                        <div class="text-gray-400">${modelA.type}</div>
-                        <div class="text-gray-400">${modelB.type}</div>
-                    </div>
-                    <div class="grid grid-cols-3 py-2.5 text-center">
-                        <div class="text-left pl-4 text-gray-500">综合智力质量</div>
-                        <div class="${winIntel[0]}">${modelA.intelligence} / 100</div>
-                        <div class="${winIntel[1]}">${modelB.intelligence} / 100</div>
-                    </div>
-                    <div class="grid grid-cols-3 py-2.5 text-center bg-gray-950/20">
-                        <div class="text-left pl-4 text-gray-500">MMLU-Pro (知识基准)</div>
-                        <div class="${winMmlu[0]}">${modelA.mmlu}%</div>
-                        <div class="${winMmlu[1]}">${modelB.mmlu}%</div>
-                    </div>
-                    <div class="grid grid-cols-3 py-2.5 text-center">
-                        <div class="text-left pl-4 text-gray-500">Chatbot Arena ELO</div>
-                        <div class="${winElo[0]}">${modelA.elo}</div>
-                        <div class="${winElo[1]}">${modelB.elo}</div>
-                    </div>
-                    <div class="grid grid-cols-3 py-2.5 text-center bg-gray-950/20">
-                        <div class="text-left pl-4 text-gray-500">生成速度 (Throughput)</div>
-                        <div class="${winSpeed[0]}">${modelA.speed} tps</div>
-                        <div class="${winSpeed[1]}">${modelB.speed} tps</div>
-                    </div>
-                    <div class="grid grid-cols-3 py-2.5 text-center">
-                        <div class="text-left pl-4 text-gray-500">首字延迟 (TTFT)</div>
-                        <div class="${winTtft[0]}">${modelA.ttft} ms</div>
-                        <div class="${winTtft[1]}">${modelB.ttft} ms</div>
-                    </div>
-                    <div class="grid grid-cols-3 py-2.5 text-center bg-gray-950/20">
-                        <div class="text-left pl-4 text-gray-500">最大上下文</div>
-                        <div class="text-gray-300 font-mono">${modelA.context}</div>
-                        <div class="text-gray-300 font-mono">${modelB.context}</div>
-                    </div>
-                    <div class="grid grid-cols-3 py-2.5 text-center font-bold">
-                        <div class="text-left pl-4 text-gray-500 font-normal">当前预估月度开销</div>
-                        <div class="${winCost[0]} font-mono">${symbol}${costAObj.total.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
-                        <div class="${winCost[1]} font-mono">${symbol}${costBObj.total.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Apply slider state change
-        function updateSliders() {
-            inputM = parseFloat(document.getElementById('slide-input').value);
-            outputM = parseFloat(document.getElementById('slide-output').value);
-            cacheHitPct = parseInt(document.getElementById('slide-cache').value);
-
-            // Update Labels
-            document.getElementById('val-input').innerText = inputM.toFixed(1) + " M Tokens";
-            document.getElementById('val-output').innerText = outputM.toFixed(1) + " M Tokens";
-            document.getElementById('val-cache').innerText = cacheHitPct + " %";
-
-            // If active view is capability, keep side-by-side comparison synced
-            if (activeView === 'capability') {
-                compareModels();
-            }
-
-            renderDashboard();
-        }
-
-        // Apply Presets
-        function applyPreset(inp, outp, cache) {
-            document.getElementById('slide-input').value = inp;
-            document.getElementById('slide-output').value = outp;
-            document.getElementById('slide-cache').value = cache;
-            updateSliders();
-        }
-
-        // Change currency and styles
-        function setCurrency(curr) {
-            currentCurrency = curr;
-            const btnCny = document.getElementById('btn-cny');
-            const btnUsd = document.getElementById('btn-usd');
-
-            if (curr === 'CNY') {
-                btnCny.className = "px-3.5 py-1.5 text-xs font-semibold bg-brand-500 text-white transition-all";
-                btnUsd.className = "px-3.5 py-1.5 text-xs font-semibold text-gray-400 hover:text-white transition-all";
-            } else {
-                btnCny.className = "px-3.5 py-1.5 text-xs font-semibold text-gray-400 hover:text-white transition-all";
-                btnUsd.className = "px-3.5 py-1.5 text-xs font-semibold bg-brand-500 text-white transition-all";
-            }
-            
-            if (activeView === 'capability') {
-                compareModels();
-            }
-            
-            renderDashboard();
-        }
-
-        // Filter Region
-        function setRegion(region) {
-            currentRegion = region;
-            const btnAll = document.getElementById('filter-all');
-            const btnDom = document.getElementById('filter-domestic');
-            const btnOvs = document.getElementById('filter-overseas');
-
-            const normalClass = "px-3 py-1 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all";
-            const activeClass = "px-3 py-1 text-xs font-semibold rounded-md bg-[#1F2937] text-white transition-all";
-
-            btnAll.className = region === 'all' ? activeClass : normalClass;
-            btnDom.className = region === 'domestic' ? activeClass : normalClass;
-            btnOvs.className = region === 'overseas' ? activeClass : normalClass;
-
-            renderDashboard();
-        }
-
-        // Sort Action
-        function setSort(sortVal) {
-            currentSort = sortVal;
-            renderDashboard();
-        }
-
-        // Calculation helper: returns total cost for the model based on simulated tokens
-        function calculateModelCost(model) {
-            // Check prices by currency
-            const normalIn = currentCurrency === 'CNY' ? model.inputCNY : model.inputUSD;
-            const normalOut = currentCurrency === 'CNY' ? model.outputCNY : model.outputUSD;
-
-            // Effective Input Token Price per Million (applying cache discount)
-            const effectiveIn = normalIn * (1 - (cacheHitPct / 100 * model.cacheDiscount));
-            
-            const costIn = effectiveIn * inputM;
-            const costOut = normalOut * outputM;
-
-            return {
-                total: costIn + costOut,
-                effectiveInputUnit: effectiveIn,
-                normalInputUnit: normalIn,
-                normalOutputUnit: normalOut,
-                savedByCache: (normalIn * inputM) - costIn
-            };
-        }
-
-        // Render everything
-        function renderDashboard() {
-            const pricingContainer = document.getElementById('pricing-rows-container');
-            const capabilityContainer = document.getElementById('capability-rows-container');
-            const scatterContainer = document.getElementById('scatter-nodes-container');
-            const cardsContainer = document.getElementById('cards-container');
-            const searchQuery = document.getElementById('model-search').value.toLowerCase().trim();
-            
-            // 1. Filter Data (Region + Search query)
-            let filteredModels = [...modelsData];
-            if (currentRegion !== 'all') {
-                filteredModels = filteredModels.filter(m => m.region === currentRegion);
-            }
-            if (searchQuery) {
-                filteredModels = filteredModels.filter(m => 
-                    m.name.toLowerCase().includes(searchQuery) || 
-                    m.provider.toLowerCase().includes(searchQuery) ||
-                    m.type.toLowerCase().includes(searchQuery)
-                );
-            }
-
-            // 2. Map and Calculate Costs for all matching models
-            let calculatedModels = filteredModels.map(model => {
-                const costs = calculateModelCost(model);
-                return {
-                    ...model,
-                    costs: costs
-                };
-            });
-
-            // Find Min and Max Cost among matching models for normalization
-            const costs = calculatedModels.map(m => m.costs.total);
-            const minCost = Math.min(...costs) || 0;
-            const maxCost = Math.max(...costs) || 1;
-            const costRange = maxCost - minCost;
-
-            // 3. Sort Data based on selected sort option
-            calculatedModels.sort((a, b) => {
-                const [field, order] = currentSort.split('-');
-                if (field === 'totalCost') {
-                    return order === 'asc' ? a.costs.total - b.costs.total : b.costs.total - a.costs.total;
-                } else if (field === 'intelligence') {
-                    return order === 'desc' ? b.intelligence - a.intelligence : a.intelligence - b.intelligence;
-                } else if (field === 'speed') {
-                    return order === 'desc' ? b.speed - a.speed : a.speed - b.speed;
-                } else if (field === 'input') {
-                    return order === 'asc' ? a.costs.normalInputUnit - b.costs.normalInputUnit : b.costs.normalInputUnit - a.costs.normalInputUnit;
-                } else if (field === 'output') {
-                    return order === 'asc' ? a.costs.normalOutputUnit - b.costs.normalOutputUnit : b.costs.normalOutputUnit - a.costs.normalOutputUnit;
-                } else if (field === 'context') {
-                    const getVal = (str) => parseInt(str) || 0;
-                    return order === 'desc' ? getVal(b.context) - getVal(a.context) : getVal(a.context) - getVal(b.context);
-                }
-                return 0;
-            });
-
-            // Find Maximum Total Cost for bar scaling reference in Cost View
-            const maxCostForScaling = Math.max(...calculatedModels.map(m => m.costs.total), 1);
-
-            // 4. Render Cost View tabular visual rows
-            pricingContainer.innerHTML = '';
-            if (calculatedModels.length === 0) {
-                pricingContainer.innerHTML = `
-                    <div class="p-8 text-center text-gray-500 text-sm">
-                        没有找到匹配当前筛选和搜索条件的大模型数据。
-                    </div>
-                `;
-            } else {
-                calculatedModels.forEach((m, idx) => {
-                    const isRmb = currentCurrency === 'CNY';
-                    const symbol = isRmb ? '¥' : '$';
-                    const totalCostFormatted = m.costs.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    const barWidth = (m.costs.total / maxCostForScaling) * 100;
-
-                    const inUnitDisplay = `${symbol}${m.costs.normalInputUnit.toFixed(2)}`;
-                    const outUnitDisplay = `${symbol}${m.costs.normalOutputUnit.toFixed(2)}`;
-
-                    const row = document.createElement('div');
-                    row.className = "p-4 md:p-5 hover:bg-gray-900/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4";
-                    row.innerHTML = `
-                        <!-- Model Identity Info -->
-                        <div class="flex-1 min-w-[240px]">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-xs text-gray-600 font-mono font-bold">#${idx+1}</span>
-                                <h4 class="font-bold text-gray-200 hover:text-brand-400 transition-colors cursor-pointer text-sm md:text-base" onclick="scrollToDetail('${m.id}')">${m.name}</h4>
-                                <span class="text-[10px] px-1.5 py-0.5 rounded-md ${m.region === 'domestic' ? 'bg-blue-950/80 text-blue-300 border border-blue-900/50' : 'bg-purple-950/80 text-purple-300 border border-purple-900/50'} font-medium">${m.provider}</span>
-                                ${m.badge ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-semibold ${m.badgeColor}">${m.badge}</span>` : ''}
-                            </div>
-                            <div class="flex items-center gap-4 mt-2 text-xs text-gray-400 flex-wrap">
-                                <span>输入: <b class="text-gray-200">${inUnitDisplay}</b> <span class="text-gray-600">/M</span></span>
-                                <span>输出: <b class="text-emerald-400">${outUnitDisplay}</b> <span class="text-gray-600">/M</span></span>
-                                <span>最大上下文: <b class="text-brand-400 font-mono">${m.context}</b></span>
-                            </div>
-                        </div>
-
-                        <!-- Relative Cost Visualizing Bar and Cost -->
-                        <div class="flex-1 max-w-full md:max-w-[320px] flex flex-col gap-1.5">
-                            <div class="flex justify-between items-end text-xs">
-                                <span class="text-gray-600 font-mono text-[10px] font-bold">费用对比刻度</span>
-                                <span class="font-semibold text-gray-300">预估月消费: <span class="text-brand-500 font-bold font-mono text-sm">${symbol}${totalCostFormatted}</span></span>
-                            </div>
-                            
-                            <!-- Progress Bar -->
-                            <div class="w-full h-2 bg-gray-950 rounded-full overflow-hidden border border-gray-800/80">
-                                <div class="h-full rounded-full bg-gradient-to-r ${m.isCheapest ? 'from-emerald-500 to-green-400' : 'from-brand-500 to-indigo-500'}" style="width: ${barWidth}%"></div>
-                            </div>
-
-                            <!-- Context Caching Advantage Info -->
-                            ${m.costs.savedByCache > 0 ? `
-                            <div class="text-[10px] text-amber-400/90 flex items-center justify-between bg-amber-950/10 px-2 py-0.5 rounded border border-amber-900/20 font-medium">
-                                <span>⚡ 开启 Prompt 缓存为您省下:</span>
-                                <span class="font-mono font-bold">${symbol}${m.costs.savedByCache.toFixed(2)}</span>
-                            </div>
-                            ` : `
-                            <div class="text-[10px] text-gray-600 px-2 py-0.5">该场景/模型暂不支持缓存折扣</div>
-                            `}
-                        </div>
-                    `;
-                    pricingContainer.appendChild(row);
-                });
-            }
-
-            // 5. Render Capability View elements (Scatter nodes & Leaderboard rows)
-            scatterContainer.innerHTML = '';
-            capabilityContainer.innerHTML = '';
-            
-            if (calculatedModels.length === 0) {
-                capabilityContainer.innerHTML = `
-                    <div class="p-8 text-center text-gray-500 text-sm">
-                        没有找到匹配当前筛选和搜索条件的大模型数据。
-                    </div>
-                `;
-            } else {
-                calculatedModels.forEach((m, idx) => {
-                    const isRmb = currentCurrency === 'CNY';
-                    const symbol = isRmb ? '¥' : '$';
-                    const totalCostFormatted = m.costs.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-                    // A. Render Scatter Plot Node
-                    let xPct = 50;
-                    if (scatterMode === 'cost') {
-                        const logMin = Math.log10(Math.max(minCost, 0.05));
-                        const logMax = Math.log10(Math.max(maxCost, 0.5));
-                        const logVal = Math.log10(Math.max(m.costs.total, 0.05));
-                        xPct = logMax === logMin ? 50 : ((logVal - logMin) / (logMax - logMin)) * 80 + 10;
+            // 切换主题按钮外圈选中高亮
+            const themeNames = ['blue', 'emerald', 'indigo', 'amber', 'slate'];
+            themeNames.forEach(name => {
+                const btn = document.getElementById(`theme-btn-${name}`);
+                if (btn) {
+                    if (name === themeName) {
+                        btn.className = btn.className.replace(/ring-[^\s]+/g, '') + ' ring-2 ring-offset-2 ring-offset-slate-950 ring-white';
                     } else {
-                        // Max Speed reference: 200 tps
-                        xPct = (m.speed / 200) * 80 + 10;
+                        btn.className = btn.className.replace(/ring-2|ring-offset-2|ring-offset-slate-950|ring-white/g, '').trim();
                     }
-                    
-                    let yPct = ((m.intelligence - 60) / 40) * 80 + 10;
-                    
-                    const isDomestic = m.region === 'domestic';
-                    const nodeColor = isDomestic ? 'from-blue-600 to-cyan-500 ring-blue-500/30' : 'from-purple-600 to-pink-500 ring-purple-500/30';
-
-                    const node = document.createElement('div');
-                    node.style.left = `${xPct}%`;
-                    node.style.bottom = `${yPct}%`;
-                    node.className = "absolute -translate-x-1/2 translate-y-1/2 group cursor-pointer transition-all duration-500 ease-out z-10 hover:z-50 w-4 h-4";
-                    node.innerHTML = `
-                        <!-- Pulsing node -->
-                        <div class="relative flex items-center justify-center w-4 h-4">
-                            <div class="w-4 h-4 rounded-full bg-gradient-to-br ${nodeColor} border-2 border-white shadow-lg group-hover:scale-125 transition-transform duration-300"></div>
-                            <!-- Mini Pulse Effect -->
-                            <span class="absolute inline-flex h-6 w-6 rounded-full bg-current opacity-0 group-hover:opacity-10 group-hover:animate-ping ${isDomestic ? 'text-blue-400' : 'text-purple-400'}"></span>
-                        </div>
-
-                        <!-- Label -->
-                        <span class="absolute top-6 left-1/2 -translate-x-1/2 text-[9px] font-extrabold text-gray-400 whitespace-nowrap bg-gray-950/90 px-1.5 py-0.5 rounded border border-gray-800 group-hover:text-white group-hover:border-gray-600 transition-colors shadow-md">
-                            ${m.name}
-                        </span>
-
-                        <!-- Glassmorphic Tooltip on Hover -->
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden group-hover:block z-50 w-64 bg-[#0F141C]/95 backdrop-blur-md p-4 rounded-xl border border-gray-700 shadow-2xl pointer-events-none text-left">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <div class="font-bold text-sm text-white">${m.name}</div>
-                                    <div class="text-[10px] text-gray-400 mt-0.5">${m.provider}</div>
-                                </div>
-                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${isDomestic ? 'bg-blue-950/80 text-blue-300 border border-blue-900/50' : 'bg-purple-950/80 text-purple-300 border border-purple-900/50'}">
-                                    ${isDomestic ? '国内' : '海外'}
-                                </span>
-                            </div>
-                            <div class="border-t border-gray-800 my-2"></div>
-                            <div class="space-y-1.5 text-xs">
-                                <div class="flex justify-between">
-                                    <span class="text-gray-500">综合智力:</span>
-                                    <span class="text-brand-400 font-bold">${m.intelligence}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-500">生成速度:</span>
-                                    <span class="text-emerald-400 font-bold">${m.speed} tps</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-500">MMLU-Pro 基准:</span>
-                                    <span class="text-purple-400 font-bold">${m.mmlu}%</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-500">Chatbot Arena:</span>
-                                    <span class="text-pink-400 font-bold">${m.elo}</span>
-                                </div>
-                                <div class="border-t border-gray-800 pt-1.5 mt-1.5 flex justify-between items-baseline">
-                                    <span class="text-gray-400 font-medium">预估月费:</span>
-                                    <span class="text-amber-400 font-black text-sm">${symbol}${totalCostFormatted}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    node.addEventListener('click', () => {
-                        scrollToDetail(m.id);
-                    });
-                    scatterContainer.appendChild(node);
-
-                    // B. Render Leaderboard Row
-                    const capRow = document.createElement('div');
-                    capRow.className = "p-4 md:p-5 hover:bg-gray-900/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4";
-                    capRow.innerHTML = `
-                        <!-- Identity & Rank -->
-                        <div class="flex-1 min-w-[220px]">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-xs text-purple-400 font-mono font-bold">#${idx+1}</span>
-                                <h4 class="font-bold text-gray-200 hover:text-brand-400 transition-colors cursor-pointer text-sm md:text-base" onclick="scrollToDetail('${m.id}')">${m.name}</h4>
-                                <span class="text-[10px] px-1.5 py-0.5 rounded-md ${isDomestic ? 'bg-blue-950/80 text-blue-300 border border-blue-900/50' : 'bg-purple-950/80 text-purple-300 border border-purple-900/50'} font-medium">${m.provider}</span>
-                                ${m.badge ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-semibold ${m.badgeColor}">${m.badge}</span>` : ''}
-                            </div>
-                            <div class="flex items-center gap-3 mt-2 text-xs text-gray-400 flex-wrap">
-                                <span class="inline-flex items-center gap-1">🧠 智力质量: <b class="text-brand-400">${m.intelligence}</b></span>
-                                <span class="inline-flex items-center gap-1">⚡ 生成速度: <b class="text-emerald-400">${m.speed} tps</b></span>
-                                <span class="inline-flex items-center gap-1">📄 空间: <b class="text-purple-400">${m.context}</b></span>
-                            </div>
-                        </div>
-
-                        <!-- Sub Benchmarks Details -->
-                        <div class="flex-1 max-w-full md:max-w-[320px] grid grid-cols-3 gap-2 text-center text-xs">
-                            <div class="bg-gray-950/40 p-2 rounded-lg border border-gray-905">
-                                <div class="text-[10px] text-gray-500 font-semibold mb-0.5">MMLU-Pro</div>
-                                <div class="font-bold text-gray-300">${m.mmlu}%</div>
-                            </div>
-                            <div class="bg-gray-950/40 p-2 rounded-lg border border-gray-905">
-                                <div class="text-[10px] text-gray-500 font-semibold mb-0.5">Arena ELO</div>
-                                <div class="font-bold text-gray-300">${m.elo}</div>
-                            </div>
-                            <div class="bg-gray-950/40 p-2 rounded-lg border border-gray-905">
-                                <div class="text-[10px] text-gray-500 font-semibold mb-0.5">TTFT 延迟</div>
-                                <div class="font-bold text-gray-300">${m.ttft}ms</div>
-                            </div>
-                        </div>
-                    `;
-                    capabilityContainer.appendChild(capRow);
-                });
-            }
-
-            // 6. Render Detail Cards
-            cardsContainer.innerHTML = '';
-            calculatedModels.forEach(m => {
-                const isRmb = currentCurrency === 'CNY';
-                const symbol = isRmb ? '¥' : '$';
-                const cachedInputFormatted = (m.costs.normalInputUnit * (1 - m.cacheDiscount)).toFixed(2);
-
-                const card = document.createElement('div');
-                card.id = `card-${m.id}`;
-                card.className = "bg-[#0F141C]/30 rounded-xl border border-gray-800/80 p-5 hover:border-gray-700/80 transition-all flex flex-col justify-between";
-                card.innerHTML = `
-                    <div>
-                        <div class="flex justify-between items-start gap-2 mb-2">
-                            <div>
-                                <h4 class="font-bold text-gray-100 text-base flex items-center gap-1.5">
-                                    <span>${m.name}</span>
-                                </h4>
-                                <span class="text-xs text-gray-500 font-medium">${m.provider} · <span class="text-brand-400 font-semibold">${m.type}</span></span>
-                            </div>
-                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${m.region === 'domestic' ? 'bg-blue-950/50 text-blue-400 border border-blue-900/40' : 'bg-purple-950/50 text-purple-400 border border-purple-900/40'}">
-                                ${m.region === 'domestic' ? '国内主流' : '海外最新'}
-                            </span>
-                        </div>
-                        
-                        <!-- Description content -->
-                        <p class="text-xs text-gray-400 leading-relaxed mb-4">
-                            ${m.desc}
-                        </p>
-
-                        <!-- Capability Metrics Grid -->
-                        <div class="grid grid-cols-2 gap-x-4 gap-y-2 mb-4 bg-gray-950/40 p-3 rounded-lg border border-gray-900 text-[11px]">
-                            <!-- Metric 1: Intelligence -->
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-gray-400">
-                                    <span>🧠 综合智力</span>
-                                    <span class="font-bold text-gray-200">${m.intelligence}</span>
-                                </div>
-                                <div class="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-brand-500" style="width: ${m.intelligence}%"></div>
-                                </div>
-                            </div>
-                            <!-- Metric 2: Speed -->
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-gray-400">
-                                    <span>⚡ 生成速度</span>
-                                    <span class="font-bold text-emerald-400">${m.speed} tps</span>
-                                </div>
-                                <div class="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-emerald-500" style="width: ${(m.speed/180)*100}%"></div>
-                                </div>
-                            </div>
-                            <!-- Metric 3: Reasoning -->
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-gray-400">
-                                    <span>🧩 推理深度</span>
-                                    <span class="font-bold text-purple-400">${m.reasoningScore}</span>
-                                </div>
-                                <div class="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-purple-500" style="width: ${m.reasoningScore}%"></div>
-                                </div>
-                            </div>
-                            <!-- Metric 4: Coding -->
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-gray-400">
-                                    <span>💻 代码能力</span>
-                                    <span class="font-bold text-amber-400">${m.codingScore}</span>
-                                </div>
-                                <div class="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-amber-500" style="width: ${m.codingScore}%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pricing Table inside Card -->
-                    <div class="bg-gray-950/60 rounded-lg p-3 border border-gray-800/60 text-xs">
-                        <div class="grid grid-cols-3 gap-2 text-center text-[10px] text-gray-500 pb-1.5 border-b border-gray-800/80 font-bold">
-                            <div>标准输入 (1M)</div>
-                            <div>缓存输入 (1M)</div>
-                            <div>标准输出 (1M)</div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 text-center font-mono font-bold pt-1.5">
-                            <div class="text-gray-300">${symbol}${m.costs.normalInputUnit.toFixed(2)}</div>
-                            <div class="text-amber-400">${m.cacheDiscount > 0 ? symbol + cachedInputFormatted : '不提供'}</div>
-                            <div class="text-emerald-400">${symbol}${m.costs.normalOutputUnit.toFixed(2)}</div>
-                        </div>
-                    </div>
-                `;
-                cardsContainer.appendChild(card);
+                }
             });
         }
 
-        // Scroll helper to focus and blink targeted card
-        function scrollToDetail(modelId) {
-            const card = document.getElementById(`card-${modelId}`);
-            if (card) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Focus flash anim
-                card.classList.remove('border-gray-800/80');
-                card.classList.add('border-brand-500', 'ring-2', 'ring-brand-500/30', 'bg-brand-500/5');
-                setTimeout(() => {
-                    card.classList.remove('border-brand-500', 'ring-2', 'ring-brand-500/30', 'bg-brand-500/5');
-                    card.classList.add('border-gray-800/80');
-                }, 1500);
+        // 初始化
+        function initApp() {
+            // 加载本地存储的主题
+            const storedTheme = localStorage.getItem('api_board_theme');
+            if (storedTheme) {
+                try {
+                    const t = JSON.parse(storedTheme);
+                    setTheme(t.name, t.primary, t.hover);
+                } catch(e) {}
+            } else {
+                setTheme('blue', '#3b82f6', '#2563eb');
+            }
+
+            renderProviderTabs();
+            renderData();
+        }
+
+        // 渲染厂商过滤Tab
+        function renderProviderTabs() {
+            const container = document.getElementById('provider-tabs');
+            container.innerHTML = providers.map(p => {
+                const isActive = p === selectedProvider;
+                const activeClass = isActive 
+                    ? 'border-theme text-theme font-bold' 
+                    : 'border-transparent text-slate-400 hover:text-white';
+                return `
+                    <button onclick="setProvider('${p}')" class="px-4 py-2 border-b-2 text-xs transition-all ${activeClass}">
+                        ${p === 'ALL' ? '全部厂商' : p}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // 过滤厂商
+        function setProvider(p) {
+            selectedProvider = p;
+            renderProviderTabs();
+            renderData();
+        }
+
+        // 搜索处理
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+            renderData();
+        }
+
+        // 切换币种
+        function setCurrency(currency) {
+            currentCurrency = currency;
+            
+            // 切换按钮高亮
+            document.getElementById('btn-cny').className = currency === 'CNY'
+                ? 'px-3 py-1.5 text-[11px] font-bold rounded-md btn-active-theme transition-all'
+                : 'px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-400 hover:text-white transition-all';
+            
+            document.getElementById('btn-usd').className = currency === 'USD'
+                ? 'px-3 py-1.5 text-[11px] font-bold rounded-md btn-active-theme transition-all'
+                : 'px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-400 hover:text-white transition-all';
+
+            renderData();
+        }
+
+        // 价格格式化
+        function formatPrice(valUSD, decimals = 2) {
+            const val = currentCurrency === 'CNY' ? valUSD * exchangeRate : valUSD;
+            const symbol = currentCurrency === 'CNY' ? '¥' : '$';
+            return `${symbol}${val.toFixed(decimals)}`;
+        }
+
+        // 核心渲染逻辑
+        function renderData() {
+            // 过滤数据
+            const filtered = apiModels.filter(m => {
+                const providerMatch = selectedProvider === 'ALL' || m.provider === selectedProvider;
+                const searchMatch = m.name.toLowerCase().includes(searchQuery) || m.notes.toLowerCase().includes(searchQuery);
+                return providerMatch && searchMatch;
+            });
+
+            // 1. 桌面端表格渲染
+            const tbody = document.getElementById('table-rows');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-slate-500">未找到相关大模型价格信息</td></tr>`;
+            } else {
+                tbody.innerHTML = filtered.map(m => `
+                    <tr class="hover:bg-slate-900/40 transition-colors">
+                        <td class="py-4 px-6 font-bold text-white">${m.name}</td>
+                        <td class="py-4 px-6"><span class="rounded bg-slate-900 border border-slate-800 px-2 py-0.5 text-[10px] text-slate-400">${m.provider}</span></td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200 font-semibold">${formatPrice(m.inputUSD, 3)}</td>
+                        <td class="py-4 px-6 text-right font-mono text-amber-500/90 font-semibold">${formatPrice(m.cachedInputUSD, 4)}</td>
+                        <td class="py-4 px-6 text-right font-mono text-emerald-500/90 font-semibold">${formatPrice(m.outputUSD, 3)}</td>
+                        <td class="py-4 px-6 font-mono text-slate-400">${m.context}</td>
+                        <td class="py-4 px-6 text-slate-400 max-w-xs truncate" title="${m.notes}">${m.notes}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // 2. 移动端卡片渲染
+            const cardList = document.getElementById('card-list');
+            if (filtered.length === 0) {
+                cardList.innerHTML = `<div class="py-8 text-center text-slate-500 text-xs">未找到相关大模型价格信息</div>`;
+            } else {
+                cardList.innerHTML = filtered.map(m => `
+                    <div class="rounded-xl border border-slate-850 bg-slate-900/30 p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-sm text-white">${m.name}</h3>
+                            <span class="rounded bg-slate-950 border border-slate-800 px-2 py-0.5 text-[9px] text-slate-400">${m.provider}</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center text-[10px] bg-slate-950/40 p-2.5 rounded-lg border border-slate-850/50">
+                            <div>
+                                <span class="block text-slate-500">输入价格 / 1M</span>
+                                <span class="font-mono font-bold text-slate-200 mt-0.5 block">${formatPrice(m.inputUSD, 3)}</span>
+                            </div>
+                            <div>
+                                <span class="block text-amber-500/80">缓存命中 / 1M</span>
+                                <span class="font-mono font-bold text-amber-400 mt-0.5 block">${formatPrice(m.cachedInputUSD, 3)}</span>
+                            </div>
+                            <div>
+                                <span class="block text-emerald-500/80">输出价格 / 1M</span>
+                                <span class="font-mono font-bold text-emerald-400 mt-0.5 block">${formatPrice(m.outputUSD, 3)}</span>
+                            </div>
+                        </div>
+                        <div class="text-[11px] text-slate-400 leading-relaxed pt-1">
+                            备注: ${m.notes}
+                        </div>
+                        <div class="text-[10px] text-slate-500 font-mono">
+                            上下文: ${m.context}
+                        </div>
+                    </div>
+                `).join('');
             }
         }
 
-        // Trigger initial dashboard rendering on page load
+        // 加载运行
         window.addEventListener('DOMContentLoaded', () => {
-            renderDashboard();
+            initApp();
         });
     </script>
 </body>
