@@ -46,25 +46,58 @@
         }
         /* 简约商务表格滚动条 */
         ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
         }
         .dark ::-webkit-scrollbar-thumb {
-            background: #1E293B;
-            border-radius: 2px;
+            background: #334155;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb {
             background: #CBD5E1;
-            border-radius: 2px;
+            border-radius: 3px;
+        }
+        /* 暗黑科技感氛围光 */
+        .dark .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.07) 0%, rgba(99, 102, 241, 0.04) 50%, rgba(0, 0, 0, 0) 100%);
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+        /* 磨砂玻璃质感 */
+        .glass-panel {
+            backdrop-filter: blur(12px) saturate(180%);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-panel {
+            backdrop-filter: blur(12px) saturate(180%);
+            background-color: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(30, 41, 59, 0.6);
+        }
+        /* 微动交互 */
+        .hover-scale {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-scale:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.08), 0 8px 10px -6px rgba(59, 130, 246, 0.08);
         }
     </style>
 </head>
-<body class="min-h-screen bg-[#F8FAFC] text-slate-800 dark:bg-[#0B0F19] dark:text-slate-100 antialiased py-10 px-4 md:px-8 transition-colors duration-200">
+<body class="min-h-screen bg-[#F8FAFC] text-slate-800 dark:bg-[#0B0F19] dark:text-slate-100 antialiased py-10 px-4 md:px-8 transition-colors duration-200 relative overflow-x-hidden">
+    <div class="ambient-glow"></div>
 
-    <div class="mx-auto max-w-6xl">
+    <div class="mx-auto max-w-6xl relative z-10">
         <!-- 商务极简头部 -->
         <header class="mb-10 flex flex-col md:flex-row md:items-end md:justify-between border-b border-slate-200 dark:border-slate-800/80 pb-6 gap-6">
             <div class="space-y-1.5">
@@ -94,44 +127,53 @@
                     汇率假设: <span class="font-mono font-bold text-slate-850 dark:text-slate-200">1 USD = 7.25 CNY</span>
                 </div>
                 <div class="rounded-full border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50 px-3 py-1.5 text-slate-500 dark:text-slate-400 shadow-sm">
-                    数据更新时间: <span class="font-mono font-bold text-slate-850 dark:text-slate-200">2026-05-26</span>
+                    数据更新时间: <span class="font-mono font-bold text-slate-850 dark:text-slate-200">2026-05-29</span>
                 </div>
             </div>
         </header>
 
-        <!-- 工具栏：过滤、搜索与币种切换 -->
-        <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <!-- 厂商过滤 Tab -->
-            <div id="provider-tabs" class="flex flex-wrap gap-1 border-b border-slate-200 dark:border-slate-800/40 pb-2 sm:pb-0 sm:border-0">
-                <!-- 动态渲染 -->
+        <!-- 新增模型类别切换 + 工具栏组合 -->
+        <div class="mb-6 flex flex-col gap-4">
+            <!-- 类别大 Tab (胶囊式，带微发光与轻量毛玻璃) -->
+            <div class="flex p-0.5 bg-slate-200/30 dark:bg-slate-900/60 rounded-xl border border-slate-200/60 dark:border-slate-800/50 w-full md:w-fit shrink-0 gap-0.5 text-xs self-start glass-panel">
+                <button id="cat-ALL" onclick="setCategory('ALL')" class="px-4 py-2 font-bold rounded-lg transition-all cursor-pointer">全部类型</button>
+                <button id="cat-text" onclick="setCategory('text')" class="px-4 py-2 font-semibold rounded-lg text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-white transition-all cursor-pointer">文本大模型</button>
+                <button id="cat-image" onclick="setCategory('image')" class="px-4 py-2 font-semibold rounded-lg text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-white transition-all cursor-pointer">图像与多模态</button>
             </div>
 
-            <!-- 搜索与币种切换 -->
-            <div class="flex items-center gap-3 w-full sm:w-auto shrink-0">
-                <input id="search-input" type="text" oninput="handleSearch()" placeholder="搜索模型名称..." class="w-full sm:w-60 rounded-lg border border-slate-200 bg-white text-slate-800 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-200 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-650 focus:border-blue-500 dark:focus:border-blue-500 shadow-sm transition-all text-xs px-3 py-2">
-                
-                <div class="flex overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 p-0.5 shrink-0 shadow-sm">
-                    <button id="btn-cny" onclick="setCurrency('CNY')" class="px-3 py-1.5 text-[11px] font-bold rounded-md transition-all">CNY (¥)</button>
-                    <button id="btn-usd" onclick="setCurrency('USD')" class="px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">USD ($)</button>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <!-- 厂商过滤 Tab -->
+                <div id="provider-tabs" class="flex flex-wrap gap-1 border-b border-slate-200 dark:border-slate-800/40 pb-2 sm:pb-0 sm:border-0">
+                    <!-- 动态渲染 -->
+                </div>
+
+                <!-- 搜索与币种切换 -->
+                <div class="flex items-center gap-3 w-full sm:w-auto shrink-0">
+                    <input id="search-input" type="text" oninput="handleSearch()" placeholder="搜索模型名称或备注..." class="w-full sm:w-60 rounded-lg border border-slate-200 bg-white text-slate-800 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-200 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-650 focus:border-blue-500 dark:focus:border-blue-500 shadow-sm transition-all text-xs px-3 py-2">
+                    
+                    <div class="flex overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 p-0.5 shrink-0 shadow-sm">
+                        <button id="btn-cny" onclick="setCurrency('CNY')" class="px-3 py-1.5 text-[11px] font-bold rounded-md transition-all cursor-pointer">CNY (¥)</button>
+                        <button id="btn-usd" onclick="setCurrency('USD')" class="px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer">USD ($)</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- 主价格表格 (桌面端) -->
-        <div class="hidden md:block overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/20 shadow-sm dark:shadow-xl dark:shadow-black/10">
+        <div class="hidden md:block overflow-hidden rounded-xl glass-panel shadow-sm dark:shadow-2xl transition-all duration-300">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/30 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                    <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
                         <th class="py-4 px-6 font-bold">模型名称</th>
                         <th class="py-4 px-6 font-bold">厂商</th>
-                        <th class="py-4 px-6 text-right font-bold">标准输入单价 / 1M</th>
-                        <th class="py-4 px-6 text-right font-bold text-amber-600 dark:text-amber-500/80">缓存输入单价 / 1M</th>
-                        <th class="py-4 px-6 text-right font-bold text-emerald-600 dark:text-emerald-500/80">标准输出单价 / 1M</th>
-                        <th class="py-4 px-6 font-bold">上下文窗口</th>
+                        <th class="py-4 px-6 text-right font-bold">标准输入 / 生成单价</th>
+                        <th class="py-4 px-6 text-right font-bold text-amber-650 dark:text-amber-500/80">缓存输入 / 批量单价</th>
+                        <th class="py-4 px-6 text-right font-bold text-emerald-650 dark:text-emerald-500/80">标准输出单价</th>
+                        <th class="py-4 px-6 font-bold">上下文 / 尺寸</th>
                         <th class="py-4 px-6 font-bold">特点与备注</th>
                     </tr>
                 </thead>
-                <tbody id="table-rows" class="divide-y divide-slate-150 dark:divide-slate-800/40 text-xs text-slate-700 dark:text-slate-300">
+                <tbody id="table-rows" class="divide-y divide-slate-150 dark:divide-slate-800/40 text-xs text-slate-750 dark:text-slate-300">
                     <!-- 动态渲染 -->
                 </tbody>
             </table>
@@ -152,9 +194,32 @@
     <script>
         const apiModels = [
             {
+                id: 'claude-opus-48-std',
+                name: 'Claude Opus 4.8 (Standard)',
+                provider: 'Anthropic',
+                type: 'text',
+                inputUSD: 5.00,
+                cachedInputUSD: 0.50,
+                outputUSD: 25.00,
+                context: '1M (1,000K)',
+                notes: '2026年5月底最新发布，智能与复杂逻辑推理的新巅峰，大幅提升长上下文代码生成。'
+            },
+            {
+                id: 'claude-opus-48-fast',
+                name: 'Claude Opus 4.8 (Fast Mode)',
+                provider: 'Anthropic',
+                type: 'text',
+                inputUSD: 10.00,
+                cachedInputUSD: 1.00,
+                outputUSD: 50.00,
+                context: '1M (1,000K)',
+                notes: 'Claude Opus 4.8 高速模式，极速响应，适合对时延敏感的复杂生产级应用。'
+            },
+            {
                 id: 'deepseek-v4-pro',
                 name: 'DeepSeek V4 Pro',
                 provider: 'DeepSeek',
+                type: 'text',
                 inputUSD: 0.435,
                 cachedInputUSD: 0.003625,
                 outputUSD: 0.87,
@@ -165,6 +230,7 @@
                 id: 'deepseek-v4-flash',
                 name: 'DeepSeek V4 Flash',
                 provider: 'DeepSeek',
+                type: 'text',
                 inputUSD: 0.14,
                 cachedInputUSD: 0.0028,
                 outputUSD: 0.28,
@@ -175,6 +241,7 @@
                 id: 'claude-sonnet-46',
                 name: 'Claude Sonnet 4.6',
                 provider: 'Anthropic',
+                type: 'text',
                 inputUSD: 3.00,
                 cachedInputUSD: 0.30,
                 outputUSD: 15.00,
@@ -182,19 +249,10 @@
                 notes: '全球编码与复杂逻辑推理的黄金准线模型。'
             },
             {
-                id: 'claude-opus-47',
-                name: 'Claude Opus 4.7',
-                provider: 'Anthropic',
-                inputUSD: 5.00,
-                cachedInputUSD: 0.50,
-                outputUSD: 25.00,
-                context: '1M (1,000K)',
-                notes: '智能脑力峰值模型，处理极端严苛学术与架构设计。'
-            },
-            {
                 id: 'gpt-55',
                 name: 'GPT-5.5 (OpenAI Flagship)',
                 provider: 'OpenAI',
+                type: 'text',
                 inputUSD: 5.00,
                 cachedInputUSD: 0.50,
                 outputUSD: 30.00,
@@ -205,6 +263,7 @@
                 id: 'gpt-54',
                 name: 'GPT-5.4',
                 provider: 'OpenAI',
+                type: 'text',
                 inputUSD: 2.50,
                 cachedInputUSD: 0.25,
                 outputUSD: 15.00,
@@ -215,6 +274,7 @@
                 id: 'gpt-54-mini',
                 name: 'GPT-5.4 mini',
                 provider: 'OpenAI',
+                type: 'text',
                 inputUSD: 0.75,
                 cachedInputUSD: 0.075,
                 outputUSD: 4.50,
@@ -225,6 +285,7 @@
                 id: 'gemini-35-flash',
                 name: 'Gemini 3.5 Flash',
                 provider: 'Google',
+                type: 'text',
                 inputUSD: 1.50,
                 cachedInputUSD: 0.15,
                 outputUSD: 9.00,
@@ -235,6 +296,7 @@
                 id: 'gemini-31-pro-preview',
                 name: 'Gemini 3.1 Pro Preview',
                 provider: 'Google',
+                type: 'text',
                 inputUSD: 2.00,
                 cachedInputUSD: 0.20,
                 outputUSD: 12.00,
@@ -245,6 +307,7 @@
                 id: 'gemini-31-flash-lite',
                 name: 'Gemini 3.1 Flash-Lite',
                 provider: 'Google',
+                type: 'text',
                 inputUSD: 0.25,
                 cachedInputUSD: 0.025,
                 outputUSD: 1.50,
@@ -252,9 +315,32 @@
                 notes: '极低单价的超轻量多模态小模型，适合海量短信息预过滤。'
             },
             {
+                id: 'gpt-image-2',
+                name: 'GPT-Image-2 (Flagship)',
+                provider: 'OpenAI',
+                type: 'image',
+                inputUSD: 0.005,
+                cachedInputUSD: 0.041,
+                outputUSD: 0.165,
+                context: '自适应尺寸',
+                notes: '2026年4月底最新发布。OpenAI 图像生成旗舰，支持低/中/高三档画质选择，单价为 $0.005 至 $0.165/张。'
+            },
+            {
+                id: 'gpt-image-15',
+                name: 'GPT-Image-1.5',
+                provider: 'OpenAI',
+                type: 'image',
+                inputUSD: 0.009,
+                cachedInputUSD: null,
+                outputUSD: 0.20,
+                context: '按张计费',
+                notes: 'OpenAI 前代图像生成旗舰，支持低/高画质选择，单价为 $0.009 至 $0.20/张。'
+            },
+            {
                 id: 'kimi-k26',
                 name: 'Kimi K2.6',
                 provider: 'Moonshot AI',
+                type: 'text',
                 inputUSD: 0.95,
                 cachedInputUSD: 0.16,
                 outputUSD: 4.00,
@@ -265,6 +351,7 @@
                 id: 'glm-51',
                 name: 'GLM-5.1',
                 provider: 'Z.AI (智谱)',
+                type: 'text',
                 inputUSD: 1.40,
                 cachedInputUSD: 0.26,
                 outputUSD: 4.40,
@@ -277,10 +364,16 @@
         let currentCurrency = 'CNY';
         const exchangeRate = 7.25;
         let selectedProvider = 'ALL';
+        let currentCategory = 'ALL';
         let searchQuery = '';
 
-        // 提取所有唯一厂商用于生成分类Tab
-        const providers = ['ALL', ...new Set(apiModels.map(m => m.provider))];
+        // 动态提取当前类别下的唯一厂商
+        function getProvidersForCurrentCategory() {
+            const filteredModels = currentCategory === 'ALL' 
+                ? apiModels 
+                : apiModels.filter(m => m.type === currentCategory);
+            return ['ALL', ...new Set(filteredModels.map(m => m.provider))];
+        }
 
         // 深浅色模式切换
         function toggleThemeMode() {
@@ -298,6 +391,7 @@
                 lightIcon.classList.add('hidden');
             } else {
                 darkIcon.classList.add('hidden');
+                lightIcon.classList.add('hidden'); // Fixed: hide both then toggle
                 lightIcon.classList.remove('hidden');
             }
         }
@@ -309,7 +403,6 @@
 
         // 初始化
         function initApp() {
-            // 加载本地深浅色设置，如果没有则使用系统首选项
             const savedMode = localStorage.getItem('theme_mode');
             let isDark;
             if (savedMode) {
@@ -325,7 +418,6 @@
             }
             updateThemeIcon(isDark);
 
-            // 监听系统主题变化
             if (window.matchMedia) {
                 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
                     if (!localStorage.getItem('theme_mode')) {
@@ -340,24 +432,49 @@
                 });
             }
 
-            renderProviderTabs();
-            setCurrency(currentCurrency); // 自动应用币种高亮
+            setCategory('ALL');
+            setCurrency(currentCurrency);
         }
 
         // 渲染厂商过滤Tab
         function renderProviderTabs() {
             const container = document.getElementById('provider-tabs');
-            container.innerHTML = providers.map(p => {
+            const availableProviders = getProvidersForCurrentCategory();
+            container.innerHTML = availableProviders.map(p => {
                 const isActive = p === selectedProvider;
                 const activeClass = isActive 
                     ? 'border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500 font-bold' 
                     : 'border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white';
                 return `
-                    <button onclick="setProvider('${p}')" class="px-4 py-2 border-b-2 text-xs transition-all ${activeClass}">
+                    <button onclick="setProvider('${p}')" class="px-4 py-2 border-b-2 text-xs transition-all cursor-pointer ${activeClass}">
                         ${p === 'ALL' ? '全部厂商' : p}
                     </button>
                 `;
             }).join('');
+        }
+
+        // 切换模型分类
+        function setCategory(category) {
+            currentCategory = category;
+            
+            const cats = ['ALL', 'text', 'image'];
+            cats.forEach(c => {
+                const btn = document.getElementById(`cat-${c}`);
+                if (btn) {
+                    if (c === category) {
+                        btn.className = 'px-4 py-2 font-bold rounded-lg bg-blue-600 text-white shadow-sm transition-all cursor-pointer';
+                    } else {
+                        btn.className = 'px-4 py-2 font-semibold rounded-lg text-slate-500 hover:text-slate-850 dark:text-slate-400 dark:hover:text-white transition-all cursor-pointer';
+                    }
+                }
+            });
+
+            const availableProviders = getProvidersForCurrentCategory();
+            if (!availableProviders.includes(selectedProvider)) {
+                selectedProvider = 'ALL';
+            }
+            renderProviderTabs();
+            renderData();
         }
 
         // 过滤厂商
@@ -377,32 +494,42 @@
         function setCurrency(currency) {
             currentCurrency = currency;
             
-            // 切换按钮高亮 (经典蓝商务风)
             document.getElementById('btn-cny').className = currency === 'CNY'
-                ? 'px-3 py-1.5 text-[11px] font-bold rounded-md bg-blue-600 text-white shadow-md shadow-blue-900/10 dark:shadow-blue-900/30 transition-all'
-                : 'px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all';
+                ? 'px-3 py-1.5 text-[11px] font-bold rounded-md bg-blue-600 text-white shadow-md shadow-blue-900/10 dark:shadow-blue-900/30 transition-all cursor-pointer'
+                : 'px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
             
             document.getElementById('btn-usd').className = currency === 'USD'
-                ? 'px-3 py-1.5 text-[11px] font-bold rounded-md bg-blue-600 text-white shadow-md shadow-blue-900/10 dark:shadow-blue-900/30 transition-all'
-                : 'px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all';
+                ? 'px-3 py-1.5 text-[11px] font-bold rounded-md bg-blue-600 text-white shadow-md shadow-blue-900/10 dark:shadow-blue-900/30 transition-all cursor-pointer'
+                : 'px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
 
             renderData();
         }
 
-        // 价格格式化
-        function formatPrice(valUSD, decimals = 2) {
+        // 价格自适应单元格渲染
+        function renderPriceCell(valUSD, type, colType, model) {
+            if (valUSD === null || valUSD === undefined) {
+                if (type === 'image' && colType === 'output') {
+                    return `<span class="text-slate-450 dark:text-slate-500 font-medium">按张计费</span>`;
+                }
+                return '<span class="text-slate-400 dark:text-slate-650">-</span>';
+            }
+
             const val = currentCurrency === 'CNY' ? valUSD * exchangeRate : valUSD;
             const symbol = currentCurrency === 'CNY' ? '¥' : '$';
-            return `${symbol}${val.toFixed(decimals)}`;
+            
+            let decimals = (val < 0.01) ? 4 : (val < 0.1) ? 3 : 2;
+            let unit = (type === 'text') ? '<span class="text-[10px] text-slate-400 dark:text-slate-500 font-normal"> / 1M</span>' : '<span class="text-[10px] text-slate-400 dark:text-slate-500 font-normal"> / 张</span>';
+
+            return `<span class="font-mono font-bold">${symbol}${val.toFixed(decimals)}</span>${unit}`;
         }
 
         // 核心渲染逻辑
         function renderData() {
-            // 过滤数据
             const filtered = apiModels.filter(m => {
+                const categoryMatch = currentCategory === 'ALL' || m.type === currentCategory;
                 const providerMatch = selectedProvider === 'ALL' || m.provider === selectedProvider;
-                const searchMatch = m.name.toLowerCase().includes(searchQuery) || m.notes.toLowerCase().includes(searchQuery);
-                return providerMatch && searchMatch;
+                const searchMatch = m.name.toLowerCase().includes(searchQuery) || m.notes.toLowerCase().includes(searchQuery) || m.provider.toLowerCase().includes(searchQuery);
+                return categoryMatch && providerMatch && searchMatch;
             });
 
             // 1. 桌面端表格渲染
@@ -410,17 +537,23 @@
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-slate-450 dark:text-slate-500">未找到相关大模型价格信息</td></tr>`;
             } else {
-                tbody.innerHTML = filtered.map(m => `
-                    <tr class="hover:bg-slate-100/50 dark:hover:bg-slate-900/40 transition-colors">
-                        <td class="py-4 px-6 font-bold text-slate-900 dark:text-white">${m.name}</td>
-                        <td class="py-4 px-6"><span class="rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-850 px-2 py-0.5 text-[10px] text-slate-500 dark:text-slate-400 font-semibold">${m.provider}</span></td>
-                        <td class="py-4 px-6 text-right font-mono text-slate-800 dark:text-slate-200 font-semibold">${formatPrice(m.inputUSD, 3)}</td>
-                        <td class="py-4 px-6 text-right font-mono text-amber-600 dark:text-amber-500/90 font-semibold">${formatPrice(m.cachedInputUSD, 4)}</td>
-                        <td class="py-4 px-6 text-right font-mono text-emerald-600 dark:text-emerald-500/90 font-semibold">${formatPrice(m.outputUSD, 3)}</td>
+                tbody.innerHTML = filtered.map(m => {
+                    return `
+                    <tr class="hover:bg-slate-100/50 dark:hover:bg-slate-900/30 transition-colors">
+                        <td class="py-4 px-6 text-slate-900 dark:text-white">
+                            <span class="font-bold">${m.name}</span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2 py-0.5 text-[10px] text-slate-500 dark:text-slate-400 font-semibold">${m.provider}</span>
+                        </td>
+                        <td class="py-4 px-6 text-right text-slate-850 dark:text-slate-200">${renderPriceCell(m.inputUSD, m.type, 'input', m)}</td>
+                        <td class="py-4 px-6 text-right text-amber-600 dark:text-amber-500/90">${renderPriceCell(m.cachedInputUSD, m.type, 'cached', m)}</td>
+                        <td class="py-4 px-6 text-right text-emerald-600 dark:text-emerald-500/90">${renderPriceCell(m.outputUSD, m.type, 'output', m)}</td>
                         <td class="py-4 px-6 font-mono text-slate-550 dark:text-slate-400">${m.context}</td>
-                        <td class="py-4 px-6 text-slate-500 dark:text-slate-400 max-w-xs truncate" title="${m.notes}">${m.notes}</td>
+                        <td class="py-4 px-6 text-slate-500 dark:text-slate-400 max-w-xs whitespace-normal break-words hover:text-slate-850 dark:hover:text-white transition-colors duration-150 cursor-default" title="${m.notes}">${m.notes}</td>
                     </tr>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             // 2. 移动端卡片渲染
@@ -428,34 +561,41 @@
             if (filtered.length === 0) {
                 cardList.innerHTML = `<div class="py-8 text-center text-slate-500 text-xs">未找到相关大模型价格信息</div>`;
             } else {
-                cardList.innerHTML = filtered.map(m => `
-                    <div class="rounded-xl border border-slate-200 bg-white dark:border-slate-850 dark:bg-slate-900/30 p-4 space-y-3 shadow-sm dark:shadow-none">
-                        <div class="flex items-center justify-between">
+                cardList.innerHTML = filtered.map(m => {
+                    const inputPrice = renderPriceCell(m.inputUSD, m.type, 'input', m);
+                    const cachedPrice = renderPriceCell(m.cachedInputUSD, m.type, 'cached', m);
+                    const outputPrice = renderPriceCell(m.outputUSD, m.type, 'output', m);
+                    
+                    return `
+                    <div class="rounded-xl glass-panel p-4 space-y-3 shadow-sm hover-scale">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
                             <h3 class="font-bold text-sm text-slate-900 dark:text-white">${m.name}</h3>
-                            <span class="rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 px-2 py-0.5 text-[9px] text-slate-500 dark:text-slate-400 font-semibold">${m.provider}</span>
+                            <span class="rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2 py-0.5 text-[9px] text-slate-500 dark:text-slate-400 font-semibold">${m.provider}</span>
                         </div>
-                        <div class="grid grid-cols-3 gap-2 text-center text-[10px] bg-slate-50 dark:bg-slate-950/40 p-2.5 rounded-lg border border-slate-200 dark:border-slate-850/50">
+                        <div class="grid grid-cols-3 gap-2 text-center text-[10px] bg-slate-50/50 dark:bg-slate-950/40 p-2.5 rounded-lg border border-slate-200/50 dark:border-slate-850/50">
                             <div>
-                                <span class="block text-slate-400 dark:text-slate-500">输入价格 / 1M</span>
-                                <span class="font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5 block">${formatPrice(m.inputUSD, 3)}</span>
+                                <span class="block text-slate-400 dark:text-slate-500">输入 / 生成</span>
+                                <span class="font-bold text-slate-800 dark:text-slate-200 mt-1 block">${inputPrice}</span>
                             </div>
                             <div>
-                                <span class="block text-amber-600 dark:text-amber-500/80">缓存命中 / 1M</span>
-                                <span class="font-mono font-bold text-amber-600 dark:text-amber-400 mt-0.5 block">${formatPrice(m.cachedInputUSD, 3)}</span>
+                                <span class="block text-amber-600 dark:text-amber-500/80">缓存 / 批量</span>
+                                <span class="font-bold text-amber-600 dark:text-amber-450 mt-1 block">${cachedPrice}</span>
                             </div>
                             <div>
-                                <span class="block text-emerald-600 dark:text-emerald-500/80">输出价格 / 1M</span>
-                                <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 block">${formatPrice(m.outputUSD, 3)}</span>
+                                <span class="block text-emerald-600 dark:text-emerald-500/80">标准输出</span>
+                                <span class="font-bold text-emerald-600 dark:text-emerald-450 mt-1 block">${outputPrice}</span>
                             </div>
                         </div>
                         <div class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pt-1">
                             备注: ${m.notes}
                         </div>
-                        <div class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-                            上下文: ${m.context}
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800/60 font-mono">
+                            <span>类型: ${m.type === 'text' ? '文本大模型' : '图像与多模态'}</span>
+                            <span>窗口/尺寸: ${m.context}</span>
                         </div>
                     </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
 
