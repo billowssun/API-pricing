@@ -37,6 +37,8 @@
         ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 2px; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; }
         .price-num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="min-h-screen bg-[#F1F5F9] dark:bg-[#020617] text-slate-800 dark:text-slate-100 antialiased transition-colors duration-300">
@@ -54,12 +56,12 @@
             </div>
 
             <div class="flex items-center gap-2 shrink-0">
-                <div id="rate-badge" class="flex items-center gap-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 px-2.5 py-1.5 text-[11px]">
+                <div id="rate-badge" class="hidden sm:flex items-center gap-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 px-2.5 py-1.5 text-[11px]">
                     <span class="text-slate-400 dark:text-slate-500">USD/CNY</span>
                     <span id="rate-value" class="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">—</span>
                     <span id="rate-dot" class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
                 </div>
-                <div class="rounded-full border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50 px-2.5 py-1 text-[11px] text-slate-500 dark:text-slate-400">
+                <div class="hidden md:block rounded-full border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50 px-2.5 py-1 text-[11px] text-slate-500 dark:text-slate-400">
                     数据 <span id="update-time" class="font-mono font-bold text-slate-850 dark:text-slate-200 text-xs">加载中</span>
                 </div>
                 <div class="flex overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-900 p-0.5">
@@ -77,21 +79,21 @@
     <main class="mx-auto max-w-7xl px-4 md:px-8 py-5">
         <!-- 工具栏 -->
         <div class="mb-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <div class="flex flex-wrap gap-1.5">
+            <div class="flex flex-wrap gap-1.5 w-full sm:w-auto shrink-0">
                 <button id="cat-ALL" onclick="setCategory('ALL')" class="px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer">全部</button>
                 <button id="cat-text" onclick="setCategory('text')" class="px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-all cursor-pointer">💬 文本</button>
                 <button id="cat-image" onclick="setCategory('image')" class="px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-all cursor-pointer">🎨 图像</button>
             </div>
-            <div class="flex flex-wrap gap-1.5" id="provider-tabs"></div>
-            <div class="flex items-center gap-2 ml-auto">
-                <select id="sort-select" onchange="setSort(this.value)" class="rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 text-slate-600 dark:text-slate-300 text-[11px] px-2.5 py-1.5 outline-none focus:border-blue-500 transition-all cursor-pointer">
+            <div class="flex overflow-x-auto no-scrollbar gap-1.5 w-full sm:w-auto py-0.5" id="provider-tabs"></div>
+            <div class="flex items-center gap-2 w-full sm:w-auto sm:ml-auto">
+                <select id="sort-select" onchange="setSort(this.value)" class="flex-1 sm:flex-none rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 text-slate-600 dark:text-slate-300 text-[11px] px-2.5 py-1.5 outline-none focus:border-blue-500 transition-all cursor-pointer">
                     <option value="default">默认</option>
                     <option value="input-asc">输入 ↑</option>
                     <option value="input-desc">输入 ↓</option>
                     <option value="output-asc">输出 ↑</option>
                     <option value="output-desc">输出 ↓</option>
                 </select>
-                <input id="search-input" type="text" oninput="handleSearch()" placeholder="搜索…" class="w-28 rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 transition-all text-[11px] px-2.5 py-1.5">
+                <input id="search-input" type="text" oninput="handleSearch()" placeholder="搜索…" class="flex-1 sm:w-28 rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-500 transition-all text-[11px] px-2.5 py-1.5">
             </div>
         </div>
 
@@ -201,7 +203,7 @@
             document.getElementById('provider-tabs').innerHTML = getProviders().map(p => {
                 const a = p === selectedProvider;
                 const cls = a ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700';
-                return `<button onclick="setProvider('${p}')" class="px-3 py-1.5 rounded-lg text-[11px] transition-all cursor-pointer ${cls}">${p === 'ALL' ? '全部厂商' : p}</button>`;
+                return `<button onclick="setProvider('${p}')" class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] transition-all cursor-pointer ${cls}">${p === 'ALL' ? '全部厂商' : p}</button>`;
             }).join('');
         }
         function setCategory(c) {
@@ -232,7 +234,7 @@
             renderData();
         }
 
-        // ── 厂商 Logo（Google S2 Favicon 服务获取各官网真实图标）──
+        // ── 厂商 Logo（多路 Fallback 解决移动端/国内加载失败问题）──
         function getLogoHtml(m) {
             const domain = {
                 'Anthropic': 'www.anthropic.com',
@@ -242,7 +244,11 @@
                 'Moonshot':  'moonshot.cn',
                 '智谱 AI':   'www.bigmodel.cn',
             }[m.provider] || (m.provider.toLowerCase().replace(/\s/g,'') + '.com');
-            return `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" class="w-5 h-5" alt="${m.provider}">`;
+            
+            const letter = m.provider.charAt(0).toUpperCase();
+            const svgUrl = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#e2e8f0"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="bold" fill="#475569">${letter}</text></svg>`);
+            
+            return `<img src="https://api.iowen.cn/favicon/${domain}.png" onerror="this.onerror=null; this.src='https://icons.duckduckgo.com/ip3/${domain}.ico'; this.onerror=function(){this.onerror=null; this.src='${svgUrl}';}" class="w-5 h-5 object-contain" alt="${m.provider}">`;
         }
 
         // ── 渲染卡片 ──
@@ -295,8 +301,8 @@
 
                     const rows = qualities.map((q, qi) => `
                         <tr class="${qBg[qi]}">
-                            <td class="py-1.5 px-2 text-[10px] font-semibold ${qColor[qi]}">${q}</td>
-                            ${sizes.map(sz => `<td class="py-1.5 px-2 text-center text-[10px] font-mono font-bold text-slate-800 dark:text-slate-200">${imgFmt(m.imagePrices[sz][qi])}</td>`).join('')}
+                            <td class="py-1.5 px-2 text-[10px] font-semibold ${qColor[qi]} whitespace-nowrap">${q}</td>
+                            ${sizes.map(sz => `<td class="py-1.5 px-2 text-center text-[10px] font-mono font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">${imgFmt(m.imagePrices[sz][qi])}</td>`).join('')}
                         </tr>`).join('');
 
                     return `
@@ -314,15 +320,17 @@
                                 </div>
                             </div>
                             <h3 class="text-sm font-bold text-slate-900 dark:text-white leading-tight">${m.name} <span class="text-[10px] font-normal text-slate-400">每张图价格</span></h3>
-                            <table class="w-full text-left border-collapse rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800/60 text-[10px]">
-                                <thead>
-                                    <tr class="bg-slate-100 dark:bg-slate-800">
-                                        <th class="py-1.5 px-2 text-slate-400 dark:text-slate-500 font-medium">画质</th>
-                                        ${sizes.map(sz => `<th class="py-1.5 px-2 text-center text-slate-500 dark:text-slate-400 font-medium">${sz}</th>`).join('')}
-                                    </tr>
-                                </thead>
-                                <tbody>${rows}</tbody>
-                            </table>
+                            <div class="w-full overflow-x-auto no-scrollbar">
+                                <table class="w-full min-w-max text-left border-collapse rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800/60 text-[10px]">
+                                    <thead>
+                                        <tr class="bg-slate-100 dark:bg-slate-800">
+                                            <th class="py-1.5 px-2 text-slate-400 dark:text-slate-500 font-medium whitespace-nowrap">画质</th>
+                                            ${sizes.map(sz => `<th class="py-1.5 px-2 text-center text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">${sz}</th>`).join('')}
+                                        </tr>
+                                    </thead>
+                                    <tbody>${rows}</tbody>
+                                </table>
+                            </div>
                             <div class="flex items-start justify-between gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800/40">
                                 <span class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed flex-1 line-clamp-2" title="${m.notes}">${m.notes}</span>
                                 <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded shrink-0">${m.context}</span>
@@ -354,7 +362,7 @@
 
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white leading-tight">${m.name}</h3>
 
-                        <div class="grid grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-950 rounded-xl p-3 border border-slate-100 dark:border-slate-800/60">
+                        <div class="grid grid-cols-3 gap-1 sm:gap-2 bg-slate-50 dark:bg-slate-950 rounded-xl p-2 sm:p-3 border border-slate-100 dark:border-slate-800/60">
                             <div class="text-center">
                                 <span class="block text-[9px] text-slate-400 dark:text-slate-500 mb-1 uppercase tracking-wide">输入</span>
                                 <span class="block text-sm font-extrabold price-num text-slate-800 dark:text-slate-200">${i !== null ? fmt(i) : '—'}</span>
