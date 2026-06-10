@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-10T02:22:36.605Z",
+  "updated": "2026-06-10T07:13:13.491Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -45,6 +45,44 @@
       "lastSeen": "2026-06-10"
     },
     {
+      "id": "anthropic-claude-mythos-5",
+      "name": "Claude Mythos 5",
+      "provider": "Anthropic",
+      "status": "released",
+      "confidence": "high",
+      "expectedWindow": "已上架",
+      "summary": "已被正式模型数据确认上架，保留在雷达中用于迁移提示。",
+      "signals": [
+        "官方来源出现关键词：claude mythos 5",
+        "官方来源出现关键词：claude mythos 5",
+        "官方来源出现关键词：claude mythos 5",
+        "正式价格看板已出现该模型或同名模型"
+      ],
+      "sources": [
+        {
+          "title": "Newsroom \\ Anthropic",
+          "url": "https://www.anthropic.com/news",
+          "type": "official"
+        },
+        {
+          "title": "Models overview - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/docs/about-claude/models/overview",
+          "type": "official"
+        },
+        {
+          "title": "Pricing - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/docs/about-claude/pricing",
+          "type": "official"
+        },
+        {
+          "title": "Claude Platform - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/release-notes/api",
+          "type": "official"
+        }
+      ],
+      "lastSeen": "2026-06-10"
+    },
+    {
       "id": "openai-next-frontier-model",
       "name": "OpenAI 下一代前沿模型",
       "provider": "OpenAI",
@@ -77,44 +115,6 @@
       "lastSeen": "2026-06-10"
     },
     {
-      "id": "anthropic-claude-mythos-5",
-      "name": "Claude Mythos 5",
-      "provider": "Anthropic",
-      "status": "limited-access",
-      "confidence": "high",
-      "expectedWindow": "限量开放 / 正式同步待确认",
-      "summary": "Anthropic 新一代 Claude 5 系列限量访问信号，适合在雷达中追踪，正式价格以官方页面为准。",
-      "signals": [
-        "官方来源出现关键词：claude mythos 5",
-        "官方来源出现关键词：claude mythos 5",
-        "官方来源出现关键词：claude mythos 5",
-        "官方来源出现关键词：claude mythos 5"
-      ],
-      "sources": [
-        {
-          "title": "Newsroom \\ Anthropic",
-          "url": "https://www.anthropic.com/news",
-          "type": "official"
-        },
-        {
-          "title": "Models overview - Claude API Docs",
-          "url": "https://docs.anthropic.com/en/docs/about-claude/models/overview",
-          "type": "official"
-        },
-        {
-          "title": "Pricing - Claude API Docs",
-          "url": "https://docs.anthropic.com/en/docs/about-claude/pricing",
-          "type": "official"
-        },
-        {
-          "title": "Claude Platform - Claude API Docs",
-          "url": "https://docs.anthropic.com/en/release-notes/api",
-          "type": "official"
-        }
-      ],
-      "lastSeen": "2026-06-10"
-    },
-    {
       "id": "low-confidence-social-rumor-sample",
       "name": "未确认社交平台传闻样例",
       "provider": "Unknown",
@@ -136,5 +136,5 @@
       "lastSeen": "2026-06-10"
     }
   ],
-  "visibleCount": 2
+  "visibleCount": 1
 }

@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-10T02:29:33.468Z",
+  "updated": "2026-06-10T07:12:59.743Z",
   "models": [
     {
       "id": "anthropic-claude-fable-5",
@@ -32,6 +32,38 @@
       "output": 25,
       "context": "1M",
       "notes": "最强推理。",
+      "color": "brand-anthropic",
+      "provider": "Anthropic",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
+    },
+    {
+      "id": "anthropic-fable-5",
+      "name": "Fable 5",
+      "tier": "极速",
+      "type": "text",
+      "baseCurrency": "USD",
+      "input": 10,
+      "cachedInput": 1,
+      "output": 50,
+      "context": "200K",
+      "notes": "低时延生产级。",
+      "color": "brand-anthropic",
+      "provider": "Anthropic",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
+    },
+    {
+      "id": "anthropic-mythos-5",
+      "name": "Mythos 5",
+      "tier": "极速",
+      "type": "text",
+      "baseCurrency": "USD",
+      "input": 10,
+      "cachedInput": 1,
+      "output": 50,
+      "context": "200K",
+      "notes": "低时延生产级。",
       "color": "brand-anthropic",
       "provider": "Anthropic",
       "pricingRegion": "global",
