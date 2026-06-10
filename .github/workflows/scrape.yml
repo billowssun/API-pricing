@@ -1,9 +1,10 @@
-name: 每日同步官方定价
+name: 同步官方模型与未来雷达
 
 on:
   schedule:
-    - cron: '0 3 * * *'   # 北京时间 11:00
-  workflow_dispatch:       # 手动触发
+    - cron: '0 * * * *'   # 每小时同步已上架模型
+    - cron: '17 */3 * * *' # 每 3 小时同步未来模型雷达
+  workflow_dispatch:
 
 jobs:
   scrape:
@@ -15,10 +16,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: node scraper.js
+      - name: 同步已上架模型
+        run: node scraper.js
+      - name: 同步未来模型雷达
+        run: node future-scraper.js
       - name: 提交更新
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add pricing.json
-          git diff --staged --quiet || git commit -m "🤖 自动同步官方定价 $(date +%Y-%m-%d)" && git push
+          git add pricing.json future-models.json future-scraper.js
+          git diff --staged --quiet || (git commit -m "🤖 自动同步模型数据 $(date +%Y-%m-%d)" && git push)

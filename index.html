@@ -78,7 +78,15 @@
 
     <main class="mx-auto max-w-7xl px-4 md:px-8 py-5">
         <!-- 工具栏 -->
-        <div class="mb-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-900 p-0.5">
+                <button id="view-live" onclick="setView('live')" class="px-3 py-1.5 text-[12px] font-bold rounded-md transition-all cursor-pointer">已上架模型</button>
+                <button id="view-future" onclick="setView('future')" class="px-3 py-1.5 text-[12px] font-bold rounded-md transition-all cursor-pointer">未来模型</button>
+            </div>
+            <div id="future-updated" class="hidden text-[11px] text-slate-400 dark:text-slate-500">雷达 <span id="future-update-time" class="font-mono font-bold text-slate-600 dark:text-slate-300">--</span></div>
+        </div>
+
+        <div id="live-tools" class="mb-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
             <div class="flex flex-wrap gap-1.5 w-full sm:w-auto shrink-0">
                 <button id="cat-ALL" onclick="setCategory('ALL')" class="px-3.5 py-1.5 rounded-lg text-[12px] font-semibold transition-all cursor-pointer">全部</button>
                 <button id="cat-text" onclick="setCategory('text')" class="px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-all cursor-pointer">💬 文本</button>
@@ -99,20 +107,25 @@
 
         <!-- 卡片网格 -->
         <div id="card-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"></div>
+        <div id="future-grid" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
 
         <div id="empty-state" class="hidden py-16 text-center text-slate-400 text-sm">未找到匹配的模型</div>
 
         <footer class="mt-8 pt-4 border-t border-slate-200/60 dark:border-slate-800/60 text-center text-[10px] text-slate-400 dark:text-slate-500">
-            所有数据来自 docsbot.ai 自动同步。价格均为标准 USD 定价，可一键切换 CNY 显示。
+            国外厂商使用 USD 官方/聚合定价，中国大陆厂商使用官方人民币定价；切换币种仅用于展示换算。
         </footer>
     </main>
 
     <script>
         // ── 内置默认数据（本地打开或 fetch 失败时使用）──
-        const DEFAULT_MODELS = [{"id":"anthropic-opus-4-8","name":"Opus 4.8","tier":"旗舰","type":"text","baseCurrency":"USD","input":5,"cachedInput":0.5,"output":25,"context":"1M","notes":"最强推理。","color":"brand-anthropic","provider":"Anthropic"},{"id":"anthropic-sonnet-4-6","name":"Sonnet 4.6","tier":"中坚","type":"text","baseCurrency":"USD","input":3,"cachedInput":0.30000000000000004,"output":15,"context":"1M","notes":"速度与智能平衡。","color":"brand-anthropic","provider":"Anthropic"},{"id":"anthropic-haiku-4-5","name":"Haiku 4.5","tier":"轻量","type":"text","baseCurrency":"USD","input":1,"cachedInput":0.1,"output":5,"context":"200K","notes":"高吞吐首选。","color":"brand-anthropic","provider":"Anthropic"},{"id":"openai-gpt-5-5","name":"GPT-5.5","tier":"旗舰","type":"text","baseCurrency":"USD","input":5,"cachedInput":0.5,"output":30,"context":"1.05M","notes":"最强推理。","color":"brand-openai","provider":"OpenAI"},{"id":"openai-gpt-5-5-pro","name":"GPT-5.5 Pro","tier":"旗舰","type":"text","baseCurrency":"USD","input":30,"cachedInput":3,"output":180,"context":"1.05M","notes":"最强推理。","color":"brand-openai","provider":"OpenAI"},{"id":"gpt-image-2","name":"GPT-Image-2","provider":"OpenAI","type":"image","tier":"旗舰","baseCurrency":"USD","context":"≤3840px","imagePrices":{"1024²":[0.006,0.053,0.211],"1024×1536":[0.005,0.041,0.165],"1536×1024":[0.005,0.041,0.165]},"notes":"文本提示按 token 另计 ($5/1M)。表格为图像输出 token 折算的单张价格。","color":"brand-openai","cachedInput":null},{"id":"openai-gpt-5-4","name":"GPT-5.4","tier":"中坚","type":"text","baseCurrency":"USD","input":2.5,"cachedInput":0.25,"output":15,"context":"270K","notes":"速度与智能平衡。","color":"brand-openai","provider":"OpenAI"},{"id":"openai-gpt-5-4-mini","name":"GPT-5.4 mini","tier":"轻量","type":"text","baseCurrency":"USD","input":0.75,"cachedInput":0.07500000000000001,"output":4.5,"context":"128K","notes":"高吞吐首选。","color":"brand-openai","provider":"OpenAI"},{"id":"openai-gpt-5-4-nano","name":"GPT-5.4 nano","tier":"超轻","type":"text","baseCurrency":"USD","input":0.2,"cachedInput":0.020000000000000004,"output":1.25,"context":"128K","notes":"极致低价。","color":"brand-openai","provider":"OpenAI"},{"id":"deepseek-deepseek-v4-pro","name":"DeepSeek V4 Pro","tier":"旗舰","type":"text","baseCurrency":"USD","input":1.74,"cachedInput":0.17400000000000002,"output":3.48,"context":"1M","notes":"最强推理。","color":"brand-deepseek","provider":"DeepSeek"},{"id":"deepseek-deepseek-v4-flash","name":"DeepSeek V4 Flash","tier":"轻量","type":"text","baseCurrency":"USD","input":0.14,"cachedInput":0.014000000000000002,"output":0.28,"context":"1M","notes":"高吞吐首选。","color":"brand-deepseek","provider":"DeepSeek"},{"id":"google-gemini-3-pro","name":"Gemini 3 Pro","tier":"旗舰","type":"text","baseCurrency":"USD","input":2,"cachedInput":0.2,"output":12,"context":"128K","notes":"最强推理。","color":"brand-google","provider":"Google"},{"id":"google-gemini-3-flash","name":"Gemini 3 Flash","tier":"轻量","type":"text","baseCurrency":"USD","input":0.5,"cachedInput":0.05,"output":3,"context":"128K","notes":"高吞吐首选。","color":"brand-google","provider":"Google"},{"id":"google-gemini-3-5-flash","name":"Gemini 3.5 Flash","tier":"轻量","type":"text","baseCurrency":"USD","input":0.25,"cachedInput":0.025,"output":1.5,"context":"128K","notes":"高吞吐首选。","color":"brand-google","provider":"Google"},{"id":"google-gemini-3-1-flash-lite","name":"Gemini 3.1 Flash-Lite","tier":"超轻","type":"text","baseCurrency":"USD","input":0.25,"cachedInput":0.025,"output":1.5,"context":"128K","notes":"极致低价。","color":"brand-google","provider":"Google"},{"id":"moonshot-kimi-k2-6","name":"Kimi K2.6","tier":"中坚","type":"text","baseCurrency":"USD","input":0.95,"cachedInput":0.095,"output":4,"context":"256K","notes":"速度与智能平衡。","provider":"Moonshot"},{"id":"ai-glm-5-1","name":"GLM-5.1","tier":"中坚","type":"text","baseCurrency":"USD","input":1.4,"cachedInput":0.13999999999999999,"output":4.4,"context":"200K","notes":"速度与智能平衡。","color":"brand-zhipu","provider":"智谱 AI"}];
+        const DEFAULT_FUTURE_MODELS = [{"id":"anthropic-claude-fable-5","name":"Claude Fable 5","provider":"Anthropic","status":"released","confidence":"high","expectedWindow":"已上架","summary":"已被正式模型数据确认上架，保留在雷达中用于迁移提示。","signals":["官方来源出现关键词：claude fable 5","官方来源出现关键词：claude fable 5","官方来源出现关键词：claude fable 5","正式价格看板已出现该模型或同名模型"],"sources":[{"title":"Newsroom \\ Anthropic","url":"https://www.anthropic.com/news","type":"official"},{"title":"Claude Platform - Claude API Docs","url":"https://docs.anthropic.com/en/release-notes/api","type":"official"},{"title":"Models overview - Claude API Docs","url":"https://docs.anthropic.com/en/docs/about-claude/models/overview","type":"official"},{"title":"Pricing - Claude API Docs","url":"https://docs.anthropic.com/en/docs/about-claude/pricing","type":"official"},{"title":"AI News Artificial Intelligence | TechCrunch","url":"https://techcrunch.com/category/artificial-intelligence/","type":"media"}],"lastSeen":"2026-06-10"},{"id":"openai-next-frontier-model","name":"OpenAI 下一代前沿模型","provider":"OpenAI","status":"announced","confidence":"high","expectedWindow":"未来数月","summary":"可信科技媒体常报道 OpenAI 下一代模型动态；进入正式看板前必须等待官方模型目录或价格页确认。","signals":["官方来源出现关键词：frontier model","官方来源出现关键词：frontier model","官方来源出现关键词：frontier model"],"sources":[{"title":"OpenAI News","url":"https://openai.com/news/","type":"official"},{"title":"The Verge AI","url":"https://www.theverge.com/ai-artificial-intelligence","type":"media"},{"title":"Models | OpenAI API","url":"https://platform.openai.com/docs/models","type":"official"}],"lastSeen":"2026-06-10"},{"id":"anthropic-claude-mythos-5","name":"Claude Mythos 5","provider":"Anthropic","status":"limited-access","confidence":"high","expectedWindow":"限量开放 / 正式同步待确认","summary":"Anthropic 新一代 Claude 5 系列限量访问信号，适合在雷达中追踪，正式价格以官方页面为准。","signals":["官方来源出现关键词：claude mythos 5","官方来源出现关键词：claude mythos 5","官方来源出现关键词：claude mythos 5","官方来源出现关键词：claude mythos 5"],"sources":[{"title":"Newsroom \\ Anthropic","url":"https://www.anthropic.com/news","type":"official"},{"title":"Models overview - Claude API Docs","url":"https://docs.anthropic.com/en/docs/about-claude/models/overview","type":"official"},{"title":"Pricing - Claude API Docs","url":"https://docs.anthropic.com/en/docs/about-claude/pricing","type":"official"},{"title":"Claude Platform - Claude API Docs","url":"https://docs.anthropic.com/en/release-notes/api","type":"official"}],"lastSeen":"2026-06-10"},{"id":"low-confidence-social-rumor-sample","name":"未确认社交平台传闻样例","provider":"Unknown","status":"rumored","confidence":"low","expectedWindow":"未知","summary":"低可信传闻默认不在页面显示，保留在 JSON 中用于验证过滤逻辑。","signals":["只有单一低可信来源","没有官方或可信媒体交叉确认"],"sources":[{"title":"Unverified social rumor","url":"https://example.com/unverified-ai-rumor","type":"social"}],"lastSeen":"2026-06-10"}];
+        const DEFAULT_MODELS = [{"id":"anthropic-claude-fable-5","apiId":"claude-fable-5","name":"Claude Fable 5","tier":"旗舰","type":"text","baseCurrency":"USD","input":10,"cachedInput":1,"output":50,"context":"1M","notes":"Anthropic 官方 API 已上架模型。","color":"brand-anthropic","provider":"Anthropic","pricingRegion":"global","availability":"public","releaseDate":"2026-06-09","source":"https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5","priceStatus":"official"},{"id":"anthropic-opus-4-8","name":"Opus 4.8","tier":"旗舰","type":"text","baseCurrency":"USD","input":5,"cachedInput":0.5,"output":25,"context":"1M","notes":"最强推理。","color":"brand-anthropic","provider":"Anthropic","pricingRegion":"global","source":"docsbot.ai"},{"id":"anthropic-sonnet-4-6","name":"Sonnet 4.6","tier":"中坚","type":"text","baseCurrency":"USD","input":3,"cachedInput":0.3,"output":15,"context":"1M","notes":"速度与智能平衡。","color":"brand-anthropic","provider":"Anthropic","pricingRegion":"global","source":"docsbot.ai"},{"id":"anthropic-haiku-4-5","name":"Haiku 4.5","tier":"轻量","type":"text","baseCurrency":"USD","input":1,"cachedInput":0.1,"output":5,"context":"200K","notes":"高吞吐首选。","color":"brand-anthropic","provider":"Anthropic","pricingRegion":"global","source":"docsbot.ai"},{"id":"openai-gpt-5-5","name":"GPT-5.5","tier":"旗舰","type":"text","baseCurrency":"USD","input":5,"cachedInput":0.5,"output":30,"context":"1.05M","notes":"最强推理。","color":"brand-openai","provider":"OpenAI","pricingRegion":"global","source":"docsbot.ai"},{"id":"openai-gpt-5-5-pro","name":"GPT-5.5 Pro","tier":"旗舰","type":"text","baseCurrency":"USD","input":30,"cachedInput":3,"output":180,"context":"1.05M","notes":"最强推理。","color":"brand-openai","provider":"OpenAI","pricingRegion":"global","source":"docsbot.ai"},{"id":"gpt-image-2","name":"GPT-Image-2","provider":"OpenAI","type":"image","tier":"旗舰","apiId":"gpt-image-2","baseCurrency":"USD","pricingRegion":"global","source":"https://platform.openai.com/docs/guides/image-generation","priceStatus":"official","context":"≤3840px","input":5,"imageInput":10,"imagePrices":{"1024²":[0.006,0.053,0.211],"1024×1536":[0.005,0.041,0.165],"1536×1024":[0.005,0.041,0.165]},"notes":"官方估算：表格为单张图像输出价，不含文本输入 ($5/1M)；图像编辑还会计图片输入 ($10/1M)。","color":"brand-openai","cachedInput":null},{"id":"openai-gpt-5-4","name":"GPT-5.4","tier":"中坚","type":"text","baseCurrency":"USD","input":2.5,"cachedInput":0.25,"output":15,"context":"270K","notes":"速度与智能平衡。","color":"brand-openai","provider":"OpenAI","pricingRegion":"global","source":"docsbot.ai"},{"id":"openai-gpt-5-4-mini","name":"GPT-5.4 mini","tier":"轻量","type":"text","baseCurrency":"USD","input":0.75,"cachedInput":0.075,"output":4.5,"context":"128K","notes":"高吞吐首选。","color":"brand-openai","provider":"OpenAI","pricingRegion":"global","source":"docsbot.ai"},{"id":"openai-gpt-5-4-nano","name":"GPT-5.4 nano","tier":"超轻","type":"text","baseCurrency":"USD","input":0.2,"cachedInput":0.02,"output":1.25,"context":"128K","notes":"极致低价。","color":"brand-openai","provider":"OpenAI","pricingRegion":"global","source":"docsbot.ai"},{"id":"deepseek-deepseek-v4-pro","name":"DeepSeek V4 Pro","tier":"旗舰","type":"text","baseCurrency":"CNY","input":3,"cachedInput":0.025,"output":6,"context":"1M","notes":"DeepSeek 官方主力高性能模型。","color":"brand-deepseek","provider":"DeepSeek","pricingRegion":"CN","source":"https://api-docs.deepseek.com/zh-cn/quick_start/pricing"},{"id":"deepseek-deepseek-v4-flash","name":"DeepSeek V4 Flash","tier":"轻量","type":"text","baseCurrency":"CNY","input":1,"cachedInput":0.02,"output":2,"context":"1M","notes":"DeepSeek 官方主力高性价比模型。","color":"brand-deepseek","provider":"DeepSeek","pricingRegion":"CN","source":"https://api-docs.deepseek.com/zh-cn/quick_start/pricing"},{"id":"google-gemini-3-pro","name":"Gemini 3 Pro","tier":"旗舰","type":"text","baseCurrency":"USD","input":2,"cachedInput":0.2,"output":12,"context":"128K","notes":"最强推理。","color":"brand-google","provider":"Google","pricingRegion":"global","source":"docsbot.ai"},{"id":"google-gemini-3-flash","name":"Gemini 3 Flash","tier":"轻量","type":"text","baseCurrency":"USD","input":0.5,"cachedInput":0.05,"output":3,"context":"128K","notes":"高吞吐首选。","color":"brand-google","provider":"Google","pricingRegion":"global","source":"docsbot.ai"},{"id":"google-gemini-3-5-flash","name":"Gemini 3.5 Flash","tier":"轻量","type":"text","baseCurrency":"USD","input":0.25,"cachedInput":0.025,"output":1.5,"context":"128K","notes":"高吞吐首选。","color":"brand-google","provider":"Google","pricingRegion":"global","source":"docsbot.ai"},{"id":"google-gemini-3-1-flash-lite","name":"Gemini 3.1 Flash-Lite","tier":"超轻","type":"text","baseCurrency":"USD","input":0.25,"cachedInput":0.025,"output":1.5,"context":"128K","notes":"极致低价。","color":"brand-google","provider":"Google","pricingRegion":"global","source":"docsbot.ai"},{"id":"moonshot-kimi-k2-6","name":"Kimi K2.6","tier":"旗舰","type":"text","baseCurrency":"CNY","input":6.5,"cachedInput":1.1,"output":27,"context":"256K","notes":"Kimi 最新多模态旗舰模型。","color":"brand-moonshot","provider":"Moonshot","pricingRegion":"CN","source":"https://platform.kimi.com/docs/pricing/chat-k26"},{"id":"moonshot-kimi-k2-5","name":"Kimi K2.5","tier":"中坚","type":"text","baseCurrency":"CNY","input":4,"cachedInput":0.7,"output":21,"context":"256K","notes":"Kimi 多模态长上下文模型。","color":"brand-moonshot","provider":"Moonshot","pricingRegion":"CN","source":"https://platform.kimi.com/docs/pricing/chat-k25"},{"id":"zhipu-glm-4-5","name":"GLM-4.5","tier":"旗舰","type":"text","baseCurrency":"CNY","input":4,"cachedInput":0.4,"output":16,"context":"128K","notes":"智谱旗舰通用推理模型。","color":"brand-zhipu","provider":"智谱 AI","pricingRegion":"CN","source":"https://open.bigmodel.cn/pricing"},{"id":"zhipu-glm-4-5-air","name":"GLM-4.5-Air","tier":"轻量","type":"text","baseCurrency":"CNY","input":0.8,"cachedInput":0.08,"output":2,"context":"128K","notes":"智谱高性价比轻量模型。","color":"brand-zhipu","provider":"智谱 AI","pricingRegion":"CN","source":"https://open.bigmodel.cn/pricing"}];
 
         let apiModels = DEFAULT_MODELS || [];
+        let futureModels = DEFAULT_FUTURE_MODELS || [];
         let dataUpdated = '';
+        let futureUpdated = '';
+        let currentView = 'live';
 
         // ── 尝试从 pricing.json 加载最新数据 ──
         async function loadData() {
@@ -124,7 +137,16 @@
                     dataUpdated = json.updated || '';
                 }
             } catch (_) {}
+            try {
+                const rsp = await fetch('future-models.json');
+                const json = await rsp.json();
+                if (json.items && json.items.length) {
+                    futureModels = json.items;
+                    futureUpdated = json.updated || '';
+                }
+            } catch (_) {}
             document.getElementById('update-time').textContent = dataUpdated ? dataUpdated.slice(0,10) : '2026-06-07';
+            document.getElementById('future-update-time').textContent = futureUpdated ? futureUpdated.slice(0,10) : '本地默认';
         }
 
         let currentCurrency = 'CNY';
@@ -191,6 +213,7 @@
             });
             setCategory('ALL');
             setCurrency(currentCurrency);
+            setView('live');
             fetchExchangeRate();
         }
 
@@ -232,6 +255,24 @@
                 ? 'px-3 py-1.5 text-[11px] font-bold rounded-md bg-slate-800 dark:bg-white text-white dark:text-slate-900 transition-all cursor-pointer'
                 : 'px-3 py-1.5 text-[11px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
             renderData();
+        }
+
+        function setView(view) {
+            currentView = view;
+            const live = view === 'live';
+            document.getElementById('live-tools').classList.toggle('hidden', !live);
+            document.getElementById('card-grid').classList.toggle('hidden', !live);
+            document.getElementById('future-grid').classList.toggle('hidden', live);
+            document.getElementById('future-updated').classList.toggle('hidden', live);
+            document.getElementById('btn-cny').parentElement.classList.toggle('hidden', !live);
+            document.getElementById('rate-badge').classList.toggle('hidden', !live);
+            document.getElementById('view-live').className = live
+                ? 'px-3 py-1.5 text-[12px] font-bold rounded-md bg-slate-800 dark:bg-white text-white dark:text-slate-900 transition-all cursor-pointer'
+                : 'px-3 py-1.5 text-[12px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
+            document.getElementById('view-future').className = !live
+                ? 'px-3 py-1.5 text-[12px] font-bold rounded-md bg-slate-800 dark:bg-white text-white dark:text-slate-900 transition-all cursor-pointer'
+                : 'px-3 py-1.5 text-[12px] font-bold rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
+            live ? renderData() : renderFutureData();
         }
 
         // ── 厂商 Logo（多路 Fallback 解决移动端/国内加载失败问题）──
@@ -383,6 +424,82 @@
                         <div class="flex items-start justify-between gap-2 mt-auto pt-2 border-t border-slate-100 dark:border-slate-800/40">
                             <span class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed flex-1 line-clamp-2" title="${m.notes}">${m.notes}</span>
                             <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded shrink-0">${m.context}</span>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function escapeHtml(s) {
+            return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+        function statusLabel(status) {
+            return {
+                'official-preview': '官方预览',
+                'limited-access': '限量开放',
+                'rumored': '媒体/传闻',
+                'announced': '已预告',
+                'released': '已上架',
+                'stale': '信号过期',
+            }[status] || '观察中';
+        }
+        function statusClass(status) {
+            return {
+                released: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
+                announced: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
+                'official-preview': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+                'limited-access': 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-300',
+                rumored: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+                stale: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
+            }[status] || 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400';
+        }
+        function confidenceClass(confidence) {
+            return {
+                high: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+                medium: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+                low: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
+            }[confidence] || 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400';
+        }
+        function renderFutureData() {
+            const grid = document.getElementById('future-grid');
+            const empty = document.getElementById('empty-state');
+            const visible = futureModels.filter(item => item.confidence !== 'low' && item.status !== 'stale' && item.status !== 'released');
+            if (!visible.length) {
+                grid.innerHTML = '';
+                empty.textContent = '暂无值得展示的未来模型信号';
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+            grid.innerHTML = visible.map(item => {
+                const signals = (item.signals || []).slice(0,3).map(s => `<li class="leading-relaxed">${escapeHtml(s)}</li>`).join('');
+                const sources = (item.sources || []).slice(0,3).map(src => `<a href="${escapeHtml(src.url)}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-semibold text-blue-600 dark:text-blue-400 hover:underline truncate">${escapeHtml(src.title || src.url)}</a>`).join('');
+                return `
+                <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 overflow-hidden hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col">
+                    <div class="h-1.5 w-full bg-slate-800 dark:bg-white"></div>
+                    <div class="p-4 flex flex-col gap-3 flex-1">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 dark:border-slate-700">${getLogoHtml(item)}</span>
+                                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">${escapeHtml(item.provider)}</span>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded ${statusClass(item.status)}">${statusLabel(item.status)}</span>
+                                <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded ${confidenceClass(item.confidence)}">${item.confidence}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white leading-tight">${escapeHtml(item.name)}</h3>
+                            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">${escapeHtml(item.summary)}</p>
+                        </div>
+                        <div class="rounded-xl bg-slate-50 dark:bg-slate-950 p-3 border border-slate-100 dark:border-slate-800/60">
+                            <div class="text-[9px] uppercase text-slate-400 dark:text-slate-500 mb-1">预计窗口</div>
+                            <div class="text-xs font-bold text-slate-800 dark:text-slate-200">${escapeHtml(item.expectedWindow)}</div>
+                        </div>
+                        <ul class="text-[11px] text-slate-500 dark:text-slate-400 list-disc pl-4 space-y-1">${signals}</ul>
+                        <div class="mt-auto pt-2 border-t border-slate-100 dark:border-slate-800/40 flex flex-col gap-1">
+                            ${sources}
+                            <span class="text-[10px] text-slate-400 dark:text-slate-500">最后信号 ${escapeHtml(item.lastSeen || '--')}</span>
                         </div>
                     </div>
                 </div>`;

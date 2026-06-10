@@ -1,0 +1,140 @@
+{
+  "updated": "2026-06-10T02:22:36.605Z",
+  "items": [
+    {
+      "id": "anthropic-claude-fable-5",
+      "name": "Claude Fable 5",
+      "provider": "Anthropic",
+      "status": "released",
+      "confidence": "high",
+      "expectedWindow": "已上架",
+      "summary": "已被正式模型数据确认上架，保留在雷达中用于迁移提示。",
+      "signals": [
+        "官方来源出现关键词：claude fable 5",
+        "官方来源出现关键词：claude fable 5",
+        "官方来源出现关键词：claude fable 5",
+        "正式价格看板已出现该模型或同名模型"
+      ],
+      "sources": [
+        {
+          "title": "Newsroom \\ Anthropic",
+          "url": "https://www.anthropic.com/news",
+          "type": "official"
+        },
+        {
+          "title": "Claude Platform - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/release-notes/api",
+          "type": "official"
+        },
+        {
+          "title": "Models overview - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/docs/about-claude/models/overview",
+          "type": "official"
+        },
+        {
+          "title": "Pricing - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/docs/about-claude/pricing",
+          "type": "official"
+        },
+        {
+          "title": "AI News Artificial Intelligence | TechCrunch",
+          "url": "https://techcrunch.com/category/artificial-intelligence/",
+          "type": "media"
+        }
+      ],
+      "lastSeen": "2026-06-10"
+    },
+    {
+      "id": "openai-next-frontier-model",
+      "name": "OpenAI 下一代前沿模型",
+      "provider": "OpenAI",
+      "status": "announced",
+      "confidence": "high",
+      "expectedWindow": "未来数月",
+      "summary": "可信科技媒体常报道 OpenAI 下一代模型动态；进入正式看板前必须等待官方模型目录或价格页确认。",
+      "signals": [
+        "官方来源出现关键词：frontier model",
+        "官方来源出现关键词：frontier model",
+        "官方来源出现关键词：frontier model"
+      ],
+      "sources": [
+        {
+          "title": "OpenAI News",
+          "url": "https://openai.com/news/",
+          "type": "official"
+        },
+        {
+          "title": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence",
+          "type": "media"
+        },
+        {
+          "title": "Models | OpenAI API",
+          "url": "https://platform.openai.com/docs/models",
+          "type": "official"
+        }
+      ],
+      "lastSeen": "2026-06-10"
+    },
+    {
+      "id": "anthropic-claude-mythos-5",
+      "name": "Claude Mythos 5",
+      "provider": "Anthropic",
+      "status": "limited-access",
+      "confidence": "high",
+      "expectedWindow": "限量开放 / 正式同步待确认",
+      "summary": "Anthropic 新一代 Claude 5 系列限量访问信号，适合在雷达中追踪，正式价格以官方页面为准。",
+      "signals": [
+        "官方来源出现关键词：claude mythos 5",
+        "官方来源出现关键词：claude mythos 5",
+        "官方来源出现关键词：claude mythos 5",
+        "官方来源出现关键词：claude mythos 5"
+      ],
+      "sources": [
+        {
+          "title": "Newsroom \\ Anthropic",
+          "url": "https://www.anthropic.com/news",
+          "type": "official"
+        },
+        {
+          "title": "Models overview - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/docs/about-claude/models/overview",
+          "type": "official"
+        },
+        {
+          "title": "Pricing - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/docs/about-claude/pricing",
+          "type": "official"
+        },
+        {
+          "title": "Claude Platform - Claude API Docs",
+          "url": "https://docs.anthropic.com/en/release-notes/api",
+          "type": "official"
+        }
+      ],
+      "lastSeen": "2026-06-10"
+    },
+    {
+      "id": "low-confidence-social-rumor-sample",
+      "name": "未确认社交平台传闻样例",
+      "provider": "Unknown",
+      "status": "rumored",
+      "confidence": "low",
+      "expectedWindow": "未知",
+      "summary": "低可信传闻默认不在页面显示，保留在 JSON 中用于验证过滤逻辑。",
+      "signals": [
+        "只有单一低可信来源",
+        "没有官方或可信媒体交叉确认"
+      ],
+      "sources": [
+        {
+          "title": "Unverified social rumor",
+          "url": "https://example.com/unverified-ai-rumor",
+          "type": "social"
+        }
+      ],
+      "lastSeen": "2026-06-10"
+    }
+  ],
+  "visibleCount": 2
+}

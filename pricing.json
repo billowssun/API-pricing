@@ -1,6 +1,26 @@
 {
-  "updated": "2026-06-10T01:47:01.836Z",
+  "updated": "2026-06-10T02:29:33.468Z",
   "models": [
+    {
+      "id": "anthropic-claude-fable-5",
+      "apiId": "claude-fable-5",
+      "name": "Claude Fable 5",
+      "tier": "旗舰",
+      "type": "text",
+      "baseCurrency": "USD",
+      "input": 10,
+      "cachedInput": 1,
+      "output": 50,
+      "context": "1M",
+      "notes": "Anthropic 官方 API 已上架模型。",
+      "color": "brand-anthropic",
+      "provider": "Anthropic",
+      "pricingRegion": "global",
+      "availability": "public",
+      "releaseDate": "2026-06-09",
+      "source": "https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5",
+      "priceStatus": "official"
+    },
     {
       "id": "anthropic-opus-4-8",
       "name": "Opus 4.8",
@@ -13,7 +33,9 @@
       "context": "1M",
       "notes": "最强推理。",
       "color": "brand-anthropic",
-      "provider": "Anthropic"
+      "provider": "Anthropic",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "anthropic-sonnet-4-6",
@@ -22,12 +44,14 @@
       "type": "text",
       "baseCurrency": "USD",
       "input": 3,
-      "cachedInput": 0.30000000000000004,
+      "cachedInput": 0.3,
       "output": 15,
       "context": "1M",
       "notes": "速度与智能平衡。",
       "color": "brand-anthropic",
-      "provider": "Anthropic"
+      "provider": "Anthropic",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "anthropic-haiku-4-5",
@@ -41,7 +65,9 @@
       "context": "200K",
       "notes": "高吞吐首选。",
       "color": "brand-anthropic",
-      "provider": "Anthropic"
+      "provider": "Anthropic",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "openai-gpt-5-5",
@@ -55,7 +81,9 @@
       "context": "1.05M",
       "notes": "最强推理。",
       "color": "brand-openai",
-      "provider": "OpenAI"
+      "provider": "OpenAI",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "openai-gpt-5-5-pro",
@@ -69,7 +97,9 @@
       "context": "1.05M",
       "notes": "最强推理。",
       "color": "brand-openai",
-      "provider": "OpenAI"
+      "provider": "OpenAI",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "gpt-image-2",
@@ -77,8 +107,14 @@
       "provider": "OpenAI",
       "type": "image",
       "tier": "旗舰",
+      "apiId": "gpt-image-2",
       "baseCurrency": "USD",
+      "pricingRegion": "global",
+      "source": "https://platform.openai.com/docs/guides/image-generation",
+      "priceStatus": "official",
       "context": "≤3840px",
+      "input": 5,
+      "imageInput": 10,
       "imagePrices": {
         "1024²": [
           0.006,
@@ -96,7 +132,7 @@
           0.165
         ]
       },
-      "notes": "文本提示按 token 另计 ($5/1M)。表格为图像输出 token 折算的单张价格。",
+      "notes": "官方估算：表格为单张图像输出价，不含文本输入 ($5/1M)；图像编辑还会计图片输入 ($10/1M)。",
       "color": "brand-openai",
       "cachedInput": null
     },
@@ -112,7 +148,9 @@
       "context": "270K",
       "notes": "速度与智能平衡。",
       "color": "brand-openai",
-      "provider": "OpenAI"
+      "provider": "OpenAI",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "openai-gpt-5-4-mini",
@@ -121,12 +159,14 @@
       "type": "text",
       "baseCurrency": "USD",
       "input": 0.75,
-      "cachedInput": 0.07500000000000001,
+      "cachedInput": 0.075,
       "output": 4.5,
       "context": "128K",
       "notes": "高吞吐首选。",
       "color": "brand-openai",
-      "provider": "OpenAI"
+      "provider": "OpenAI",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "openai-gpt-5-4-nano",
@@ -135,40 +175,46 @@
       "type": "text",
       "baseCurrency": "USD",
       "input": 0.2,
-      "cachedInput": 0.020000000000000004,
+      "cachedInput": 0.02,
       "output": 1.25,
       "context": "128K",
       "notes": "极致低价。",
       "color": "brand-openai",
-      "provider": "OpenAI"
+      "provider": "OpenAI",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "deepseek-deepseek-v4-pro",
       "name": "DeepSeek V4 Pro",
       "tier": "旗舰",
       "type": "text",
-      "baseCurrency": "USD",
-      "input": 1.74,
-      "cachedInput": 0.17400000000000002,
-      "output": 3.48,
+      "baseCurrency": "CNY",
+      "input": 3,
+      "cachedInput": 0.025,
+      "output": 6,
       "context": "1M",
-      "notes": "最强推理。",
+      "notes": "DeepSeek 官方主力高性能模型。",
       "color": "brand-deepseek",
-      "provider": "DeepSeek"
+      "provider": "DeepSeek",
+      "pricingRegion": "CN",
+      "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing"
     },
     {
       "id": "deepseek-deepseek-v4-flash",
       "name": "DeepSeek V4 Flash",
       "tier": "轻量",
       "type": "text",
-      "baseCurrency": "USD",
-      "input": 0.14,
-      "cachedInput": 0.014000000000000002,
-      "output": 0.28,
+      "baseCurrency": "CNY",
+      "input": 1,
+      "cachedInput": 0.02,
+      "output": 2,
       "context": "1M",
-      "notes": "高吞吐首选。",
+      "notes": "DeepSeek 官方主力高性价比模型。",
       "color": "brand-deepseek",
-      "provider": "DeepSeek"
+      "provider": "DeepSeek",
+      "pricingRegion": "CN",
+      "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing"
     },
     {
       "id": "google-gemini-3-pro",
@@ -182,7 +228,9 @@
       "context": "128K",
       "notes": "最强推理。",
       "color": "brand-google",
-      "provider": "Google"
+      "provider": "Google",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "google-gemini-3-flash",
@@ -196,7 +244,9 @@
       "context": "128K",
       "notes": "高吞吐首选。",
       "color": "brand-google",
-      "provider": "Google"
+      "provider": "Google",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "google-gemini-3-5-flash",
@@ -210,7 +260,9 @@
       "context": "128K",
       "notes": "高吞吐首选。",
       "color": "brand-google",
-      "provider": "Google"
+      "provider": "Google",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "google-gemini-3-1-flash-lite",
@@ -224,34 +276,73 @@
       "context": "128K",
       "notes": "极致低价。",
       "color": "brand-google",
-      "provider": "Google"
+      "provider": "Google",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
     },
     {
       "id": "moonshot-kimi-k2-6",
       "name": "Kimi K2.6",
-      "tier": "中坚",
+      "tier": "旗舰",
       "type": "text",
-      "baseCurrency": "USD",
-      "input": 0.95,
-      "cachedInput": 0.095,
-      "output": 4,
+      "baseCurrency": "CNY",
+      "input": 6.5,
+      "cachedInput": 1.1,
+      "output": 27,
       "context": "256K",
-      "notes": "速度与智能平衡。",
-      "provider": "Moonshot"
+      "notes": "Kimi 最新多模态旗舰模型。",
+      "color": "brand-moonshot",
+      "provider": "Moonshot",
+      "pricingRegion": "CN",
+      "source": "https://platform.kimi.com/docs/pricing/chat-k26"
     },
     {
-      "id": "ai-glm-5-1",
-      "name": "GLM-5.1",
+      "id": "moonshot-kimi-k2-5",
+      "name": "Kimi K2.5",
       "tier": "中坚",
       "type": "text",
-      "baseCurrency": "USD",
-      "input": 1.4,
-      "cachedInput": 0.13999999999999999,
-      "output": 4.4,
-      "context": "200K",
-      "notes": "速度与智能平衡。",
+      "baseCurrency": "CNY",
+      "input": 4,
+      "cachedInput": 0.7,
+      "output": 21,
+      "context": "256K",
+      "notes": "Kimi 多模态长上下文模型。",
+      "color": "brand-moonshot",
+      "provider": "Moonshot",
+      "pricingRegion": "CN",
+      "source": "https://platform.kimi.com/docs/pricing/chat-k25"
+    },
+    {
+      "id": "zhipu-glm-4-5",
+      "name": "GLM-4.5",
+      "tier": "旗舰",
+      "type": "text",
+      "baseCurrency": "CNY",
+      "input": 4,
+      "cachedInput": 0.4,
+      "output": 16,
+      "context": "128K",
+      "notes": "智谱旗舰通用推理模型。",
       "color": "brand-zhipu",
-      "provider": "智谱 AI"
+      "provider": "智谱 AI",
+      "pricingRegion": "CN",
+      "source": "https://open.bigmodel.cn/pricing"
+    },
+    {
+      "id": "zhipu-glm-4-5-air",
+      "name": "GLM-4.5-Air",
+      "tier": "轻量",
+      "type": "text",
+      "baseCurrency": "CNY",
+      "input": 0.8,
+      "cachedInput": 0.08,
+      "output": 2,
+      "context": "128K",
+      "notes": "智谱高性价比轻量模型。",
+      "color": "brand-zhipu",
+      "provider": "智谱 AI",
+      "pricingRegion": "CN",
+      "source": "https://open.bigmodel.cn/pricing"
     }
   ]
 }
