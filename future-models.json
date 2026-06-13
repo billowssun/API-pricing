@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-13T11:19:17.326Z",
+  "updated": "2026-06-13T14:09:43.907Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -40,6 +40,11 @@
           "title": "AI News Artificial Intelligence | TechCrunch",
           "url": "https://techcrunch.com/category/artificial-intelligence/",
           "type": "media"
+        },
+        {
+          "title": "Artificial Intelligence | The Verge",
+          "url": "https://www.theverge.com/ai-artificial-intelligence",
+          "type": "media"
         }
       ],
       "lastSeen": "2026-06-13"
@@ -78,6 +83,11 @@
           "title": "Claude Platform - Claude API Docs",
           "url": "https://docs.anthropic.com/en/release-notes/api",
           "type": "official"
+        },
+        {
+          "title": "Artificial Intelligence | The Verge",
+          "url": "https://www.theverge.com/ai-artificial-intelligence",
+          "type": "media"
         }
       ],
       "lastSeen": "2026-06-13"
