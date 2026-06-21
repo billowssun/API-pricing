@@ -45,6 +45,12 @@ function timeoutFetch(url) {
 }
 
 const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 48);
+function canonicalModelKey(model) {
+    let name = String(model.name || '').toLowerCase();
+    if (model.provider === 'Anthropic') name = name.replace(/^claude\s+/, '');
+    name = name.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+    return `${model.provider || ''}|${slug(name)}`;
+}
 const stripTags = (s) => s.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, '').trim();
 const priceNum = (s) => {
     const m = String(s).match(/[¥￥$]\s*(\d+(?:\.\d+)?)/);
@@ -422,8 +428,8 @@ function diffAll(prev, fresh) {
     }
 
     const officialAnthropic = await scrapeAnthropicOfficialModels();
-    const officialIds = new Set(officialAnthropic.map((m) => m.id));
-    globalModels = globalModels.filter((m) => !officialIds.has(m.id));
+    const officialKeys = new Set(officialAnthropic.map(canonicalModelKey));
+    globalModels = globalModels.filter((m) => !officialKeys.has(canonicalModelKey(m)));
 
     const dedupedGlobal = [...officialAnthropic];
     for (const p of Object.values(GLOBAL_PROVIDER)) dedupedGlobal.push(...deduplicateByTier(globalModels, p));
