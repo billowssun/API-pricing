@@ -95,6 +95,13 @@ function previousByProvider(provider) {
     return (PREV.models || []).filter((m) => m.provider === provider);
 }
 
+function normalizeModelName(provider, name) {
+    if (provider !== 'Google') return name;
+    if (/^Gemini\s+3\s+Pro$/i.test(name)) return 'Gemini 3.1 Pro';
+    if (/^Gemini\s+3\s+Flash$/i.test(name)) return 'Gemini 3.5 Flash';
+    return name;
+}
+
 async function scrapeGlobalModels() {
     console.log(`抓取全球 USD 定价: ${DOCSBOT_SOURCE}`);
     const rsp = await timeoutFetch(DOCSBOT_SOURCE);
@@ -129,6 +136,7 @@ async function scrapeGlobalModels() {
         if (provider === 'Anthropic' && /claude.*(\b3\b|haiku\s*3)/i.test(name)) continue;
         if (provider === 'OpenAI' && !/\bgpt-5\.[45]/i.test(nameLow)) continue;
         if (provider === 'Anthropic') name = name.replace(/^Claude\s+/i, '');
+        name = normalizeModelName(provider, name);
 
         const id = slug(`${provider}-${name}`);
         if (seenIds.has(id)) continue;
