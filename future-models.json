@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-25T18:14:29.799Z",
+  "updated": "2026-06-25T20:24:00.741Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -22,17 +22,17 @@
           "type": "official"
         },
         {
-          "title": "Claude Platform - Claude API Docs",
+          "title": "Claude Platform - Claude Platform Docs",
           "url": "https://docs.anthropic.com/en/release-notes/api",
           "type": "official"
         },
         {
-          "title": "Models overview - Claude API Docs",
+          "title": "Models overview - Claude Platform Docs",
           "url": "https://docs.anthropic.com/en/docs/about-claude/models/overview",
           "type": "official"
         },
         {
-          "title": "Pricing - Claude API Docs",
+          "title": "Pricing - Claude Platform Docs",
           "url": "https://docs.anthropic.com/en/docs/about-claude/pricing",
           "type": "official"
         },
@@ -70,17 +70,17 @@
           "type": "official"
         },
         {
-          "title": "Models overview - Claude API Docs",
+          "title": "Models overview - Claude Platform Docs",
           "url": "https://docs.anthropic.com/en/docs/about-claude/models/overview",
           "type": "official"
         },
         {
-          "title": "Pricing - Claude API Docs",
+          "title": "Pricing - Claude Platform Docs",
           "url": "https://docs.anthropic.com/en/docs/about-claude/pricing",
           "type": "official"
         },
         {
-          "title": "Claude Platform - Claude API Docs",
+          "title": "Claude Platform - Claude Platform Docs",
           "url": "https://docs.anthropic.com/en/release-notes/api",
           "type": "official"
         },
