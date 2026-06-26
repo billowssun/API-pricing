@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-25T23:22:25.006Z",
+  "updated": "2026-06-26T04:07:15.061Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -47,7 +47,7 @@
           "type": "media"
         }
       ],
-      "lastSeen": "2026-06-25"
+      "lastSeen": "2026-06-26"
     },
     {
       "id": "anthropic-claude-mythos-5",
@@ -90,7 +90,7 @@
           "type": "media"
         }
       ],
-      "lastSeen": "2026-06-25"
+      "lastSeen": "2026-06-26"
     },
     {
       "id": "openai-next-frontier-model",
@@ -122,7 +122,7 @@
           "type": "official"
         }
       ],
-      "lastSeen": "2026-06-25"
+      "lastSeen": "2026-06-26"
     },
     {
       "id": "low-confidence-social-rumor-sample",
