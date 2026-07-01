@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-01T15:46:08.772Z",
+  "updated": "2026-07-01T17:25:14.236Z",
   "models": [
     {
       "id": "anthropic-claude-fable-5",
@@ -54,14 +54,14 @@
       "source": "docsbot.ai"
     },
     {
-      "id": "anthropic-sonnet-4-6",
-      "name": "Sonnet 4.6",
+      "id": "anthropic-sonnet-5",
+      "name": "Sonnet 5",
       "tier": "中坚",
       "type": "text",
       "baseCurrency": "USD",
-      "input": 3,
-      "cachedInput": 0.3,
-      "output": 15,
+      "input": 2,
+      "cachedInput": 0.2,
+      "output": 10,
       "context": "1M",
       "notes": "速度与智能平衡。",
       "color": "brand-anthropic",
