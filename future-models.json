@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-09T15:36:46.932Z",
+  "updated": "2026-07-09T18:00:10.560Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -58,7 +58,7 @@
       "expectedWindow": "已上架",
       "summary": "已被正式模型数据确认上架，保留在雷达中用于迁移提示。",
       "signals": [
-        "官方来源出现关键词：mythos 5",
+        "官方来源出现关键词：claude mythos 5",
         "官方来源出现关键词：claude mythos 5",
         "官方来源出现关键词：claude mythos 5",
         "正式价格看板已出现该模型或同名模型"
@@ -117,7 +117,7 @@
           "type": "media"
         },
         {
-          "title": "Models | OpenAI API",
+          "title": "platform.openai.com",
           "url": "https://platform.openai.com/docs/models",
           "type": "official"
         }
