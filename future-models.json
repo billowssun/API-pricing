@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-14T14:16:22.124Z",
+  "updated": "2026-07-14T15:26:09.673Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -102,7 +102,6 @@
       "summary": "可信科技媒体常报道 OpenAI 下一代模型动态；进入正式看板前必须等待官方模型目录或价格页确认。",
       "signals": [
         "官方来源出现关键词：frontier model",
-        "媒体来源出现关键词：frontier model",
         "官方来源出现关键词：frontier model",
         "媒体来源出现关键词：frontier model"
       ],
