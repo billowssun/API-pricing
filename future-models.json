@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-13T22:58:29.948Z",
+  "updated": "2026-07-14T00:00:05.878Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -22,7 +22,7 @@
           "type": "official"
         },
         {
-          "title": "Claude Platform - Claude Platform Docs",
+          "title": "Claude Platform release notes - Claude Platform Docs",
           "url": "https://docs.anthropic.com/en/release-notes/api",
           "type": "official"
         },
@@ -80,7 +80,7 @@
           "type": "official"
         },
         {
-          "title": "Claude Platform - Claude Platform Docs",
+          "title": "Claude Platform release notes - Claude Platform Docs",
           "url": "https://docs.anthropic.com/en/release-notes/api",
           "type": "official"
         },
