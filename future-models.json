@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-20T22:03:44.669Z",
+  "updated": "2026-07-20T22:14:59.077Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -103,7 +103,7 @@
       "signals": [
         "官方来源出现关键词：frontier model",
         "官方来源出现关键词：frontier model",
-        "媒体来源出现关键词：frontier model"
+        "官方来源出现关键词：frontier model"
       ],
       "sources": [
         {
