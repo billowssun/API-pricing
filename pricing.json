@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-21T18:17:37.988Z",
+  "updated": "2026-07-21T19:54:49.834Z",
   "models": [
     {
       "id": "anthropic-claude-fable-5",
@@ -249,14 +249,14 @@
       "source": "docsbot.ai"
     },
     {
-      "id": "google-gemini-3-5-flash",
-      "name": "Gemini 3.5 Flash",
+      "id": "google-gemini-3-6-flash",
+      "name": "Gemini 3.6 Flash",
       "tier": "轻量",
       "type": "text",
       "baseCurrency": "USD",
-      "input": 0.5,
-      "cachedInput": 0.05,
-      "output": 3,
+      "input": 1.5,
+      "cachedInput": 0.15,
+      "output": 7.5,
       "context": "128K",
       "notes": "高吞吐首选。",
       "color": "brand-google",
@@ -265,14 +265,30 @@
       "source": "docsbot.ai"
     },
     {
-      "id": "google-gemini-3-1-flash-lite",
-      "name": "Gemini 3.1 Flash-Lite",
+      "id": "google-gemini-3-5-flash",
+      "name": "Gemini 3.5 Flash",
+      "tier": "轻量",
+      "type": "text",
+      "baseCurrency": "USD",
+      "input": 1.5,
+      "cachedInput": 0.15,
+      "output": 9,
+      "context": "128K",
+      "notes": "高吞吐首选。",
+      "color": "brand-google",
+      "provider": "Google",
+      "pricingRegion": "global",
+      "source": "docsbot.ai"
+    },
+    {
+      "id": "google-gemini-3-5-flash-lite",
+      "name": "Gemini 3.5 Flash-Lite",
       "tier": "超轻",
       "type": "text",
       "baseCurrency": "USD",
-      "input": 0.25,
-      "cachedInput": 0.025,
-      "output": 1.5,
+      "input": 0.3,
+      "cachedInput": 0.03,
+      "output": 2.5,
       "context": "128K",
       "notes": "极致低价。",
       "color": "brand-google",
