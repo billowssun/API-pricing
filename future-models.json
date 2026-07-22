@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-22T18:10:29.912Z",
+  "updated": "2026-07-22T19:46:57.317Z",
   "items": [
     {
       "id": "anthropic-claude-fable-5",
@@ -10,7 +10,7 @@
       "expectedWindow": "已上架",
       "summary": "已被正式模型数据确认上架，保留在雷达中用于迁移提示。",
       "signals": [
-        "官方来源出现关键词：claude fable 5",
+        "官方来源出现关键词：fable 5",
         "官方来源出现关键词：claude fable 5",
         "官方来源出现关键词：claude fable 5",
         "正式价格看板已出现该模型或同名模型"
