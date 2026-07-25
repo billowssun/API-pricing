@@ -1,0 +1,29 @@
+{
+  "name": "model-price",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "data:validate": "node scraper.js --validate",
+    "data:sync": "node scraper.js",
+    "check": "npm run data:validate && npm run typecheck && npm run build"
+  },
+  "dependencies": {
+    "@tabler/icons-react": "^3.34.1",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20.9"
+  }
+}

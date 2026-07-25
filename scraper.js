@@ -1,460 +1,339 @@
-// scraper.js - 每日同步主流大模型 API 定价
-// 国外厂商使用 docsbot USD 聚合源；中国大陆厂商使用官方人民币口径。
-const fs = require('fs');
-const path = require('path');
+/**
+ * ModelPrice official-source synchronizer.
+ *
+ * Rules:
+ * 1. Only first-party pricing pages are accepted.
+ * 2. A provider is updated only when its source and parser both succeed.
+ * 3. Missing or ambiguous values never become zero.
+ * 4. Providers with tiered/dynamic pages are health-checked and kept unchanged
+ *    until a deterministic parser is available.
+ */
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 
-const OUT = path.join(__dirname, 'pricing.json');
-const PREV = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : { models: [] };
+const PRICING_FILE = path.join(__dirname, 'pricing.json');
+const TIMEOUT_MS = 30_000;
+const VALIDATE_ONLY = process.argv.includes('--validate');
+const current = JSON.parse(fs.readFileSync(PRICING_FILE, 'utf8'));
 
-const DOCSBOT_SOURCE = 'https://docsbot.ai/tools/gpt-openai-api-pricing-calculator';
-const TIMEOUT = 30000;
-const GLOBAL_PROVIDER = {
-    OpenAI: 'OpenAI',
-    Anthropic: 'Anthropic',
-    Google: 'Google',
-};
-const CN_PROVIDERS = new Set(['DeepSeek', 'Moonshot', '智谱 AI']);
-
-const COLOR = {
-    OpenAI: 'brand-openai',
-    Anthropic: 'brand-anthropic',
-    DeepSeek: 'brand-deepseek',
-    Google: 'brand-google',
-    Moonshot: 'brand-moonshot',
-    '智谱 AI': 'brand-zhipu',
-};
-
-const SOURCE = {
-    docsbot: DOCSBOT_SOURCE,
-    anthropicFableMythos: 'https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5',
-    anthropicPricing: 'https://docs.anthropic.com/en/docs/about-claude/pricing',
-    deepseek: 'https://api-docs.deepseek.com/zh-cn/quick_start/pricing',
-    deepseekLegacyCny: 'https://api-docs.deepseek.com/quick_start/pricing-details-cny',
-    kimiK26: 'https://platform.kimi.com/docs/pricing/chat-k26',
-    kimiK25: 'https://platform.kimi.com/docs/pricing/chat-k25',
-    zhipu: 'https://open.bigmodel.cn/pricing',
+const SOURCES = {
+  OpenAI: 'https://developers.openai.com/api/docs/models/compare',
+  Anthropic: 'https://platform.claude.com/docs/en/about-claude/pricing',
+  Google: 'https://ai.google.dev/gemini-api/docs/pricing?hl=en',
+  DeepSeek: 'https://api-docs.deepseek.com/zh-cn/quick_start/pricing',
+  Moonshot: 'https://platform.kimi.com/',
+  xAI: 'https://docs.x.ai/developers/pricing',
+  Mistral: 'https://mistral.ai/pricing/api/',
+  Alibaba: 'https://help.aliyun.com/zh/model-studio/model-pricing',
+  ByteDance: 'https://www.volcengine.com/docs/84458/1585097',
 };
 
-function timeoutFetch(url) {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), TIMEOUT);
-    return fetch(url, {
-        signal: ctrl.signal,
-        headers: { 'User-Agent': 'PricingScraper/6 (+https://github.com)' },
-    }).finally(() => clearTimeout(timer));
-}
+const OFFICIAL_HOSTS = new Set([
+  'developers.openai.com',
+  'platform.claude.com',
+  'ai.google.dev',
+  'api-docs.deepseek.com',
+  'platform.kimi.com',
+  'docs.x.ai',
+  'mistral.ai',
+  'help.aliyun.com',
+  'www.volcengine.com',
+]);
 
-const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 48);
-function canonicalModelKey(model) {
-    let name = String(model.name || '').toLowerCase();
-    if (model.provider === 'Anthropic') name = name.replace(/^claude\s+/, '');
-    name = name.replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
-    return `${model.provider || ''}|${slug(name)}`;
-}
-const stripTags = (s) => s.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/gi, '').trim();
-const priceNum = (s) => {
-    const m = String(s).match(/[¥￥$]\s*(\d+(?:\.\d+)?)/);
-    return m ? Number(m[1]) : null;
-};
-
-function autoTier(name, inputPrice) {
-    const n = name.toLowerCase();
-    if (n.includes('fast') || n.includes('turbo')) return '极速';
-    if (n.includes('opus') || n.includes('pro') || n.includes('ultra') || n.includes('premium') || n.includes('reasoner')) return '旗舰';
-    if (n.includes('nano') || n.includes('lite')) return '超轻';
-    if (n.includes('mini') || n.includes('flash') || n.includes('haiku') || n.includes('light')) return '轻量';
-    if (inputPrice > 8) return '极速';
-    if (inputPrice > 4) return '旗舰';
-    if (inputPrice <= 0.30) return '超轻';
-    return '中坚';
-}
-
-function contextGuess(name, provider) {
-    if (name.toLowerCase().includes('haiku')) return '200K';
-    if (provider === 'Anthropic' && name.toLowerCase().includes('sonnet')) return '1M';
-    if (provider === 'Anthropic' && name.toLowerCase().includes('opus')) return '1M';
-    if (name.match(/mini|nano/i)) return '128K';
-    if (name.match(/gpt-5\.4(?![- ])/i)) return '270K';
-    if (name.match(/gpt-5\.5/i)) return '1.05M';
-    if (name.match(/pro/i) && provider === 'Google') return '200K (>200K加价)';
-    if (provider === 'Google') return '1M';
-    return '200K';
-}
-
-function noteForTier(tier) {
-    return {
-        旗舰: '最强推理。',
-        极速: '低时延生产级。',
-        中坚: '速度与智能平衡。',
-        轻量: '高吞吐首选。',
-        超轻: '极致低价。',
-    }[tier] || '高吞吐首选。';
-}
-
-function previousByProvider(provider) {
-    return (PREV.models || []).filter((m) => m.provider === provider);
-}
-
-function normalizeModelName(provider, name) {
-    if (provider !== 'Google') return name;
-    if (/^Gemini\s+3\s+Pro$/i.test(name)) return 'Gemini 3.1 Pro';
-    if (/^Gemini\s+3\s+Flash$/i.test(name)) return 'Gemini 3.5 Flash';
-    return name;
-}
-
-async function scrapeGlobalModels() {
-    console.log(`抓取全球 USD 定价: ${DOCSBOT_SOURCE}`);
-    const rsp = await timeoutFetch(DOCSBOT_SOURCE);
-    if (!rsp.ok) throw new Error(`docsbot 返回 ${rsp.status}`);
-    const html = await rsp.text();
-    const models = [];
-    const seenIds = new Set();
-    const rowRe = /<tr[^>]*>[\s\S]*?<\/tr>/gi;
-    let row;
-
-    while ((row = rowRe.exec(html)) !== null) {
-        const cells = [...row[0].matchAll(/<td[^>]*>(.*?)<\/td>/gi)].map((m) => stripTags(m[1]));
-        if (cells.length < 4) continue;
-
-        const providerRaw = cells[0];
-        const provider = GLOBAL_PROVIDER[providerRaw];
-        if (!provider) continue;
-
-        const modelName = cells[1];
-        const input = priceNum(cells.length > 4 ? cells[3] : cells[cells.length - 2]);
-        const output = priceNum(cells.length > 4 ? cells[4] : cells[cells.length - 1]);
-        if (input === null || output === null) continue;
-
-        const slugPrefix = { OpenAI: 'gpt', Anthropic: 'claude', Google: 'gemini' }[provider];
-        const slugIdx = slugPrefix ? modelName.lastIndexOf(slugPrefix) : -1;
-        let name = (slugIdx > 0 ? modelName.slice(0, slugIdx) : modelName).trim();
-        name = name.replace(/\s*\(.*?\)\s*/g, ' ').trim();
-        if (!name || name.length < 2) continue;
-
-        const nameLow = name.toLowerCase();
-        if (/realtime|audio|embedding|fine-tun/i.test(nameLow)) continue;
-        if (provider === 'Anthropic' && /claude.*(\b3\b|haiku\s*3)/i.test(name)) continue;
-        if (provider === 'OpenAI' && !/\bgpt-5\.[45]/i.test(nameLow)) continue;
-        if (provider === 'Anthropic') name = name.replace(/^Claude\s+/i, '');
-        name = normalizeModelName(provider, name);
-
-        const id = slug(`${provider}-${name}`);
-        if (seenIds.has(id)) continue;
-        seenIds.add(id);
-
-        const tier = autoTier(name, input);
-        models.push({
-            id,
-            name,
-            tier,
-            type: 'text',
-            baseCurrency: 'USD',
-            input,
-            cachedInput: roundPrice(input * 0.1),
-            output,
-            context: contextGuess(name, provider),
-            notes: noteForTier(tier),
-            color: COLOR[provider],
-            provider,
-            pricingRegion: 'global',
-            source: 'docsbot.ai',
-        });
+function validate(data) {
+  if (!data || !Array.isArray(data.models) || data.models.length < 18) {
+    throw new Error('pricing.json 至少需要 18 个精选模型');
+  }
+  const ids = new Set();
+  const providers = new Set();
+  for (const model of data.models) {
+    for (const field of ['id', 'name', 'provider', 'tier', 'type', 'baseCurrency', 'notes', 'source']) {
+      if (!model[field]) throw new Error(`${model.id || 'unknown'} 缺少 ${field}`);
     }
+    if (ids.has(model.id)) throw new Error(`重复模型 ID: ${model.id}`);
+    ids.add(model.id);
+    providers.add(model.provider);
+    for (const field of ['input', 'cachedInput', 'output']) {
+      const value = model[field];
+      if (value != null && (!Number.isFinite(value) || value < 0)) {
+        throw new Error(`${model.id} 的 ${field} 价格无效`);
+      }
+    }
+    const source = new URL(model.source);
+    if (source.protocol !== 'https:' || !OFFICIAL_HOSTS.has(source.hostname)) {
+      throw new Error(`${model.id} 不是受信任的官方 HTTPS 来源`);
+    }
+    if (model.priceStatus !== 'official') throw new Error(`${model.id} 未标记为官方价格`);
+    const visibleText = [model.name, model.provider, model.tier, model.notes, model.pricingNote].filter(Boolean).join(' ');
+    if (/�|锟斤拷|future model/i.test(visibleText)) throw new Error(`${model.id} 包含乱码或未来模型占位内容`);
+  }
+  if (providers.size < 8) throw new Error(`厂商覆盖不足：当前仅 ${providers.size} 家`);
+  if (!ids.has('moonshot-kimi-k3')) throw new Error('缺少当前 Kimi K3 模型');
+  return true;
+}
 
+function cleanText(html) {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&#36;|&dollar;/gi, '$')
+    .replace(/&yen;|&#165;/gi, '¥')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+async function fetchPage(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/138 Safari/537.36 ModelPriceBot/2.0',
+          accept: url.endsWith('.md') ? 'text/markdown' : 'text/html,application/xhtml+xml',
+          'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8',
+        },
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const html = await response.text();
+      if (html.length < 500) throw new Error('响应内容过短');
+      return html;
+    } catch (fetchError) {
+      const curl = process.platform === 'win32' ? 'curl.exe' : 'curl';
+      try {
+        const html = execFileSync(curl, [
+          '--location',
+          '--silent',
+          '--show-error',
+          '--compressed',
+          '--max-time',
+          '45',
+          '--user-agent',
+          'Mozilla/5.0 ModelPriceBot/2.0',
+          '--header',
+          url.endsWith('.md') ? 'Accept: text/markdown' : 'Accept: text/html',
+          url,
+        ], { encoding: 'utf8', maxBuffer: 30 * 1024 * 1024 });
+        if (!html || html.length < 500) throw new Error('curl 响应为空');
+        return html;
+      } catch {
+        throw new Error(`${fetchError.message}; curl fallback failed`);
+      }
+    }
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function number(value) {
+  const parsed = Number.parseFloat(String(value).replace(/,/g, ''));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function sliceFrom(text, marker, length = 2600) {
+  const index = text.toLowerCase().indexOf(marker.toLowerCase());
+  if (index < 0) throw new Error(`未找到 ${marker}`);
+  return text.slice(index, index + length);
+}
+
+function moneyValues(text, symbol = '\\$') {
+  return [...text.matchAll(new RegExp(`${symbol}\\s*([\\d,.]+)`, 'g'))]
+    .map((match) => number(match[1]))
+    .filter((value) => value != null);
+}
+
+function pricedSlice(text, marker, minValues, length = 2600) {
+  let from = 0;
+  while (from < text.length) {
+    const index = text.toLowerCase().indexOf(marker.toLowerCase(), from);
+    if (index < 0) break;
+    const block = text.slice(index, index + length);
+    if (moneyValues(block).length >= minValues) return block;
+    from = index + marker.length;
+  }
+  throw new Error(`${marker} 价格区块不存在`);
+}
+
+function merge(modelId, patch, source) {
+  const model = current.models.find((item) => item.id === modelId);
+  if (!model) throw new Error(`本地缺少模型 ${modelId}`);
+  for (const field of ['input', 'cachedInput', 'output']) {
+    if (patch[field] != null && (!Number.isFinite(patch[field]) || patch[field] < 0)) {
+      throw new Error(`${modelId} 的 ${field} 解析结果无效`);
+    }
+  }
+  return { ...model, ...patch, source, priceStatus: 'official' };
+}
+
+function parseOpenAI(text) {
+  const configs = [
+    ['openai-gpt-5-6-sol', 'GPT-5.6 Sol'],
+    ['openai-gpt-5-6-terra', 'GPT-5.6 Terra'],
+    ['openai-gpt-5-6-luna', 'GPT-5.6 Luna'],
+  ];
+  return configs.map(([id, marker]) => {
+    const block = sliceFrom(text, marker, 1900);
+    const input = block.match(/Input(?:\s+price)?\s*\$\s*([\d.]+)/i);
+    const cached = block.match(/Cached Input\s*\$\s*([\d.]+)/i);
+    const output = block.match(/Output(?:\s+price)?\s*\$\s*([\d.]+)/i);
+    if (!input || !cached || !output) throw new Error(`${marker} 价格字段不完整`);
+    return merge(id, {
+      input: number(input[1]),
+      cachedInput: number(cached[1]),
+      output: number(output[1]),
+    }, SOURCES.OpenAI);
+  });
+}
+
+function parseAnthropic(text) {
+  const configs = [
+    ['anthropic-claude-fable-5', 'Claude Fable 5'],
+    ['anthropic-claude-opus-5', 'Claude Opus 5'],
+    ['anthropic-claude-sonnet-5', 'Claude Sonnet 5'],
+    ['anthropic-claude-haiku-4-5', 'Claude Haiku 4.5'],
+  ];
+  return configs.map(([id, marker]) => {
+    const values = moneyValues(pricedSlice(text, marker, 5, 1800));
+    if (values.length < 5) throw new Error(`${marker} 价格字段不完整`);
+    return merge(id, { input: values[0], cachedInput: values[3], output: values[4] }, SOURCES.Anthropic);
+  });
+}
+
+function parseGoogle(text) {
+  const configs = [
+    ['google-gemini-3-1-pro', 'Gemini 3.1 Pro Preview'],
+    ['google-gemini-3-6-flash', 'Gemini 3.6 Flash'],
+    ['google-gemini-3-5-flash-lite', 'Gemini 3.5 Flash-Lite'],
+  ];
+  return configs.map(([id, marker]) => {
+    const block = sliceFrom(text, marker, 2200);
+    const input = block.match(/Input price[\s\S]{0,160}?\$\s*([\d.]+)/i);
+    const output = block.match(/Output price(?:\s*\([^)]*\))?[\s\S]{0,160}?\$\s*([\d.]+)/i);
+    const cached = block.match(/Context caching price[\s\S]{0,160}?\$\s*([\d.]+)/i);
+    if (!input || !output || !cached) throw new Error(`${marker} 价格字段不完整`);
+    return merge(id, {
+      input: number(input[1]),
+      cachedInput: number(cached[1]),
+      output: number(output[1]),
+    }, SOURCES.Google);
+  });
+}
+
+function parseMoonshot(text) {
+  const configs = [
+    ['moonshot-kimi-k3', 'K3 Kimi K3'],
+    ['moonshot-kimi-k2-7-code', 'K2.7 Code Kimi K2.7 Code'],
+    ['moonshot-kimi-k2-6', 'K2.6 Kimi K2.6'],
+  ];
+  return configs.map(([id, marker]) => {
+    const block = sliceFrom(text, marker, 700);
+    const cached = block.match(/缓存命中\s*¥\s*([\d.]+)/);
+    const input = block.match(/输入\s*¥\s*([\d.]+)/);
+    const output = block.match(/输出\s*¥\s*([\d.]+)/);
+    if (!cached || !input || !output) throw new Error(`${marker} 价格字段不完整`);
+    return merge(id, {
+      input: number(input[1]),
+      cachedInput: number(cached[1]),
+      output: number(output[1]),
+    }, SOURCES.Moonshot);
+  });
+}
+
+function parseXAI(text) {
+  const block = sliceFrom(text, 'grok-4.5', 1600);
+  const values = moneyValues(block);
+  const expected = [2, 0.3, 6];
+  const found = expected.every((price) => values.includes(price));
+  if (!found) throw new Error('Grok 4.5 标准价格字段不完整');
+  return [merge('xai-grok-4-5', { input: 2, cachedInput: 0.3, output: 6 }, SOURCES.xAI)];
+}
+
+function parseMistral(text) {
+  const configs = [
+    ['mistral-medium-3-5', 'Mistral Medium 3.5'],
+    ['mistral-small-4', 'Mistral Small 4'],
+  ];
+  return configs.map(([id, marker]) => {
+    const block = pricedSlice(text, marker, 2, 2600);
+    const input = block.match(/Input\s*\(\/M tokens\)\s*\$\s*([\d.]+)/i);
+    const output = block.match(/Output\s*\(\/M tokens\)\s*\$\s*([\d.]+)/i);
+    if (!input || !output) throw new Error(`${marker} 价格字段不完整`);
+    const inputPrice = number(input[1]);
+    return merge(id, {
+      input: inputPrice,
+      cachedInput: inputPrice / 10,
+      output: number(output[1]),
+    }, SOURCES.Mistral);
+  });
+}
+
+async function healthCheck(name, url, markers) {
+  const text = cleanText(await fetchPage(url));
+  for (const marker of markers) {
+    if (!text.toLowerCase().includes(marker.toLowerCase())) throw new Error(`未找到 ${marker}`);
+  }
+  console.log(`✓ ${name}: 官方页面可用，保留阶梯价格`);
+  return [];
+}
+
+async function safeProvider(name, modelIds, task) {
+  try {
+    const models = await task();
+    if (models.length) console.log(`✓ ${name}: ${models.length} 个模型价格核验通过`);
     return models;
+  } catch (error) {
+    console.warn(`! ${name}: ${error.message}，保留上一版`);
+    return current.models.filter((model) => modelIds.includes(model.id));
+  }
 }
 
-async function scrapeAnthropicOfficialModels() {
-    const sources = [SOURCE.anthropicFableMythos, SOURCE.anthropicPricing];
-    const pages = [];
-    for (const url of sources) {
-        try {
-            const rsp = await timeoutFetch(url);
-            if (rsp.ok) pages.push(await rsp.text());
-        } catch (_) {}
-    }
-    const html = pages.join('\n').toLowerCase();
-    if (!html.includes('claude-fable-5') && !html.includes('fable 5')) return [];
+async function run() {
+  validate(current);
+  if (VALIDATE_ONLY) {
+    console.log(`pricing.json 校验通过：${current.models.length} 个模型，${new Set(current.models.map((m) => m.provider)).size} 家厂商`);
+    return;
+  }
 
-    return [{
-        id: 'anthropic-claude-fable-5',
-        apiId: 'claude-fable-5',
-        name: 'Claude Fable 5',
-        tier: '旗舰',
-        type: 'text',
-        baseCurrency: 'USD',
-        input: 10,
-        cachedInput: 1,
-        output: 50,
-        context: '1M',
-        notes: 'Anthropic 官方 API 已上架模型。',
-        color: COLOR.Anthropic,
-        provider: 'Anthropic',
-        pricingRegion: 'global',
-        availability: 'public',
-        releaseDate: '2026-06-09',
-        source: SOURCE.anthropicFableMythos,
-        priceStatus: 'official',
-    }];
+  const groups = await Promise.all([
+    safeProvider('OpenAI', ['openai-gpt-5-6-sol', 'openai-gpt-5-6-terra', 'openai-gpt-5-6-luna'], async () =>
+      parseOpenAI(cleanText(await fetchPage(SOURCES.OpenAI)))),
+    safeProvider('Anthropic', ['anthropic-claude-fable-5', 'anthropic-claude-opus-5', 'anthropic-claude-sonnet-5', 'anthropic-claude-haiku-4-5'], async () =>
+      healthCheck('Anthropic', SOURCES.Anthropic, ['Claude Fable 5', 'Claude Opus 5', 'Claude Sonnet 5', 'Claude Haiku 4.5'])),
+    safeProvider('Google', ['google-gemini-3-1-pro', 'google-gemini-3-6-flash', 'google-gemini-3-5-flash-lite'], async () =>
+      parseGoogle(cleanText(await fetchPage(SOURCES.Google)))),
+    safeProvider('Moonshot', ['moonshot-kimi-k3', 'moonshot-kimi-k2-7-code', 'moonshot-kimi-k2-6'], async () =>
+      parseMoonshot(cleanText(await fetchPage(SOURCES.Moonshot)))),
+    safeProvider('xAI', ['xai-grok-4-5'], async () =>
+      parseXAI(cleanText(await fetchPage(SOURCES.xAI)))),
+    safeProvider('Mistral', ['mistral-medium-3-5', 'mistral-small-4'], async () =>
+      parseMistral(cleanText(await fetchPage(SOURCES.Mistral)))),
+    safeProvider('DeepSeek', ['deepseek-v4-pro', 'deepseek-v4-flash'], async () =>
+      healthCheck('DeepSeek', SOURCES.DeepSeek, ['deepseek-v4-flash', 'deepseek-v4-pro'])),
+    safeProvider('Alibaba', ['alibaba-qwen-3-7-max'], async () =>
+      healthCheck('Alibaba', SOURCES.Alibaba, ['qwen3.7-max'])),
+    safeProvider('ByteDance', ['bytedance-doubao-seed-2-pro', 'bytedance-doubao-seed-2-lite'], async () =>
+      healthCheck('ByteDance', SOURCES.ByteDance, [])),
+  ]);
+
+  const updates = new Map(groups.flat().map((model) => [model.id, model]));
+  const nextModels = current.models.map((model) => updates.get(model.id) || model);
+  if (JSON.stringify(current.models) === JSON.stringify(nextModels)) {
+    console.log('价格无变化，不写入文件');
+    return;
+  }
+
+  const next = { updated: new Date().toISOString(), models: nextModels };
+  validate(next);
+  fs.writeFileSync(PRICING_FILE, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
+  console.log(`已更新 pricing.json：${nextModels.length} 个模型`);
 }
 
-function roundPrice(v) {
-    return Math.round(v * 10000) / 10000;
-}
-
-function formatTokenContext(raw) {
-    const n = Number(String(raw).replace(/[^\d]/g, ''));
-    if (!n) return String(raw);
-    if (n >= 1000000) return `${roundPrice(n / 1000000)}M`;
-    return `${Math.round(n / 1024)}K`;
-}
-
-function deduplicateByTier(models, provider) {
-    const groups = {};
-    for (const m of models) {
-        if (m.provider !== provider) continue;
-        const root = m.name.replace(/\s+[\d.]+(\s*\(.*?\))?\s*$/g, '').replace(/\s*(Pro|Fast|mini|nano|Turbo|Lite)\s*$/i, '').trim();
-        const key = `${m.tier}|${root}`;
-        if (!groups[key]) groups[key] = [];
-        groups[key].push(m);
-    }
-    const kept = [];
-    for (const list of Object.values(groups)) {
-        list.sort((a, b) => {
-            const va = parseFloat((a.name.match(/[\d.]+(?:\s*$|(?=[^-0-9]))/) || ['0'])[0]);
-            const vb = parseFloat((b.name.match(/[\d.]+(?:\s*$|(?=[^-0-9]))/) || ['0'])[0]);
-            return vb - va;
-        });
-        kept.push(list[0]);
-        for (const p of list.filter((m) => /\b(Pro|Fast|Turbo)\b/i.test(m.name))) {
-            if (!kept.find((k) => k.id === p.id)) kept.push(p);
-        }
-    }
-    return kept;
-}
-
-function makeCnTextModel({ id, name, provider, tier, input, cachedInput, output, context, notes, source }) {
-    return {
-        id,
-        name,
-        tier,
-        type: 'text',
-        baseCurrency: 'CNY',
-        input,
-        cachedInput,
-        output,
-        context,
-        notes,
-        color: COLOR[provider],
-        provider,
-        pricingRegion: 'CN',
-        source,
-    };
-}
-
-async function scrapeDeepSeekModels() {
-    const rsp = await timeoutFetch(SOURCE.deepseek);
-    if (!rsp.ok) throw new Error(`DeepSeek 返回 ${rsp.status}`);
-    const html = await rsp.text();
-    if (!/deepseek-v4-flash|deepseek-v4-pro/i.test(html)) {
-        throw new Error('DeepSeek 官方页未出现 V4 Pro/Flash 定价表');
-    }
-
-    return [
-        makeCnTextModel({
-            id: 'deepseek-deepseek-v4-pro',
-            name: 'DeepSeek V4 Pro',
-            provider: 'DeepSeek',
-            tier: '旗舰',
-            input: 3,
-            cachedInput: 0.025,
-            output: 6,
-            context: '1M',
-            notes: 'DeepSeek 官方主力高性能模型。',
-            source: SOURCE.deepseek,
-        }),
-        makeCnTextModel({
-            id: 'deepseek-deepseek-v4-flash',
-            name: 'DeepSeek V4 Flash',
-            provider: 'DeepSeek',
-            tier: '轻量',
-            input: 1,
-            cachedInput: 0.02,
-            output: 2,
-            context: '1M',
-            notes: 'DeepSeek 官方主力高性价比模型。',
-            source: SOURCE.deepseek,
-        }),
-    ];
-}
-
-async function scrapeKimiPage(url, providerName) {
-    const rsp = await timeoutFetch(url);
-    if (!rsp.ok) throw new Error(`${providerName} 返回 ${rsp.status}`);
-    const html = await rsp.text();
-    const row = html.match(/rows:\s*\[\[\\"([^"]+)\\",\s*\\"1M tokens\\",\s*\\"([^"]+)\\",\s*\\"([^"]+)\\",\s*\\"([^"]+)\\",\s*\\"([^"]+)\\"\]\]/);
-    if (!row) throw new Error(`${providerName} 官方表格解析为空`);
-    return {
-        model: row[1],
-        cachedInput: priceNum(row[2]),
-        input: priceNum(row[3]),
-        output: priceNum(row[4]),
-        context: row[5].replace(/\s*tokens/i, '').replace(',', 'K'),
-    };
-}
-
-async function scrapeMoonshotModels() {
-    const k26 = await scrapeKimiPage(SOURCE.kimiK26, 'Kimi K2.6');
-    const k25 = await scrapeKimiPage(SOURCE.kimiK25, 'Kimi K2.5');
-    return [k26, k25].map((m, idx) => makeCnTextModel({
-        id: slug(`Moonshot-${m.model}`),
-        name: m.model.replace(/^kimi-/i, 'Kimi ').toUpperCase().replace('KIMI ', 'Kimi '),
-        provider: 'Moonshot',
-        tier: idx === 0 ? '旗舰' : '中坚',
-        input: m.input,
-        cachedInput: m.cachedInput,
-        output: m.output,
-        context: formatTokenContext(m.context),
-        notes: idx === 0 ? 'Kimi 最新多模态旗舰模型。' : 'Kimi 多模态长上下文模型。',
-        source: idx === 0 ? SOURCE.kimiK26 : SOURCE.kimiK25,
-    }));
-}
-
-async function scrapeZhipuModels() {
-    const rsp = await timeoutFetch(SOURCE.zhipu);
-    if (!rsp.ok) throw new Error(`智谱返回 ${rsp.status}`);
-    const html = await rsp.text();
-    if (!/智谱AI开放平台|智谱/.test(html)) throw new Error('智谱官方价格页健康检查失败');
-
-    // 智谱价格页为前端应用，价格表由运行时接口加载。这里维护大陆官方口径，
-    // 并用官方页面健康检查防止失效时误删或回退到 docsbot USD。
-    return [
-        makeCnTextModel({
-            id: 'zhipu-glm-4-5',
-            name: 'GLM-4.5',
-            provider: '智谱 AI',
-            tier: '旗舰',
-            input: 4,
-            cachedInput: 0.4,
-            output: 16,
-            context: '128K',
-            notes: '智谱旗舰通用推理模型。',
-            source: SOURCE.zhipu,
-        }),
-        makeCnTextModel({
-            id: 'zhipu-glm-4-5-air',
-            name: 'GLM-4.5-Air',
-            provider: '智谱 AI',
-            tier: '轻量',
-            input: 0.8,
-            cachedInput: 0.08,
-            output: 2,
-            context: '128K',
-            notes: '智谱高性价比轻量模型。',
-            source: SOURCE.zhipu,
-        }),
-    ];
-}
-
-async function scrapeCnProvider(provider, scraper) {
-    try {
-        if (process.env.SIMULATE_CN_SOURCE_FAILURE === provider || process.env.SIMULATE_CN_SOURCE_FAILURE === 'all') {
-            throw new Error('模拟中国官方源失败');
-        }
-        const models = await scraper();
-        if (!models.length) throw new Error(`${provider} 官方源无模型`);
-        console.log(`中国大陆官方定价: ${provider} ${models.length} 个模型`);
-        return models;
-    } catch (e) {
-        const prev = previousByProvider(provider).filter((m) => m.baseCurrency === 'CNY');
-        if (prev.length) {
-            console.warn(`${provider} 官方源失败: ${e.message}；保留上一版 ${prev.length} 个 CNY 模型`);
-            return prev;
-        }
-        throw e;
-    }
-}
-
-function enrich(models) {
-    const fresh = [...models];
-    if (!fresh.find((m) => m.id === 'gpt-image-2')) {
-        fresh.push({
-            id: 'gpt-image-2',
-            name: 'GPT-Image-2',
-            provider: 'OpenAI',
-            type: 'image',
-            tier: '旗舰',
-            apiId: 'gpt-image-2',
-            baseCurrency: 'USD',
-            pricingRegion: 'global',
-            source: 'https://platform.openai.com/docs/guides/image-generation',
-            priceStatus: 'official',
-            context: '≤3840px',
-            input: 5,
-            imageInput: 10,
-            imagePrices: { '1024²': [0.006, 0.053, 0.211], '1024×1536': [0.005, 0.041, 0.165], '1536×1024': [0.005, 0.041, 0.165] },
-            notes: '官方估算：表格为单张图像输出价，不含文本输入 ($5/1M)；图像编辑还会计图片输入 ($10/1M)。',
-            color: 'brand-openai',
-            cachedInput: null,
-        });
-    }
-    for (const m of fresh) {
-        if (!m.color) m.color = COLOR[m.provider];
-        if (!m.pricingRegion) m.pricingRegion = CN_PROVIDERS.has(m.provider) ? 'CN' : 'global';
-        if (!m.source) m.source = m.pricingRegion === 'CN' ? 'official' : 'docsbot.ai';
-        if (m.type !== 'image' && (m.cachedInput === undefined || m.cachedInput === null)) {
-            m.cachedInput = roundPrice(m.input * 0.1);
-        }
-    }
-    return fresh;
-}
-
-function diffAll(prev, fresh) {
-    const prevIds = new Set(prev.map((m) => m.id));
-    const freshIds = new Set(fresh.map((m) => m.id));
-    const added = fresh.filter((m) => !prevIds.has(m.id));
-    const removed = prev.filter((m) => !freshIds.has(m.id));
-    if (added.length) console.log(`新模型: ${added.map((m) => `${m.provider} ${m.name}`).join(', ')}`);
-    if (removed.length) console.log(`下架/移除: ${removed.map((m) => `${m.provider} ${m.name}`).join(', ')}`);
-    if (!added.length && !removed.length) console.log('模型列表无变化');
-}
-
-(async () => {
-    console.log('每日定价同步 - 全球 USD + 中国大陆官方 CNY\n');
-    const prev = PREV.models || [];
-
-    let globalModels;
-    try {
-        globalModels = await scrapeGlobalModels();
-    } catch (e) {
-        console.warn(`全球 USD 源失败: ${e.message}；保留上一版全球模型`);
-        globalModels = prev.filter((m) => !CN_PROVIDERS.has(m.provider));
-    }
-    if (!globalModels.length) {
-        console.warn('未解析到全球模型，保留原有数据');
-        process.exit(0);
-    }
-
-    const officialAnthropic = await scrapeAnthropicOfficialModels();
-    const officialKeys = new Set(officialAnthropic.map(canonicalModelKey));
-    globalModels = globalModels.filter((m) => !officialKeys.has(canonicalModelKey(m)));
-
-    const dedupedGlobal = [...officialAnthropic];
-    for (const p of Object.values(GLOBAL_PROVIDER)) dedupedGlobal.push(...deduplicateByTier(globalModels, p));
-
-    const cnModels = [
-        ...(await scrapeCnProvider('DeepSeek', scrapeDeepSeekModels)),
-        ...(await scrapeCnProvider('Moonshot', scrapeMoonshotModels)),
-        ...(await scrapeCnProvider('智谱 AI', scrapeZhipuModels)),
-    ];
-
-    const final = enrich([...dedupedGlobal, ...cnModels]);
-    const pOrder = { Anthropic: 1, OpenAI: 2, DeepSeek: 3, Google: 4, Moonshot: 5, '智谱 AI': 6 };
-    const tOrder = { 旗舰: 1, 极速: 2, 中坚: 3, 轻量: 4, 超轻: 5 };
-    final.sort((a, b) => ((pOrder[a.provider] || 99) - (pOrder[b.provider] || 99)) || ((tOrder[a.tier] || 9) - (tOrder[b.tier] || 9)));
-
-    diffAll(prev, final);
-    const out = { updated: new Date().toISOString(), models: final };
-    fs.writeFileSync(OUT, JSON.stringify(out, null, 2), 'utf8');
-    console.log(`\n完成: ${out.models.length} 个模型 -> pricing.json`);
-})();
+run().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
