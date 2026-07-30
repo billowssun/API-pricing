@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-25T15:53:07.883Z",
+  "updated": "2026-07-30T18:45:25.015Z",
   "models": [
     {
       "id": "openai-gpt-5-6-sol",
@@ -28,9 +28,9 @@
       "tier": "均衡",
       "type": "text",
       "baseCurrency": "USD",
-      "input": 2.5,
-      "cachedInput": 0.25,
-      "output": 15,
+      "input": 2,
+      "cachedInput": 0.2,
+      "output": 12,
       "context": "1.05M",
       "maxOutput": "128K",
       "notes": "在智能水平、响应速度和调用成本之间取得平衡。",
@@ -47,9 +47,9 @@
       "tier": "轻量",
       "type": "text",
       "baseCurrency": "USD",
-      "input": 1,
-      "cachedInput": 0.1,
-      "output": 6,
+      "input": 0.2,
+      "cachedInput": 0.02,
+      "output": 1.2,
       "context": "1.05M",
       "maxOutput": "128K",
       "notes": "适合成本敏感和高吞吐的日常工作负载。",
