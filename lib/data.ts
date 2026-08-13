@@ -1,4 +1,5 @@
 import pricing from '@/pricing.json';
+import syncStatus from '@/sync-status.json';
 
 export type Currency = 'USD' | 'CNY';
 export type ModelType = 'text' | 'image' | 'audio' | 'video';
@@ -24,12 +25,21 @@ export type Model = {
   releaseDate?: string;
   source: string;
   priceStatus?: 'official' | 'aggregated';
+  catalogId?: string;
+  discoveredAt?: string;
+  lastVerifiedAt?: string;
   imageInput?: number;
   imagePrices?: Record<string, number[]>;
 };
 
 export const models = pricing.models as Model[];
 export const updatedAt = pricing.updated;
+export const sync = syncStatus as {
+  checkedAt: string;
+  status: 'healthy' | 'degraded' | 'stale' | 'failed';
+  modelCount: number;
+  sources: Array<{ name: string; status: string; role: string; message?: string; count?: number }>;
+};
 export const providers = [...new Set(models.map((model) => model.provider))];
 
 export function getModel(id: string) {

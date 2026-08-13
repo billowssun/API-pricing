@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: pricing-sync
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   sync:
@@ -15,8 +15,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -24,12 +26,20 @@ jobs:
         run: npm ci
       - name: 同步官方价格
         run: npm run data:sync
+      - name: 上传同步诊断
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pricing-sync-status
+          path: sync-status.json
+          if-no-files-found: error
       - name: 校验数据与构建
         run: npm run check
       - name: 提交价格变化
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pricing.json
-          git diff --staged --quiet || git commit -m "data: sync official model pricing"
-          git push
+          git add pricing.json sync-status.json
+          git diff --staged --quiet || git commit -m "data: sync model catalog and pricing"
+          git pull --rebase origin main
+          git push origin HEAD:main

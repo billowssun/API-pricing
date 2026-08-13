@@ -68,7 +68,7 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ id
             </div>
           </div>
           <a className="source-button" href={model.source} target="_blank" rel="noreferrer">
-            查看官方来源
+            {model.priceStatus === 'official' ? '查看官方来源' : '查看聚合来源'}
             <IconExternalLink size={17} stroke={1.7} />
           </a>
         </section>
@@ -107,6 +107,7 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ id
               <div><dt><IconDatabase size={17} />上下文</dt><dd>{model.context || '未公布'}</dd></div>
               {model.maxOutput && <div><dt><IconArrowUpRight size={17} />最大输出</dt><dd>{model.maxOutput}</dd></div>}
               <div><dt><IconCoin size={17} />计价货币</dt><dd>{model.baseCurrency}</dd></div>
+              <div><dt><IconCheck size={17} />价格来源</dt><dd>{model.priceStatus === 'official' ? '厂商官方' : 'OpenRouter 聚合'}</dd></div>
               <div><dt><IconCheck size={17} />可用状态</dt><dd>{availabilityLabel(model.availability)}</dd></div>
               {model.releaseDate && <div><dt><IconCalendar size={17} />发布日期</dt><dd>{model.releaseDate}</dd></div>}
             </dl>

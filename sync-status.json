@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-08-13T03:55:10.601Z",
+  "status": "healthy",
+  "sources": [
+    {
+      "name": "OpenRouter 模型目录",
+      "status": "ok",
+      "count": 55,
+      "role": "发现与聚合报价"
+    },
+    {
+      "name": "Anthropic 官方价格",
+      "status": "ok",
+      "role": "官方页面可访问"
+    },
+    {
+      "name": "Google 官方价格",
+      "status": "ok",
+      "role": "官方页面可访问"
+    },
+    {
+      "name": "DeepSeek 官方价格",
+      "status": "ok",
+      "role": "官方页面可访问"
+    },
+    {
+      "name": "Moonshot 官方平台",
+      "status": "ok",
+      "role": "官方页面可访问"
+    },
+    {
+      "name": "xAI 官方价格",
+      "status": "ok",
+      "role": "官方页面可访问"
+    },
+    {
+      "name": "Mistral 官方价格",
+      "status": "ok",
+      "role": "官方页面可访问"
+    },
+    {
+      "name": "Alibaba 官方价格",
+      "status": "ok",
+      "role": "官方页面可访问"
+    },
+    {
+      "name": "ByteDance 官方价格",
+      "status": "ok",
+      "role": "官方页面可访问"
+    },
+    {
+      "name": "OpenAI 官方价格",
+      "status": "ok",
+      "role": "官方价格校验"
+    }
+  ],
+  "modelCount": 61
+}
