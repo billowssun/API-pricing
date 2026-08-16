@@ -1,6 +1,6 @@
 {
-  "checkedAt": "2026-08-16T09:41:11.674Z",
-  "status": "healthy",
+  "checkedAt": "2026-08-16T10:38:57.496Z",
+  "status": "degraded",
   "sources": [
     {
       "name": "OpenRouter 模型目录",
@@ -20,8 +20,9 @@
     },
     {
       "name": "DeepSeek 官方价格",
-      "status": "ok",
-      "role": "官方页面可访问"
+      "status": "error",
+      "role": "保留上次官方报价",
+      "message": "fetch failed"
     },
     {
       "name": "Moonshot 官方平台",
