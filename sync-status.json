@@ -1,6 +1,6 @@
 {
-  "checkedAt": "2026-08-25T21:43:34.111Z",
-  "status": "healthy",
+  "checkedAt": "2026-08-25T22:44:19.823Z",
+  "status": "degraded",
   "sources": [
     {
       "name": "OpenRouter 模型目录",
@@ -25,8 +25,9 @@
     },
     {
       "name": "Moonshot 官方平台",
-      "status": "ok",
-      "role": "官方页面可访问"
+      "status": "error",
+      "role": "保留上次官方报价",
+      "message": "terminated"
     },
     {
       "name": "xAI 官方价格",
