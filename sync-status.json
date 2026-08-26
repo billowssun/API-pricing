@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-08-26T19:18:52.573Z",
+  "checkedAt": "2026-08-26T23:31:24.620Z",
   "status": "healthy",
   "sources": [
     {
@@ -54,5 +54,5 @@
       "role": "官方价格校验"
     }
   ],
-  "modelCount": 61
+  "modelCount": 62
 }
