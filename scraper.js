@@ -14,7 +14,7 @@ const STATUS_FILE = path.join(__dirname, 'sync-status.json');
 const VALIDATE_ONLY = process.argv.includes('--validate');
 const TIMEOUT_MS = 30_000;
 const OPENROUTER_MODELS = 'https://openrouter.ai/api/v1/models?output_modalities=text';
-const OPENAI_COMPARE = 'https://developers.openai.com/api/docs/models/compare';
+const OPENAI_MODELS = 'https://developers.openai.com/api/docs/models/';
 const OFFICIAL_SOURCES = [
   ['Anthropic 官方价格', 'https://platform.claude.com/docs/en/about-claude/pricing'],
   ['Google 官方价格', 'https://ai.google.dev/gemini-api/docs/pricing?hl=en'],
@@ -87,7 +87,7 @@ async function fetchText(url) {
   } catch (fetchError) {
     const curl = process.platform === 'win32' ? 'curl.exe' : 'curl';
     try {
-      return execFileSync(curl, ['--location', '--silent', '--show-error', '--compressed', '--max-time', '45', '--user-agent', 'Mozilla/5.0 Chrome/138 ModelPriceBot/3.0', url], {
+      return execFileSync(curl, ['--fail', '--location', '--silent', '--show-error', '--compressed', '--max-time', '45', '--user-agent', 'Mozilla/5.0 Chrome/138 ModelPriceBot/3.0', url], {
         encoding: 'utf8', maxBuffer: 30 * 1024 * 1024,
       });
     } catch {
@@ -208,24 +208,45 @@ function catalogModel(model, checkedAt) {
   };
 }
 
-function updateOpenAIPrices(models, markdown, checkedAt) {
-  markdown = cleanDocument(markdown);
-  const next = models.map((model) => ({ ...model }));
-  for (const model of next.filter((item) => item.provider === 'OpenAI' && item.priceStatus === 'official')) {
-    const marker = model.name;
-    const start = markdown.toLowerCase().indexOf(marker.toLowerCase());
-    if (start < 0) throw new Error(`官方页面未找到 ${marker}`);
-    const block = markdown.slice(start, start + 1800);
-    const input = block.match(/Input\s*\$\s*([\d.]+)/i);
-    const cached = block.match(/Cached Input\s*\$\s*([\d.]+)/i);
-    const output = block.match(/Output\s*\$\s*([\d.]+)/i);
-    if (!input || !cached || !output) throw new Error(`${marker} 官方价格字段不完整`);
-    model.input = number(input[1]);
-    model.cachedInput = number(cached[1]);
-    model.output = number(output[1]);
-    model.lastVerifiedAt = checkedAt;
+function parseOpenAIPrice(model, document) {
+  // Navigation and comparison cards may mention other models. Require the
+  // page's own heading, then read only its standard text-token pricing block.
+  const heading = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(document)
+    || /^#\s+(.+)$/m.exec(document);
+  if (!heading || cleanDocument(heading[1]).toLowerCase() !== model.name.toLowerCase()) {
+    throw new Error(`${model.name} 官方页面标题不匹配`);
   }
-  return next;
+  const body = cleanDocument(document.slice(heading.index + heading[0].length))
+    .replace(/[*#|`]/g, ' ');
+  const section = /\bPricing\b[\s\S]*?\bText tokens\b([\s\S]*?)(?:Quick comparison|\bImage tokens\b|\bAudio tokens\b|\bEndpoints\b|$)/i.exec(body);
+  // The server negotiates Markdown tables for our Accept header; browsers get
+  // HTML cards. Both layouts must explicitly declare the same per-million unit.
+  const prices = section?.[1].match(/^\s*Per 1M tokens\s+Input\s*\$\s*(\d+(?:\.\d+)?)\s+Cached input\s*\$\s*(\d+(?:\.\d+)?)\s+Output\s*\$\s*(\d+(?:\.\d+)?)(?=\s|$)/i)
+    || section?.[1].match(/^\s*Metric\s+Price\s+Unit[\s:-]+Input\s*\$\s*(\d+(?:\.\d+)?)\s+1M tokens\s+Cached input\s*\$\s*(\d+(?:\.\d+)?)\s+1M tokens\s+Output\s*\$\s*(\d+(?:\.\d+)?)\s+1M tokens\b/i);
+  if (!prices) {
+    const pricingStart = body.search(/\bPricing\b/i);
+    throw new Error(`${model.name} 官方标准文本价格字段不完整或格式已变化；价格区片段：${body.slice(Math.max(0, pricingStart), Math.max(0, pricingStart) + 700)}`);
+  }
+  return { input: Number(prices[1]), cachedInput: Number(prices[2]), output: Number(prices[3]) };
+}
+
+async function updateOpenAIPrices(models, checkedAt, readText = fetchText) {
+  // allSettled collects every model failure; never publish a partially parsed
+  // catalog or advance verification timestamps when a required source fails.
+  const results = await Promise.allSettled(models.map(async (model) => {
+    if (model.provider !== 'OpenAI' || model.priceStatus !== 'official') return { ...model };
+    if (!/^[a-z0-9][a-z0-9.-]*$/.test(model.apiId || '')) throw new Error(`${model.name} API ID 无效`);
+    const source = `${OPENAI_MODELS}${model.apiId}`;
+    try {
+      const prices = parseOpenAIPrice(model, await readText(source));
+      return { ...model, ...prices, source, lastVerifiedAt: checkedAt };
+    } catch (error) {
+      throw new Error(`${source}: ${error.message}`);
+    }
+  }));
+  const failures = results.filter((result) => result.status === 'rejected');
+  if (failures.length) throw new Error(failures.map((result) => result.reason.message).join('; '));
+  return results.map((result) => result.value);
 }
 
 function mergeCatalog(existing, catalog, checkedAt) {
@@ -291,8 +312,7 @@ async function run() {
   });
 
   try {
-    const markdown = await fetchText(OPENAI_COMPARE);
-    nextModels = updateOpenAIPrices(nextModels, markdown, checkedAt);
+    nextModels = await updateOpenAIPrices(nextModels, checkedAt);
     status.sources.push({ name: 'OpenAI 官方价格', status: 'ok', role: '官方价格校验' });
   } catch (error) {
     status.status = 'failed';
@@ -313,7 +333,11 @@ async function run() {
   console.log(`同步完成：${nextModels.length} 个模型，其中 ${discovered} 个由聚合目录自动发现`);
 }
 
-run().catch((error) => {
-  console.error(`同步失败：${error.message}`);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  run().catch((error) => {
+    console.error(`同步失败：${error.message}`);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = { parseOpenAIPrice, updateOpenAIPrices, validate };
