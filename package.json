@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "data:validate": "node scraper.js --validate",
     "data:sync": "node scraper.js",
-    "check": "npm run data:validate && npm run typecheck && npm run build"
+    "test": "node --test tests/*.test.cjs",
+    "check": "npm test && npm run data:validate && npm run typecheck && npm run build"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.34.1",

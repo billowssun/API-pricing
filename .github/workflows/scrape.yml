@@ -6,12 +6,13 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: pricing-sync
-  cancel-in-progress: true
+  group: pricing-sync-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
     steps:
@@ -25,7 +26,13 @@ jobs:
       - name: 安装依赖
         run: npm ci
       - name: 同步官方价格
-        run: npm run data:sync
+        run: |
+          npm test
+          npm run data:sync
+      - name: 写入同步摘要
+        if: always()
+        run: |
+          node -e 'const fs = require("node:fs"); const s = JSON.parse(fs.readFileSync("sync-status.json", "utf8")); fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, "## 模型同步诊断\n\n检查时间：" + s.checkedAt + "\n\n状态：" + s.status + "\n\n" + s.sources.map(x => "- " + x.name + ": " + x.status + (x.message ? " — " + x.message : "")).join("\n") + "\n");'
       - name: 上传同步诊断
         if: always()
         uses: actions/upload-artifact@v7
@@ -36,6 +43,7 @@ jobs:
       - name: 校验数据与构建
         run: npm run check
       - name: 提交价格变化
+        if: github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
