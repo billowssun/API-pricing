@@ -1,8 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { parseOpenAIPrice, updateOpenAIPrices } = require('../scraper.js');
 
 const luna = { id: 'luna', apiId: 'gpt-5.6-luna', name: 'GPT-5.6 Luna', provider: 'OpenAI', priceStatus: 'official', input: 9, cachedInput: 8, output: 7, lastVerifiedAt: 'old' };
+// Pricing table excerpt observed in the real Actions response on 2026-09-08.
+const table = fs.readFileSync(path.join(__dirname, 'fixtures/openai-luna.md'), 'utf8');
 // Minimal fixture of the official model page's heading and pricing structure.
 const page = (name = luna.name) => `<nav>GPT-6 Astra Input $10 Cached Input $1 Output $50</nav><h1>${name}</h1><h2>Pricing</h2><h3>Text tokens</h3><p>Per 1M tokens</p><div>Input</div><div>$0.20</div><div>Cached input</div><div>$0.02</div><div>Output</div><div>$1.20</div><h3>Quick comparison</h3>GPT-5.6 Terra $2`;
 
@@ -11,6 +15,14 @@ test('reads the model own prices, ignoring navigation and comparison cards', () 
 });
 test('supports official markdown responses', () => {
   assert.deepEqual(parseOpenAIPrice(luna, '# GPT-5.6 Luna\n## Pricing\n### Text tokens\nPer 1M tokens\nInput\n$0.20\nCached input\n$0.02\nOutput\n$1.20\nQuick comparison'), { input: 0.2, cachedInput: 0.02, output: 1.2 });
+});
+test('parses the content-negotiated Markdown table returned to Actions', () => {
+  assert.deepEqual(parseOpenAIPrice(luna, table), { input: 0.2, cachedInput: 0.02, output: 1.2 });
+});
+test('rejects missing rows and inconsistent units in Markdown tables', () => {
+  for (const body of [table.replace('| Cached input | $0.02 | 1M tokens |', ''), table.replace('$1.2 | 1M', '$1.2 | 1K')]) {
+    assert.throws(() => parseOpenAIPrice(luna, body), /字段不完整/);
+  }
 });
 test('rejects compare pages, wrong model pages and HTTP error bodies', () => {
   for (const body of [page('Compare models'), page('GPT-6 Astra'), 'Forbidden']) {
@@ -39,9 +51,13 @@ test('fetches each independent model page, not the default compare selection', a
   assert.equal(luna.lastVerifiedAt, 'old');
 });
 test('a failed model prevents partial publication and retains original prices/dates', async () => {
-  const before = structuredClone(luna);
-  await assert.rejects(updateOpenAIPrices([luna], 'new', async () => { throw new Error('HTTP 403'); }), /gpt-5.6-luna: HTTP 403/);
-  assert.deepEqual(luna, before);
+  const models = [luna, { ...luna, apiId: 'gpt-5.6-sol', name: 'GPT-5.6 Sol' }];
+  const before = structuredClone(models);
+  await assert.rejects(updateOpenAIPrices(models, 'new', async url => {
+    if (url.endsWith('luna')) throw new Error('HTTP 403');
+    return page('GPT-5.6 Sol');
+  }), /gpt-5.6-luna: HTTP 403/);
+  assert.deepEqual(models, before);
 });
 test('does not request aggregated or other provider models', async () => {
   const models = [{ ...luna, priceStatus: 'aggregated' }, { ...luna, provider: 'Google' }];

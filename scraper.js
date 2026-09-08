@@ -218,8 +218,11 @@ function parseOpenAIPrice(model, document) {
   }
   const body = cleanDocument(document.slice(heading.index + heading[0].length))
     .replace(/[*#|`]/g, ' ');
-  const section = /\bPricing\b[\s\S]*?\bText tokens\s+Per 1M tokens\b([\s\S]*?)(?:Quick comparison|\bImage tokens\b|\bAudio tokens\b|$)/i.exec(body);
-  const prices = section?.[1].match(/^\s*Input\s*\$\s*(\d+(?:\.\d+)?)\s+Cached input\s*\$\s*(\d+(?:\.\d+)?)\s+Output\s*\$\s*(\d+(?:\.\d+)?)(?=\s|$)/i);
+  const section = /\bPricing\b[\s\S]*?\bText tokens\b([\s\S]*?)(?:Quick comparison|\bImage tokens\b|\bAudio tokens\b|\bEndpoints\b|$)/i.exec(body);
+  // The server negotiates Markdown tables for our Accept header; browsers get
+  // HTML cards. Both layouts must explicitly declare the same per-million unit.
+  const prices = section?.[1].match(/^\s*Per 1M tokens\s+Input\s*\$\s*(\d+(?:\.\d+)?)\s+Cached input\s*\$\s*(\d+(?:\.\d+)?)\s+Output\s*\$\s*(\d+(?:\.\d+)?)(?=\s|$)/i)
+    || section?.[1].match(/^\s*Metric\s+Price\s+Unit[\s:-]+Input\s*\$\s*(\d+(?:\.\d+)?)\s+1M tokens\s+Cached input\s*\$\s*(\d+(?:\.\d+)?)\s+1M tokens\s+Output\s*\$\s*(\d+(?:\.\d+)?)\s+1M tokens\b/i);
   if (!prices) {
     const pricingStart = body.search(/\bPricing\b/i);
     throw new Error(`${model.name} 官方标准文本价格字段不完整或格式已变化；价格区片段：${body.slice(Math.max(0, pricingStart), Math.max(0, pricingStart) + 700)}`);
