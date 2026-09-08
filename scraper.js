@@ -220,7 +220,10 @@ function parseOpenAIPrice(model, document) {
     .replace(/[*#|`]/g, ' ');
   const section = /\bPricing\b[\s\S]*?\bText tokens\s+Per 1M tokens\b([\s\S]*?)(?:Quick comparison|\bImage tokens\b|\bAudio tokens\b|$)/i.exec(body);
   const prices = section?.[1].match(/^\s*Input\s*\$\s*(\d+(?:\.\d+)?)\s+Cached input\s*\$\s*(\d+(?:\.\d+)?)\s+Output\s*\$\s*(\d+(?:\.\d+)?)(?=\s|$)/i);
-  if (!prices) throw new Error(`${model.name} 官方标准文本价格字段不完整或格式已变化`);
+  if (!prices) {
+    const pricingStart = body.search(/\bPricing\b/i);
+    throw new Error(`${model.name} 官方标准文本价格字段不完整或格式已变化；价格区片段：${body.slice(Math.max(0, pricingStart), Math.max(0, pricingStart) + 700)}`);
+  }
   return { input: Number(prices[1]), cachedInput: Number(prices[2]), output: Number(prices[3]) };
 }
 
