@@ -8,6 +8,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
+const { selectMainstreamModels, providers: boardProviders } = require('./lib/catalog-policy.cjs');
 
 const PRICING_FILE = path.join(__dirname, 'pricing.json');
 const STATUS_FILE = path.join(__dirname, 'sync-status.json');
@@ -38,12 +39,15 @@ const PROVIDERS = {
   qwen: 'Alibaba',
   bytedance: 'ByteDance',
   'bytedance-seed': 'ByteDance',
+  'z-ai': 'ZAI',
+  minimax: 'MiniMax',
 };
 
 const OFFICIAL_HOSTS = new Set([
   'developers.openai.com', 'platform.claude.com', 'ai.google.dev',
   'api-docs.deepseek.com', 'platform.kimi.com', 'docs.x.ai', 'mistral.ai',
   'help.aliyun.com', 'www.volcengine.com',
+  'docs.z.ai', 'platform.minimax.io',
 ]);
 
 function validate(data) {
@@ -167,9 +171,22 @@ function isPrimaryTextModel(model) {
 }
 
 function selectCatalog(models) {
+  const supported = new Set(boardProviders.map(provider => provider.id));
+  const candidates = models.filter(isPrimaryTextModel);
+  const representatives = new Set(selectMainstreamModels(candidates.map(model => ({
+    id: model.id, apiId: model.id.split('/').slice(1).join('/'), name: cleanName(model.name || model.id),
+    provider: PROVIDERS[model.id.split('/')[0]], type: 'text', priceStatus: 'aggregated',
+    releaseDate: model.created ? new Date(model.created * 1000).toISOString().slice(0, 10) : undefined,
+  }))).map(model => model.id));
+  // Preserve non-board providers for old detail links, but prevent a burst of
+  // six Flash releases from crowding the current Pro/Plus tier out of discovery.
   const byProvider = new Map();
-  for (const model of models.filter(isPrimaryTextModel).sort((a, b) => (b.created || 0) - (a.created || 0))) {
+  for (const model of candidates.sort((a, b) => (b.created || 0) - (a.created || 0))) {
     const author = model.id.split('/')[0];
+    if (supported.has(PROVIDERS[author])) {
+      if (representatives.has(model.id)) byProvider.set(model.id, [model]);
+      continue;
+    }
     const list = byProvider.get(author) || [];
     if (list.length < 6) list.push(model);
     byProvider.set(author, list);
@@ -340,4 +357,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseOpenAIPrice, updateOpenAIPrices, validate };
+module.exports = { parseOpenAIPrice, updateOpenAIPrices, validate, selectCatalog };

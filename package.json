@@ -21,6 +21,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@lobehub/icons-static-svg": "1.95.0",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

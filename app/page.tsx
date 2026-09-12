@@ -1,56 +1,76 @@
-import { IconActivity, IconAlertTriangle, IconCheck, IconClock, IconDatabase } from '@tabler/icons-react';
-import { ModelExplorer } from '@/components/ModelExplorer';
-import { Shell } from '@/components/Shell';
-import { formatUpdated, models, providers, sync } from '@/lib/data';
-
+import { IconExternalLink } from "@tabler/icons-react";
+import { ModelExplorer } from "@/components/ModelExplorer";
+import { models, sync, formatUpdated } from "@/lib/data";
+import { selectMainstreamModels } from "@/lib/catalog-policy.cjs";
 export const revalidate = 3600;
-
 export default function HomePage() {
-  const officialCount = models.filter((model) => model.priceStatus === 'official').length;
-  const discoveredCount = models.length - officialCount;
-  const healthy = sync.status === 'healthy';
-
   return (
-    <Shell>
-      <div className="page-shell tool-page">
-        <section className="tool-header" aria-labelledby="page-title">
-          <div>
-            <h1 id="page-title">AI 模型价格监控</h1>
-            <p>查价格、找新模型、核对来源。标准价格统一为每 100 万 tokens。</p>
+    <main className="price-board">
+      <header className="board-masthead">
+        <a href="/" className="board-brand">
+          ModelPrice
+        </a>
+        <span className="board-edition">精选价目簿</span>
+        <a className="board-source-link" href="#sources">
+          来源说明 <IconExternalLink size={13} />
+        </a>
+      </header>
+      <div className="board-content">
+        <div className="board-heading">
+          <h1>大模型价格</h1>
+          <p>精选主流 · 按厂商分组</p>
+        </div>
+        <ModelExplorer models={selectMainstreamModels(models)} />
+        <footer className="board-footer">
+          <span>
+            USD 美元 <span className="footer-separator">/</span> CNY 人民币{" "}
+            <span className="footer-separator">·</span> 每百万 tokens
+          </span>
+          <a
+            href="#sources"
+            className={sync.status === "healthy" ? "" : "sync-warning"}
+          >
+            目录同步 {formatUpdated(sync.checkedAt)}
+            {sync.status !== "healthy" ? " · 部分来源异常" : ""}
+          </a>
+        </footer>
+        <details className="board-sources" id="sources">
+          <summary>来源与选型说明</summary>
+          <div className="sources-content">
+            <p>
+              每家保留各产品线的当前代表型号，同系列新版本替换旧版本；不代表调用量排名。实验版、重复快照与旧型号不进入本表。点击模型名称可查看上下文、API
+              ID 和计费限制。
+            </p>
+            <p>
+              <strong>官方</strong>为厂商直连报价；<strong>聚合</strong>为
+              OpenRouter
+              路由报价。按原币展示，不将人民币与美元直接排名。长上下文、Batch、缓存写入、地区和工具调用可能另外收费。
+            </p>
+            <p>
+              目录同步时间不等于每一条价格的核验时间。各模型的核验日期在展开详情中单独显示，外站可访问也不代表该厂商的报价已重新解析。
+            </p>
+            <ul>
+              {sync.sources.map((source) => (
+                <li key={source.name}>
+                  <span>{source.name}</span>
+                  <span>
+                    {source.status === "ok"
+                      ? source.role
+                      : `异常 · ${source.message || "保留上次数据"}`}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href="https://github.com/billowssun/API-pricing"
+              target="_blank"
+              rel="noreferrer"
+            >
+              查看开源数据与同步记录 <IconExternalLink size={13} />
+            </a>
           </div>
-          <div className={`sync-state ${healthy ? 'healthy' : 'warning'}`}>
-            {healthy ? <IconCheck size={17} /> : <IconAlertTriangle size={17} />}
-            <span><strong>{healthy ? '目录同步正常' : '数据需要刷新'}</strong><small>{formatUpdated(sync.checkedAt)}</small></span>
-          </div>
-        </section>
-
-        <section className="status-strip" aria-label="监控摘要">
-          <div><IconDatabase size={17} /><span>模型</span><strong>{models.length}</strong></div>
-          <div><IconActivity size={17} /><span>厂商</span><strong>{providers.length}</strong></div>
-          <div><IconCheck size={17} /><span>官方报价</span><strong>{officialCount}</strong></div>
-          <div><IconClock size={17} /><span>自动发现</span><strong>{discoveredCount}</strong></div>
-        </section>
-
-        <ModelExplorer models={models} />
-
-        <section className="source-panel" id="about">
-          <div className="section-heading compact-heading">
-            <h2>数据源状态</h2>
-            <p>官方报价与聚合报价分开标记。聚合报价只用于发现新模型和快速比较。</p>
-          </div>
-          <div className="source-list">
-            {sync.sources.map((source) => (
-              <div className="source-row" key={source.name}>
-                <span className={`source-indicator ${source.status}`} aria-hidden="true" />
-                <strong>{source.name}</strong>
-                <span>{source.role}</span>
-                <small>{source.message || (source.count ? `${source.count} 个候选模型` : '连接正常')}</small>
-              </div>
-            ))}
-          </div>
-          <p className="source-footnote">最终账单以厂商控制台为准。阶梯价、长上下文、Batch、工具调用和地区价格可能不同。</p>
-        </section>
+        </details>
       </div>
-    </Shell>
+    </main>
   );
 }

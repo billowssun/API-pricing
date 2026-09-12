@@ -1,5 +1,6 @@
 import pricing from '@/pricing.json';
 import syncStatus from '@/sync-status.json';
+import { applyPriceSchedule } from './catalog-policy.cjs';
 
 export type Currency = 'USD' | 'CNY';
 export type ModelType = 'text' | 'image' | 'audio' | 'video';
@@ -20,6 +21,8 @@ export type Model = {
   maxOutput?: string;
   notes: string;
   pricingNote?: string;
+  priceLabel?: string;
+  priceSchedule?: { endsAt: string; after: { input: number; cachedInput: number; output: number; priceLabel: string; pricingNote: string } };
   pricingRegion: 'global' | 'CN';
   availability?: Availability;
   releaseDate?: string;
@@ -43,7 +46,8 @@ export const sync = syncStatus as {
 export const providers = [...new Set(models.map((model) => model.provider))];
 
 export function getModel(id: string) {
-  return models.find((model) => model.id === id);
+  const model = models.find((model) => model.id === id);
+  return model ? applyPriceSchedule(model) : undefined;
 }
 
 export function formatPrice(value: number | null | undefined, currency: Currency = 'USD') {
@@ -85,5 +89,6 @@ export function modelSummary(model: Model) {
 export function nearbyModels(model: Model) {
   return models
     .filter((candidate) => candidate.id !== model.id && (candidate.provider === model.provider || candidate.tier === model.tier))
-    .slice(0, 4);
+    .slice(0, 4)
+    .map((candidate) => applyPriceSchedule(candidate));
 }

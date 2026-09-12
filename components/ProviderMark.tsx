@@ -1,19 +1,39 @@
-const providerLetters: Record<string, string> = {
-  OpenAI: 'O',
-  Anthropic: 'A',
-  Google: 'G',
-  DeepSeek: 'D',
-  Moonshot: 'K',
-  xAI: 'X',
-  Mistral: 'M',
-  Alibaba: 'Q',
-  ByteDance: '豆',
+import Image from "next/image";
+import { IconCpu } from "@tabler/icons-react";
+const icons: Record<string, string> = {
+  OpenAI: "openai",
+  Anthropic: "anthropic",
+  Google: "gemini-color",
+  DeepSeek: "deepseek-color",
+  Alibaba: "qwen-color",
+  ByteDance: "doubao-color",
+  Moonshot: "kimi-color",
+  ZAI: "zai",
+  MiniMax: "minimax-color",
+  xAI: "grok",
+  Mistral: "mistral-color",
 };
-
-export function ProviderMark({ provider, size = 'normal' }: { provider: string; size?: 'small' | 'normal' | 'large' }) {
+export function ProviderMark({
+  provider,
+  size = "normal",
+}: {
+  provider: string;
+  size?: "small" | "normal" | "large";
+}) {
+  const pixels = size === "large" ? 36 : size === "small" ? 20 : 24;
   return (
-    <span className={`provider-mark provider-${provider.toLowerCase().replace(/\s+/g, '-')} ${size}`} aria-hidden="true">
-      {providerLetters[provider] ?? provider.slice(0, 1).toUpperCase()}
+    <span className="vendor-icon" aria-hidden="true">
+      {icons[provider] ? (
+        <Image
+          src={`/providers/${icons[provider]}.svg`}
+          width={pixels}
+          height={pixels}
+          alt=""
+          unoptimized
+        />
+      ) : (
+        <IconCpu size={pixels} stroke={1.5} />
+      )}
     </span>
   );
 }

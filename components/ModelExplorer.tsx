@@ -1,121 +1,360 @@
-'use client';
-
-import Link from 'next/link';
-import { IconArrowUpRight, IconSearch, IconSelector, IconX } from '@tabler/icons-react';
-import { useMemo, useState } from 'react';
-import { formatPrice, type Model } from '@/lib/data';
-import { ProviderMark } from './ProviderMark';
-
-type SortKey = 'newest' | 'input-asc' | 'output-asc' | 'context-desc';
-
-function contextNumber(value = '') {
-  const parsed = Number.parseFloat(value);
-  if (Number.isNaN(parsed)) return 0;
-  return value.toUpperCase().includes('M') ? parsed * 1_000_000 : parsed * 1_000;
-}
-
-function sourceLabel(model: Model) {
-  return model.priceStatus === 'official' ? '官方' : '聚合';
-}
-
-export function ModelExplorer({ models }: { models: Model[] }) {
-  const providers = [...new Set(models.map((model) => model.provider))];
-  const [query, setQuery] = useState('');
-  const [provider, setProvider] = useState('全部');
-  const [sort, setSort] = useState<SortKey>('newest');
-
-  const shown = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    return models
-      .filter((model) => provider === '全部' || model.provider === provider)
-      .filter((model) => !normalized || `${model.name} ${model.provider} ${model.apiId ?? ''}`.toLowerCase().includes(normalized))
-      .toSorted((a, b) => {
-        if (sort === 'input-asc') return (a.input ?? Infinity) - (b.input ?? Infinity);
-        if (sort === 'output-asc') return (a.output ?? Infinity) - (b.output ?? Infinity);
-        if (sort === 'context-desc') return contextNumber(b.context) - contextNumber(a.context);
-        return (b.releaseDate || '').localeCompare(a.releaseDate || '');
-      });
-  }, [models, provider, query, sort]);
-
-  const reset = () => { setQuery(''); setProvider('全部'); };
-  const hasFilters = Boolean(query || provider !== '全部');
-
+"use client";
+import { Fragment, useMemo, useState } from "react";
+import {
+  IconArrowDown,
+  IconChevronDown,
+  IconExternalLink,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
+import type { Model } from "@/lib/data";
+import { providers } from "@/lib/catalog-policy.cjs";
+import { ProviderMark } from "./ProviderMark";
+type SortKey = "default" | "input" | "output";
+const tiers = ["旗舰", "进阶", "均衡", "轻量", "编程", "高速"];
+function Price({
+  value,
+  currency,
+}: {
+  value: number | null | undefined;
+  currency: string;
+}) {
+  if (value == null)
+    return (
+      <span className="price-missing" title="来源未提供此项报价">
+        —
+      </span>
+    );
   return (
-    <section className="catalog-section" id="models">
-      <div className="catalog-toolbar">
-        <label className="search-field">
-          <span className="sr-only">搜索模型</span>
-          <IconSearch size={19} stroke={1.8} />
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索模型、厂商或 API ID" />
-          {query && <button type="button" aria-label="清空搜索" onClick={() => setQuery('')}><IconX size={17} /></button>}
+    <span className="board-price">
+      {currency === "CNY" ? "¥" : "$"}
+      {value.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 6,
+      })}
+      <small>{currency}</small>
+    </span>
+  );
+}
+export function ModelExplorer({ models }: { models: Model[] }) {
+  const [query, setQuery] = useState("");
+  const [country, setCountry] = useState("all");
+  const [tier, setTier] = useState("all");
+  const [sort, setSort] = useState<SortKey>("default");
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const groups = useMemo(
+    () =>
+      providers.flatMap((provider) => {
+        if (country !== "all" && provider.country !== country) return [];
+        const normalized = query.trim().toLowerCase();
+        const rows = models.filter(
+          (m) =>
+            m.provider === provider.id &&
+            (tier === "all" || m.tier === tier) &&
+            (!normalized ||
+              `${m.name} ${m.apiId || ""} ${provider.name} ${provider.id}`
+                .toLowerCase()
+                .includes(normalized)),
+        );
+        if (sort !== "default")
+          rows.sort(
+            (a, b) =>
+              a.baseCurrency.localeCompare(b.baseCurrency) ||
+              (a[sort] ?? Infinity) - (b[sort] ?? Infinity),
+          );
+        return rows.length ? [{ provider, rows }] : [];
+      }),
+    [models, query, country, tier, sort],
+  );
+  const count = groups.reduce((sum, g) => sum + g.rows.length, 0);
+  const filtered = Boolean(query || country !== "all" || tier !== "all");
+  function reset() {
+    setQuery("");
+    setCountry("all");
+    setTier("all");
+    setSort("default");
+    setCollapsed(new Set());
+  }
+  function toggleProvider(id: string) {
+    setCollapsed((previous) => {
+      const next = new Set(previous);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+  function toggleSort(key: SortKey) {
+    setSort((previous) => (previous === key ? "default" : key));
+  }
+  return (
+    <section id="models" aria-label="主流模型价目表">
+      <div className="board-toolbar">
+        <label className="board-search">
+          <IconSearch size={18} stroke={1.7} />
+          <span className="sr-only">搜索模型名称或厂商</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="搜索模型名称或厂商"
+          />
+          {query ? (
+            <button
+              type="button"
+              aria-label="清空搜索"
+              onClick={() => setQuery("")}
+            >
+              <IconX size={16} />
+            </button>
+          ) : null}
         </label>
-        <label className="select-field sort-field">
-          <IconSelector size={18} stroke={1.8} />
-          <span className="sr-only">排序方式</span>
-          <select value={sort} onChange={(event) => setSort(event.target.value as SortKey)}>
-            <option value="newest">新模型优先</option>
-            <option value="input-asc">输入价格最低</option>
-            <option value="output-asc">输出价格最低</option>
-            <option value="context-desc">上下文最大</option>
-          </select>
-        </label>
+        <div className="board-filters">
+          <div className="country-filter" role="group" aria-label="按国家筛选">
+            {[
+              ["all", "全部"],
+              ["CN", "中国"],
+              ["US", "美国"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={country === value}
+                onClick={() => setCountry(value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <label className="board-tier">
+            <span>档次</span>
+            <select
+              aria-label="按档次筛选"
+              value={tier}
+              onChange={(e) => setTier(e.target.value)}
+            >
+              <option value="all">全部</option>
+              {tiers.map((value) => (
+                <option key={value}>{value}</option>
+              ))}
+            </select>
+            <IconChevronDown size={14} />
+          </label>
+        </div>
       </div>
-
-      <div className="provider-tabs" aria-label="按厂商筛选">
-        {['全部', ...providers].map((item) => (
-          <button key={item} type="button" className={provider === item ? 'active' : ''} aria-pressed={provider === item} onClick={() => setProvider(item)}>
-            {item}
+      {filtered || sort !== "default" ? (
+        <div className="board-filter-status">
+          <span aria-live="polite">
+            找到 {count} 个模型
+            {sort !== "default" ? " · 各厂商内按币种分组后升序排列" : ""}
+          </span>
+          <button type="button" onClick={reset}>
+            重置筛选
           </button>
-        ))}
-      </div>
-
-      <div className="result-meta">
-        <span>{shown.length} 个模型</span>
-        {hasFilters && <button type="button" onClick={reset}>清除筛选</button>}
-      </div>
-
-      {shown.length ? (
-        <div className="model-results">
-          <div className="price-table" role="table" aria-label="模型价格列表">
-            <div className="price-row price-head" role="row">
-              <span role="columnheader">模型</span><span role="columnheader">输入</span><span role="columnheader">缓存</span>
-              <span role="columnheader">输出</span><span role="columnheader">上下文</span><span role="columnheader">来源</span><span />
-            </div>
-            {shown.map((model) => (
-              <Link className="price-row" role="row" href={`/models/${model.id}`} key={model.id}>
-                <span className="model-cell" role="cell">
-                  <ProviderMark provider={model.provider} />
-                  <span><strong>{model.name}</strong><small><code>{model.apiId || model.id}</code></small></span>
-                </span>
-                <span className="price-cell" role="cell"><strong>{formatPrice(model.input, model.baseCurrency)}</strong><small>/ 1M</small></span>
-                <span className="price-cell" role="cell"><strong>{formatPrice(model.cachedInput, model.baseCurrency)}</strong><small>/ 1M</small></span>
-                <span className="price-cell" role="cell"><strong>{formatPrice(model.output, model.baseCurrency)}</strong><small>/ 1M</small></span>
-                <span className="context-cell" role="cell">{model.context || '未公布'}</span>
-                <span role="cell"><em className={`source-badge ${model.priceStatus}`}>{sourceLabel(model)}</em></span>
-                <span className="row-action" role="cell"><IconArrowUpRight size={18} stroke={1.7} /></span>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mobile-model-list">
-            {shown.map((model) => (
-              <Link className="mobile-model-row" href={`/models/${model.id}`} key={model.id}>
-                <ProviderMark provider={model.provider} size="small" />
-                <span className="mobile-model-main"><strong>{model.name}</strong><small>{model.apiId || model.id}</small></span>
-                <span className="mobile-model-price"><strong>{formatPrice(model.input, model.baseCurrency)}</strong><small>输入 / 1M</small></span>
-                <em className={`source-badge ${model.priceStatus}`}>{sourceLabel(model)}</em>
-                <IconArrowUpRight className="mobile-row-arrow" size={16} />
-                <span className="mobile-model-secondary">
-                  <small>输出 <b>{formatPrice(model.output, model.baseCurrency)}</b></small>
-                  <small>上下文 <b>{model.context || '未公布'}</b></small>
-                </span>
-              </Link>
-            ))}
-          </div>
+        </div>
+      ) : null}
+      {count ? (
+        <p className="board-mobile-guide">
+          每百万 tokens · 左右滑动查看完整价格
+        </p>
+      ) : null}
+      {count ? (
+        <div
+          className="board-table-wrap"
+          tabIndex={0}
+          role="region"
+          aria-label="价格表，小屏幕可左右滑动"
+        >
+          <table className="board-table">
+            <caption className="sr-only">
+              {count} 个模型，所有价格为原币每百万
+              tokens。点击输入或输出表头可在厂商内按同币种排序。
+            </caption>
+            <colgroup>
+              <col className="col-model" />
+              <col className="col-tier" />
+              <col className="col-price" />
+              <col className="col-price" />
+              <col className="col-price" />
+              <col className="col-source" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">模型</th>
+                <th scope="col">档次</th>
+                <th
+                  scope="col"
+                  aria-sort={sort === "input" ? "ascending" : "none"}
+                >
+                  <button onClick={() => toggleSort("input")} type="button">
+                    输入{" "}
+                    <IconArrowDown
+                      size={13}
+                      className={sort === "input" ? "sort-active" : "sort-idle"}
+                    />
+                  </button>
+                </th>
+                <th scope="col">缓存</th>
+                <th
+                  scope="col"
+                  aria-sort={sort === "output" ? "ascending" : "none"}
+                >
+                  <button onClick={() => toggleSort("output")} type="button">
+                    输出{" "}
+                    <IconArrowDown
+                      size={13}
+                      className={
+                        sort === "output" ? "sort-active" : "sort-idle"
+                      }
+                    />
+                  </button>
+                </th>
+                <th scope="col">来源</th>
+              </tr>
+            </thead>
+            {groups.map(({ provider, rows }) => {
+              const closed = collapsed.has(provider.id) && !filtered;
+              return (
+                <tbody key={provider.id}>
+                  <tr className="board-provider">
+                    <th colSpan={6} scope="rowgroup">
+                      <button
+                        type="button"
+                        aria-expanded={!closed}
+                        onClick={() => toggleProvider(provider.id)}
+                        disabled={filtered}
+                      >
+                        <ProviderMark provider={provider.id} />
+                        <span>{provider.name}</span>
+                        <small>{rows.length} 个模型</small>
+                        <IconChevronDown
+                          size={17}
+                          className={closed ? "is-closed" : ""}
+                        />
+                      </button>
+                    </th>
+                  </tr>
+                  {!closed
+                    ? rows.map((model) => (
+                        <Fragment key={model.id}>
+                          <tr
+                            className={`board-model-row ${expanded === model.id ? "is-expanded" : ""}`}
+                          >
+                            <th scope="row">
+                              <button
+                                type="button"
+                                className="model-expand"
+                                aria-expanded={expanded === model.id}
+                                aria-controls={`detail-${model.id}`}
+                                onClick={() =>
+                                  setExpanded(
+                                    expanded === model.id ? null : model.id,
+                                  )
+                                }
+                              >
+                                <span>{model.name}</span>
+                                {model.priceLabel ? <small className="model-price-label">{model.priceLabel}</small> : null}
+                                <IconChevronDown size={13} />
+                              </button>
+                            </th>
+                            <td className="board-tier-cell">{model.tier}</td>
+                            <td>
+                              <Price
+                                value={model.input}
+                                currency={model.baseCurrency}
+                              />
+                            </td>
+                            <td>
+                              <Price
+                                value={model.cachedInput}
+                                currency={model.baseCurrency}
+                              />
+                            </td>
+                            <td>
+                              <Price
+                                value={model.output}
+                                currency={model.baseCurrency}
+                              />
+                            </td>
+                            <td>
+                              <a
+                                className={`board-source ${model.priceStatus}`}
+                                href={model.source}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={`${model.name} ${model.priceStatus === "official" ? "官方" : "聚合"}价格来源`}
+                              >
+                                {model.priceStatus === "official"
+                                  ? "官方"
+                                  : "聚合"}
+                                <IconExternalLink size={13} stroke={1.7} />
+                              </a>
+                            </td>
+                          </tr>
+                          <tr
+                            id={`detail-${model.id}`}
+                            hidden={expanded !== model.id}
+                            className="board-detail"
+                          >
+                            <td colSpan={6}>
+                              <dl>
+                                <div>
+                                  <dt>API ID</dt>
+                                  <dd>
+                                    <code>{model.apiId || model.id}</code>
+                                  </dd>
+                                </div>
+                                <div>
+                                  <dt>上下文</dt>
+                                  <dd>{model.context || "未公布"}</dd>
+                                </div>
+                                <div>
+                                  <dt>最大输出</dt>
+                                  <dd>{model.maxOutput || "未公布"}</dd>
+                                </div>
+                                <div>
+                                  <dt>报价核验</dt>
+                                  <dd>
+                                    {model.lastVerifiedAt
+                                      ? model.lastVerifiedAt.slice(0, 10)
+                                      : "未记录"}
+                                  </dd>
+                                </div>
+                              </dl>
+                              <p>
+                                {model.pricingNote ||
+                                  "标准文本 token 报价；具体计费限制以来源页面为准。"}
+                              </p>
+                              {model.availability === "preview" ? (
+                                <p>当前为预览版本，定价与可用性可能变化。</p>
+                              ) : null}
+                            </td>
+                          </tr>
+                        </Fragment>
+                      ))
+                    : null}
+                </tbody>
+              );
+            })}
+          </table>
         </div>
       ) : (
-        <div className="empty-state"><IconSearch size={28} /><h3>没有匹配的模型</h3><p>换一个关键词或清除厂商筛选。</p><button type="button" onClick={reset}>查看全部模型</button></div>
+        <div className="board-empty">
+          <IconSearch size={26} stroke={1.5} />
+          <h2>没有匹配的模型</h2>
+          <p>试试其他关键词，或清除国家与档次筛选。</p>
+          <button type="button" onClick={reset}>
+            查看全部模型
+          </button>
+        </div>
       )}
+      <div className="board-table-note">
+        <span>每百万 tokens · 原币报价</span>
+        <span>
+          点击型号展开详情{" "}
+          <span className="mobile-scroll-hint">· 左右滑动查看完整表格</span>
+        </span>
+      </div>
     </section>
   );
 }

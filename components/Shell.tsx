@@ -14,7 +14,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </Link>
           <nav className="nav-links" aria-label="主导航">
             <Link href="/#models">价格表</Link>
-            <Link href="/#about"><IconInfoCircle size={17} /><span>数据状态</span></Link>
+            <Link href="/#sources"><IconInfoCircle size={17} /><span>数据状态</span></Link>
             <a href="https://github.com/billowssun/API-pricing" target="_blank" rel="noreferrer" aria-label="打开 GitHub 仓库">
               <IconBrandGithub size={18} /><span>GitHub</span>
             </a>
@@ -25,7 +25,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <footer className="site-footer">
         <span>ModelPrice</span>
         <p>价格用于估算，实际结算以厂商账单为准。</p>
-        <a href="/#about">数据来源</a>
+        <a href="/#sources">数据来源</a>
       </footer>
     </>
   );
