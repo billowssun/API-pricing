@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-13T00:59:44.177Z",
+  "updated": "2026-09-13T06:08:21.478Z",
   "models": [
     {
       "id": "catalog-deepseek-deepseek-v4-1-flash",
@@ -21,7 +21,7 @@
       "availability": "public",
       "releaseDate": "2026-09-10",
       "discoveredAt": "2026-09-10T11:18:02.342Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/deepseek/deepseek-v4.1-flash",
       "priceStatus": "aggregated"
     },
@@ -45,7 +45,7 @@
       "availability": "public",
       "releaseDate": "2026-09-04",
       "discoveredAt": "2026-09-08T02:27:37.998Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/openai/gpt-6-astra",
       "priceStatus": "aggregated"
     },
@@ -69,7 +69,7 @@
       "availability": "public",
       "releaseDate": "2026-09-04",
       "discoveredAt": "2026-09-08T02:27:37.998Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/openai/gpt-6-astra-pro",
       "priceStatus": "aggregated"
     },
@@ -93,7 +93,7 @@
       "availability": "public",
       "releaseDate": "2026-09-03",
       "discoveredAt": "2026-09-08T02:27:37.998Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/qwen/qwen3.8-max-0902",
       "priceStatus": "aggregated"
     },
@@ -117,7 +117,7 @@
       "availability": "public",
       "releaseDate": "2026-09-02",
       "discoveredAt": "2026-09-02T16:33:41.267Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/google/gemini-3.8-flash",
       "priceStatus": "aggregated"
     },
@@ -141,7 +141,7 @@
       "availability": "public",
       "releaseDate": "2026-09-01",
       "discoveredAt": "2026-09-01T18:29:46.509Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/anthropic/claude-fable-5.1",
       "priceStatus": "aggregated"
     },
@@ -165,7 +165,7 @@
       "availability": "public",
       "releaseDate": "2026-08-26",
       "discoveredAt": "2026-08-26T23:31:24.620Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/qwen/qwen3.8-flash",
       "priceStatus": "aggregated"
     },
@@ -189,7 +189,7 @@
       "availability": "public",
       "releaseDate": "2026-08-12",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/bytedance-seed/seed-2-1-turbo",
       "priceStatus": "aggregated"
     },
@@ -213,7 +213,7 @@
       "availability": "public",
       "releaseDate": "2026-08-12",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/bytedance-seed/seed-2.0-code",
       "priceStatus": "aggregated"
     },
@@ -236,7 +236,7 @@
       "availability": "public",
       "releaseDate": "2026-08-12",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/deepseek/deepseek-v4-pro-0813",
       "priceStatus": "aggregated",
       "maxOutput": "393K"
@@ -260,7 +260,7 @@
       "availability": "public",
       "releaseDate": "2026-08-12",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/x-ai/grok-4.6",
       "priceStatus": "aggregated",
       "maxOutput": "450K"
@@ -327,7 +327,7 @@
       "availability": "public",
       "releaseDate": "2026-06-03",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/qwen/qwen3.7-plus",
       "priceStatus": "aggregated"
     },
@@ -351,7 +351,7 @@
       "availability": "public",
       "releaseDate": "2026-05-31",
       "discoveredAt": "2026-09-12T10:44:21.617Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/minimax/minimax-m3",
       "priceStatus": "aggregated"
     },
@@ -374,7 +374,7 @@
       "availability": "public",
       "releaseDate": "2026-05-20",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/x-ai/grok-build-0.1",
       "priceStatus": "aggregated",
       "maxOutput": "230K"
@@ -398,7 +398,7 @@
       "availability": "public",
       "releaseDate": "2026-04-30",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/mistralai/mistral-medium-3-5",
       "priceStatus": "aggregated",
       "maxOutput": "210K"
@@ -423,7 +423,7 @@
       "availability": "public",
       "releaseDate": "2026-03-18",
       "discoveredAt": "2026-09-12T10:44:21.617Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/minimax/minimax-m2.7",
       "priceStatus": "aggregated"
     },
@@ -446,7 +446,7 @@
       "availability": "public",
       "releaseDate": "2026-03-16",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/mistralai/mistral-small-2603",
       "priceStatus": "aggregated",
       "maxOutput": "210K"
@@ -471,7 +471,7 @@
       "availability": "public",
       "releaseDate": "2026-03-10",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/bytedance-seed/seed-2.0-lite",
       "priceStatus": "aggregated"
     },
@@ -495,7 +495,7 @@
       "availability": "public",
       "releaseDate": "2026-02-25",
       "discoveredAt": "2026-09-12T10:44:21.617Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/google/gemini-3.1-pro-preview-customtools",
       "priceStatus": "aggregated"
     },
@@ -519,7 +519,7 @@
       "availability": "public",
       "releaseDate": "2026-02-04",
       "discoveredAt": "2026-09-12T10:44:21.617Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/qwen/qwen3-coder-next",
       "priceStatus": "aggregated"
     },
@@ -542,7 +542,7 @@
       "availability": "public",
       "releaseDate": "2025-12-09",
       "discoveredAt": "2026-08-24T16:54:41.161Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/mistralai/devstral-2512",
       "priceStatus": "aggregated",
       "maxOutput": "210K"
@@ -566,7 +566,7 @@
       "availability": "public",
       "releaseDate": "2025-12-02",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/mistralai/ministral-14b-2512",
       "priceStatus": "aggregated",
       "maxOutput": "210K"
@@ -590,7 +590,7 @@
       "availability": "public",
       "releaseDate": "2025-12-02",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/mistralai/ministral-8b-2512",
       "priceStatus": "aggregated",
       "maxOutput": "210K"
@@ -614,7 +614,7 @@
       "availability": "public",
       "releaseDate": "2025-12-02",
       "discoveredAt": "2026-08-13T03:46:16.241Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/mistralai/ministral-3b-2512",
       "priceStatus": "aggregated",
       "maxOutput": "105K"
@@ -639,7 +639,7 @@
       "availability": "public",
       "releaseDate": "2025-10-15",
       "discoveredAt": "2026-09-12T10:44:21.617Z",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z",
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z",
       "source": "https://openrouter.ai/anthropic/claude-haiku-4.5",
       "priceStatus": "aggregated"
     },
@@ -1031,7 +1031,7 @@
       "availability": "public",
       "source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
       "priceStatus": "official",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z"
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z"
     },
     {
       "id": "openai-gpt-5-6-terra",
@@ -1051,7 +1051,7 @@
       "availability": "public",
       "source": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
       "priceStatus": "official",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z"
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z"
     },
     {
       "id": "openai-gpt-5-6-luna",
@@ -1071,7 +1071,7 @@
       "availability": "public",
       "source": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
       "priceStatus": "official",
-      "lastVerifiedAt": "2026-09-13T00:59:44.177Z"
+      "lastVerifiedAt": "2026-09-13T06:08:21.478Z"
     },
     {
       "id": "zai-glm-5-3",
