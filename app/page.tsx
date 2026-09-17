@@ -4,6 +4,8 @@ import { models, sync, formatUpdated } from "@/lib/data";
 import { selectMainstreamModels } from "@/lib/catalog-policy.cjs";
 export const revalidate = 3600;
 export default function HomePage() {
+  const visibleModels = selectMainstreamModels(models);
+  const staleCount = visibleModels.filter(model => !model.lastVerifiedAt || Date.now() - Date.parse(model.lastVerifiedAt) > 30 * 86400000).length;
   return (
     <main className="price-board">
       <header className="board-masthead">
@@ -20,7 +22,8 @@ export default function HomePage() {
           <h1>大模型价格</h1>
           <p>精选主流 · 按厂商分组</p>
         </div>
-        <ModelExplorer models={selectMainstreamModels(models)} />
+        <ModelExplorer models={visibleModels} />
+        {staleCount > 0 && <p role="status">{staleCount} 条报价超过 30 天未核验或缺少核验日期，请以来源页面为准。</p>}
         <footer className="board-footer">
           <span>
             USD 美元 <span className="footer-separator">/</span> CNY 人民币{" "}
@@ -38,7 +41,7 @@ export default function HomePage() {
           <summary>来源与选型说明</summary>
           <div className="sources-content">
             <p>
-              每家保留各产品线的当前代表型号，同系列新版本替换旧版本；不代表调用量排名。实验版、重复快照与旧型号不进入本表。点击模型名称可查看上下文、API
+              不限制每家型号数量；保留各独立产品线的代表型号，仅在同一产品线内去除旧版本与重复快照。不同产品线不会仅因版本号更大就互相替代。有明确下架依据的型号不再展示；不代表调用量排名。点击模型名称可查看上下文、API
               ID 和计费限制。
             </p>
             <p>

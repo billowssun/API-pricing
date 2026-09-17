@@ -25,6 +25,9 @@ export type Model = {
   priceSchedule?: { endsAt: string; after: { input: number; cachedInput: number; output: number; priceLabel: string; pricingNote: string } };
   pricingRegion: 'global' | 'CN';
   availability?: Availability;
+  lifecycle?: 'active' | 'retired';
+  retireAt?: string;
+  lifecycleSource?: string;
   releaseDate?: string;
   source: string;
   priceStatus?: 'official' | 'aggregated';

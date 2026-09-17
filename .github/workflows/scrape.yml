@@ -25,10 +25,21 @@ jobs:
           cache: npm
       - name: 安装依赖
         run: npm ci
-      - name: 同步官方价格
+      - name: 同步前测试
+        run: npm test
+      - name: 同步价格与来源状态
+        id: sync
+        run: npm run data:sync
+      - name: 保留失败状态，不发布失败批次价格
+        if: failure() && steps.sync.outcome == 'failure' && github.ref == 'refs/heads/main'
         run: |
-          npm test
-          npm run data:sync
+          node -e 'const s=require("./sync-status.json"); if(s.status!=="failed") process.exit(1);'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sync-status.json
+          git diff --staged --quiet || git commit -m "data: report failed pricing sync"
+          git pull --rebase origin main
+          git push origin HEAD:main
       - name: 写入同步摘要
         if: always()
         run: |

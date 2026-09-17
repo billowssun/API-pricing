@@ -47,13 +47,30 @@ test("experiments do not replace stable models", () =>
     ]).length,
     0,
   ));
-test("board is bounded and deduplicated, latest Astra is retained", () => {
+test("independent current product lines coexist without a per-provider cap", () => {
   const result = selectMainstreamModels(data.models);
   assert.equal(new Set(result.map((m) => m.id)).size, result.length);
-  for (const p of providers)
-    assert.ok(result.filter((m) => m.provider === p.id).length <= 4);
+  for (const id of ['gpt-5.6-sol', 'gpt-6-astra', 'gpt-6-astra-pro', 'gpt-5.6-terra', 'gpt-5.6-luna'])
+    assert.ok(result.some(m => m.apiId === id), `${id} must remain visible`);
   assert.ok(result.some((m) => m.apiId === "gpt-6-astra"));
   assert.ok(!result.some((m) => m.apiId === "gemini-3.7-flash"));
+});
+test('MiniMax minor upgrades replace old versions in the same line', () => {
+  const result = selectMainstreamModels(['minimax-m3', 'minimax-m3.1'].map(id => row(id, { provider: 'MiniMax' })));
+  assert.deepEqual(result.map(m => m.apiId), ['minimax-m3.1']);
+});
+test('retirement takes effect at its explicit deadline, not from age alone', () => {
+  const models = [row('gemini-3.1-pro', { retireAt: '2026-10-01T00:00:00Z' })];
+  assert.equal(selectMainstreamModels(models, Date.parse('2026-09-30')).length, 1);
+  assert.equal(selectMainstreamModels(models, Date.parse('2026-10-01')).length, 0);
+  assert.equal(selectMainstreamModels([row('gemini-3.1-pro', { lifecycle: 'retired' })]).length, 0);
+});
+test('discovery keeps Sol alongside Astra instead of dropping a live product line', () => {
+  const { selectCatalog } = require('../scraper.js');
+  const models = ['gpt-5.6-sol', 'gpt-6-astra', 'gpt-6-astra-pro', 'gpt-5.6-terra', 'gpt-5.6-luna'].map(id => ({
+    id: `openai/${id}`, name: id, architecture: { output_modalities: ['text'] }, pricing: { prompt: '0.000001', completion: '0.000002' }
+  }));
+  assert.equal(selectCatalog(models).length, 5);
 });
 test("discovery retains tiers even when many more recent Flash variants exist", () => {
   const { selectCatalog } = require("../scraper.js");

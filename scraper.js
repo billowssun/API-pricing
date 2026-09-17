@@ -61,6 +61,11 @@ function validate(data) {
     }
     if (ids.has(model.id)) throw new Error(`重复模型 ID: ${model.id}`);
     ids.add(model.id);
+    if (model.lifecycle && !['active', 'retired'].includes(model.lifecycle)) throw new Error(`${model.id} 生命周期状态无效`);
+    if (model.retireAt && !Number.isFinite(Date.parse(model.retireAt))) throw new Error(`${model.id} 下架日期无效`);
+    if (model.lifecycle === 'retired' || model.retireAt) {
+      if (!model.lifecycleSource || new URL(model.lifecycleSource).protocol !== 'https:') throw new Error(`${model.id} 下架必须有 HTTPS 来源依据`);
+    }
     for (const field of ['input', 'cachedInput', 'output']) {
       const value = model[field];
       if (value != null && (!Number.isFinite(value) || value < 0)) {

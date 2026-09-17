@@ -111,7 +111,7 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ id
               <div><dt><IconCheck size={17} />可用状态</dt><dd>{availabilityLabel(model.availability)}</dd></div>
               {model.releaseDate && <div><dt><IconCalendar size={17} />发布日期</dt><dd>{model.releaseDate}</dd></div>}
             </dl>
-            <p>数据校验于 {formatUpdated(updatedAt)}</p>
+            <p>报价核验：{model.lastVerifiedAt ? formatUpdated(model.lastVerifiedAt) : '未记录'}</p>
           </aside>
         </div>
 
