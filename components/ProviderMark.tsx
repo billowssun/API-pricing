@@ -7,7 +7,7 @@ const icons: Record<string, string> = {
   DeepSeek: "deepseek-color",
   Alibaba: "qwen-color",
   ByteDance: "doubao-color",
-  Moonshot: "kimi-color",
+  Moonshot: "kimi",
   ZAI: "zai",
   MiniMax: "minimax-color",
   xAI: "grok",
