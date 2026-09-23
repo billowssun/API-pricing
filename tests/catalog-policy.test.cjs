@@ -4,7 +4,8 @@ const {
   selectMainstreamModels,
   providers,
 } = require("../lib/catalog-policy.cjs");
-const data = require("../pricing.json");
+// Unit tests must not depend on the hourly, mutable production catalog.
+const data = { models: [{ id: 'glm', apiId: 'glm-5.3-flash', name: 'GLM', provider: 'ZAI', type: 'text', input: .075, priceSchedule: { endsAt: '2026-09-09T16:00:00Z', after: { input: .15, priceLabel: '' } } }] };
 test('time-limited pricing returns to the official list price at the exact deadline', () => {
   const before = selectMainstreamModels(data.models, Date.parse('2026-09-09T15:59:59Z')).find(m => m.apiId === 'glm-5.3-flash');
   const after = selectMainstreamModels(data.models, Date.parse('2026-09-09T16:00:00Z')).find(m => m.apiId === 'glm-5.3-flash');
@@ -48,12 +49,22 @@ test("experiments do not replace stable models", () =>
     0,
   ));
 test("independent current product lines coexist without a per-provider cap", () => {
-  const result = selectMainstreamModels(data.models);
+  const ids = ['gpt-5.6-sol', 'gpt-5.6-sol-pro', 'gpt-6-astra', 'gpt-6-astra-pro', 'gpt-5.6-terra', 'gpt-5.6-luna'];
+  const result = selectMainstreamModels(ids.map(id => row(id, { provider: 'OpenAI' })));
+  assert.equal(result.length, 6);
   assert.equal(new Set(result.map((m) => m.id)).size, result.length);
   for (const id of ['gpt-5.6-sol', 'gpt-6-astra', 'gpt-6-astra-pro', 'gpt-5.6-terra', 'gpt-5.6-luna'])
     assert.ok(result.some(m => m.apiId === id), `${id} must remain visible`);
   assert.ok(result.some((m) => m.apiId === "gpt-6-astra"));
-  assert.ok(!result.some((m) => m.apiId === "gemini-3.7-flash"));
+});
+test('future upgrades replace versions, not independent product lines', () => {
+  for (const version of ['6', '6.1', '7', '10']) {
+    const ids = ['gpt-6-astra', 'gpt-6-astra-pro', 'gpt-5.6-sol', 'gpt-5.6-sol-pro', 'gpt-5.6-luna', 'gpt-5.6-terra', `gpt-${version}-sol`, `gpt-${version}-sol-pro`, `gpt-${version}-luna`];
+    const result = selectMainstreamModels(ids.map(id => row(id, { provider: 'OpenAI' }))).map(m => m.apiId);
+    assert.equal(result.length, 6);
+    for (const id of ['gpt-6-astra', 'gpt-6-astra-pro', 'gpt-5.6-terra', `gpt-${version}-sol`, `gpt-${version}-sol-pro`, `gpt-${version}-luna`]) assert.ok(result.includes(id), id);
+    assert.ok(!result.includes('gpt-5.6-sol'));
+  }
 });
 test('MiniMax minor upgrades replace old versions in the same line', () => {
   const result = selectMainstreamModels(['minimax-m3', 'minimax-m3.1'].map(id => row(id, { provider: 'MiniMax' })));

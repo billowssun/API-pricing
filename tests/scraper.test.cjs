@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { parseOpenAIPrice, updateOpenAIPrices } = require('../scraper.js');
+const { parseOpenAIPrice, updateOpenAIPrices, validateCatalogCoverage } = require('../scraper.js');
 
 const luna = { id: 'luna', apiId: 'gpt-5.6-luna', name: 'GPT-5.6 Luna', provider: 'OpenAI', priceStatus: 'official', input: 9, cachedInput: 8, output: 7, lastVerifiedAt: 'old' };
 // Pricing table excerpt observed in the real Actions response on 2026-09-08.
@@ -62,4 +62,32 @@ test('a failed model prevents partial publication and retains original prices/da
 test('does not request aggregated or other provider models', async () => {
   const models = [{ ...luna, priceStatus: 'aggregated' }, { ...luna, provider: 'Google' }];
   assert.deepEqual(await updateOpenAIPrices(models, 'new', () => assert.fail('unexpected request')), models);
+});
+test('resilient sync isolates one model failure without advancing its verification date', async () => {
+  const models = [luna, { ...luna, id: 'sol', apiId: 'gpt-5.6-sol', name: 'GPT-5.6 Sol' }];
+  const failures = [];
+  const result = await updateOpenAIPrices(models, 'new', async url => {
+    if (url.endsWith('luna')) throw new Error('changed markup');
+    return page('GPT-5.6 Sol');
+  }, f => failures.push(f));
+  assert.deepEqual(result[0], luna);
+  assert.equal(result[1].input, .2);
+  assert.equal(result[1].lastVerifiedAt, 'new');
+  assert.equal(failures[0].modelId, 'luna');
+});
+test('resilient sync can retain every failed model without inventing fresh dates', async () => {
+  const failures = [];
+  assert.deepEqual(await updateOpenAIPrices([luna], 'new', async () => { throw new Error('offline'); }, f => failures.push(f)), [luna]);
+  assert.equal(failures.length, 1);
+});
+test('catalog guards allow version upgrades but reject missing providers', () => {
+  const row = (apiId, provider) => ({ id: apiId, apiId, provider, type: 'text' });
+  const old = [row('gpt-5.6-sol', 'OpenAI'), row('gemini-3.1-pro', 'Google')];
+  assert.doesNotThrow(() => validateCatalogCoverage(old, [row('gpt-6-sol', 'OpenAI'), row('gemini-4-pro', 'Google')]));
+  assert.throws(() => validateCatalogCoverage(old, [row('gpt-6-sol', 'OpenAI')]), /Google/);
+});
+test('catalog guards quarantine mass family loss even if provider survives', () => {
+  const ids = ['gpt-6-astra','gpt-6-astra-pro','gpt-6-sol','gpt-6-sol-pro','gpt-6-luna','gpt-5.6-terra'];
+  const old = ids.map(apiId => ({ id: apiId, apiId, provider:'OpenAI', type:'text' }));
+  assert.throws(() => validateCatalogCoverage(old, old.slice(0, 2)), /30%/);
 });

@@ -252,9 +252,9 @@ function parseOpenAIPrice(model, document) {
   return { input: Number(prices[1]), cachedInput: Number(prices[2]), output: Number(prices[3]) };
 }
 
-async function updateOpenAIPrices(models, checkedAt, readText = fetchText) {
-  // allSettled collects every model failure; never publish a partially parsed
-  // catalog or advance verification timestamps when a required source fails.
+async function updateOpenAIPrices(models, checkedAt, readText = fetchText, onFailure) {
+  // Strict by default for callers; the sync runner opts into per-model isolation.
+  // In either mode, failed models never receive a fresh verification timestamp.
   const results = await Promise.allSettled(models.map(async (model) => {
     if (model.provider !== 'OpenAI' || model.priceStatus !== 'official') return { ...model };
     if (!/^[a-z0-9][a-z0-9.-]*$/.test(model.apiId || '')) throw new Error(`${model.name} API ID 无效`);
@@ -267,8 +267,23 @@ async function updateOpenAIPrices(models, checkedAt, readText = fetchText) {
     }
   }));
   const failures = results.filter((result) => result.status === 'rejected');
-  if (failures.length) throw new Error(failures.map((result) => result.reason.message).join('; '));
-  return results.map((result) => result.value);
+  if (failures.length && !onFailure) throw new Error(failures.map((result) => result.reason.message).join('; '));
+  return results.map((result, index) => {
+    if (result.status === 'fulfilled') return result.value;
+    onFailure({ modelId: models[index].id, message: result.reason.message });
+    // Preserve both the old price and its verification timestamp on failure.
+    return { ...models[index] };
+  });
+}
+
+function validateCatalogCoverage(existing, catalog) {
+  const prior = selectMainstreamModels(existing);
+  const next = selectMainstreamModels(catalog);
+  for (const provider of new Set(prior.map(m => m.provider))) {
+    // An upstream omission is not evidence of retirement.
+    if (!next.some(m => m.provider === provider)) throw new Error(`${provider} 在新目录中整体缺失，保留旧目录等待复核`);
+  }
+  if (next.length < prior.length * .7) throw new Error('代表型号数量骤降超过 30%，保留旧目录等待复核');
 }
 
 function mergeCatalog(existing, catalog, checkedAt) {
@@ -304,19 +319,22 @@ async function run() {
 
   const checkedAt = new Date().toISOString();
   const status = { checkedAt, status: 'healthy', sources: [], modelCount: current.models.length };
-  let nextModels = current.models.map((model) => ({
-    ...model,
-    lastVerifiedAt: model.lastVerifiedAt || current.updated,
-  }));
+  let nextModels = current.models.map((model) => ({ ...model }));
+  let refreshedSources = 0;
 
   try {
     const payload = await fetchJson(OPENROUTER_MODELS);
     if (!Array.isArray(payload.data) || payload.data.length < 100) throw new Error('模型目录返回数量异常');
     const selected = selectCatalog(payload.data);
-    nextModels = mergeCatalog(nextModels, selected.map((model) => catalogModel(model, checkedAt)), checkedAt);
+    const catalog = selected.map((model) => catalogModel(model, checkedAt));
+    validateCatalogCoverage(current.models, catalog);
+    const candidate = mergeCatalog(structuredClone(nextModels), catalog, checkedAt);
+    validate({ models: candidate });
+    nextModels = candidate;
+    refreshedSources++;
     status.sources.push({ name: 'OpenRouter 模型目录', status: 'ok', count: selected.length, role: '发现与聚合报价' });
   } catch (error) {
-    status.status = 'failed';
+    status.status = 'degraded';
     status.sources.push({ name: 'OpenRouter 模型目录', status: 'error', message: error.message, role: '发现与聚合报价' });
   }
 
@@ -334,14 +352,19 @@ async function run() {
   });
 
   try {
-    nextModels = await updateOpenAIPrices(nextModels, checkedAt);
-    status.sources.push({ name: 'OpenAI 官方价格', status: 'ok', role: '官方价格校验' });
+    const failures = [];
+    nextModels = await updateOpenAIPrices(nextModels, checkedAt, fetchText, failure => failures.push(failure));
+    const refreshed = nextModels.filter(m => m.provider === 'OpenAI' && m.priceStatus === 'official' && m.lastVerifiedAt === checkedAt).length;
+    if (refreshed) refreshedSources++;
+    if (failures.length) status.status = 'degraded';
+    status.sources.push({ name: 'OpenAI 官方价格', status: failures.length ? 'error' : 'ok', role: `逐模型价格校验：${refreshed} 成功，${failures.length} 保留旧价`, ...(failures.length ? { message: failures.map(f => f.message).join('; '), failures } : {}) });
   } catch (error) {
-    status.status = 'failed';
+    status.status = 'degraded';
     status.sources.push({ name: 'OpenAI 官方价格', status: 'error', message: error.message, role: '官方价格校验' });
   }
 
   status.modelCount = nextModels.length;
+  if (!refreshedSources) status.status = 'failed';
   fs.writeFileSync(STATUS_FILE, `${JSON.stringify(status, null, 2)}\n`, 'utf8');
   if (status.status === 'failed') {
     throw new Error(status.sources.filter((source) => source.status === 'error').map((source) => `${source.name}: ${source.message}`).join('; '));
@@ -362,4 +385,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseOpenAIPrice, updateOpenAIPrices, validate, selectCatalog };
+module.exports = { parseOpenAIPrice, updateOpenAIPrices, validate, selectCatalog, validateCatalogCoverage };

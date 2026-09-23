@@ -30,10 +30,15 @@ jobs:
       - name: 同步价格与来源状态
         id: sync
         run: npm run data:sync
+      - name: 校验数据与构建
+        id: verify
+        run: npm run check
       - name: 保留失败状态，不发布失败批次价格
-        if: failure() && steps.sync.outcome == 'failure' && github.ref == 'refs/heads/main'
+        if: failure() && (steps.sync.outcome == 'failure' || steps.verify.outcome == 'failure') && github.ref == 'refs/heads/main'
+        env:
+          FAILED_STAGE: ${{ steps.sync.outcome == 'failure' && 'sync' || 'validation-build' }}
         run: |
-          node -e 'const s=require("./sync-status.json"); if(s.status!=="failed") process.exit(1);'
+          node scripts/report-sync-failure.cjs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add sync-status.json
@@ -51,8 +56,6 @@ jobs:
           name: pricing-sync-status
           path: sync-status.json
           if-no-files-found: error
-      - name: 校验数据与构建
-        run: npm run check
       - name: 提交价格变化
         if: github.ref == 'refs/heads/main'
         run: |
