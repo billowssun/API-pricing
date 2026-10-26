@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-26T14:14:47.137Z",
+  "checkedAt": "2026-10-26T20:28:34.299Z",
   "status": "healthy",
   "sources": [
     {
@@ -54,5 +54,5 @@
       "role": "逐模型价格校验：3 成功，0 保留旧价"
     }
   ],
-  "modelCount": 57
+  "modelCount": 58
 }
