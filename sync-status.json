@@ -1,11 +1,11 @@
 {
-  "checkedAt": "2026-11-11T06:14:35.390Z",
+  "checkedAt": "2026-11-11T15:09:48.857Z",
   "status": "healthy",
   "sources": [
     {
       "name": "OpenRouter 模型目录",
       "status": "ok",
-      "count": 37,
+      "count": 36,
       "role": "发现与聚合报价"
     },
     {
@@ -54,5 +54,5 @@
       "role": "逐模型价格校验：3 成功，0 保留旧价"
     }
   ],
-  "modelCount": 58
+  "modelCount": 57
 }
