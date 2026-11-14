@@ -1,18 +1,18 @@
 {
-  "updated": "2026-11-14T13:33:23.725Z",
-  "checkedAt": "2026-11-14T13:33:23.725Z",
+  "updated": "2026-11-14T22:25:37.824Z",
+  "checkedAt": "2026-11-14T22:25:37.824Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-14T13:33:22.519Z"
+      "lastSeen": "2026-11-14T22:25:37.340Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-14T13:33:22.519Z"
+      "lastSeen": "2026-11-14T22:25:37.340Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-14T13:33:22.519Z"
+      "lastSeen": "2026-11-14T22:25:37.340Z"
     }
   },
   "tiers": {
@@ -20,8 +20,8 @@
       "google|": [
         "gemini flash",
         "gemini argon",
-        "gemini flash lite",
         "gemini carbon",
+        "gemini flash lite",
         "gemini hydrogen"
       ],
       "anthropic|": [
@@ -185,14 +185,14 @@
       ],
       "elevenlabs|tts": [
         "eleven turbo",
-        "eleven"
+        "eleven flash"
       ],
       "elevenlabs|stt": [
         "scribe"
       ],
       "microsoft|tts": [
-        "mai voice flash",
-        "mai voice"
+        "mai voice",
+        "mai voice flash"
       ],
       "bytedance-seed|tts": [
         "seed audio"
@@ -474,9 +474,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
+      "input": 0.075,
+      "output": 0.3,
+      "cached": 0.0075,
       "context": 1048576,
       "created": 1792379569
     },
@@ -1082,16 +1082,6 @@
     },
     {
       "category": "speech",
-      "id": "elevenlabs/eleven-v4",
-      "name": "Eleven v4",
-      "provider": "ElevenLabs",
-      "kind": "tts",
-      "unitPrice": 80,
-      "unit": "M 字符",
-      "created": 1791386285
-    },
-    {
-      "category": "speech",
       "id": "elevenlabs/eleven-v4-turbo",
       "name": "Eleven v4 Turbo",
       "provider": "ElevenLabs",
@@ -1099,6 +1089,16 @@
       "unitPrice": 40,
       "unit": "M 字符",
       "created": 1791386280
+    },
+    {
+      "category": "speech",
+      "id": "elevenlabs/eleven-flash-v2.5",
+      "name": "Eleven Flash v2.5",
+      "provider": "ElevenLabs",
+      "kind": "tts",
+      "unitPrice": 40,
+      "unit": "M 字符",
+      "created": 1791386250
     },
     {
       "category": "speech",
