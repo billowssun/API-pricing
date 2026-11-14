@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大模型 API 价格</title>
+<meta name="description" content="主流大模型 API 价格一览：文本、图片、视频模型，自动跟进各厂商最新模型。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111'/><text x='16' y='22' font-size='17' text-anchor='middle' fill='%23fff' font-family='system-ui'>$</text></svg>">
+<style>
+  :root {
+    --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --line: #e7e5e4;
+    --card: #fff; --hover: #f5f5f4; --accent: #0f766e; --chip: #f0efed;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0c0a09; --fg: #f5f5f4; --muted: #a8a29e; --line: #292524;
+      --card: #141210; --hover: #1c1917; --accent: #5eead4; --chip: #1c1917; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 14px/1.5 system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .sub b { color: var(--fg); font-weight: 500; }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted); margin-right: 6px; vertical-align: 1px; }
+  .dot.live { background: #22c55e; }
+
+  .tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--chip); margin-bottom: 14px; }
+  .tab { border: 0; background: none; color: var(--muted); font: inherit; font-weight: 500;
+    padding: 6px 16px; border-radius: 8px; cursor: pointer; }
+  .tab span { font-weight: 400; font-size: 12px; margin-left: 4px; opacity: .7; }
+  .tab[aria-selected=true] { background: var(--card); color: var(--fg); box-shadow: 0 1px 2px rgb(0 0 0 / .08); }
+
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; align-items: center; }
+  input[type=search] { flex: 1 1 220px; min-width: 0; padding: 8px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--card); color: var(--fg); font: inherit; outline: none; }
+  input[type=search]:focus { border-color: var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid transparent; background: var(--chip); color: var(--fg); font: inherit;
+    font-size: 13px; padding: 4px 10px; border-radius: 999px; cursor: pointer; }
+  .chip[aria-pressed=true] { background: var(--fg); color: var(--bg); }
+
+  .wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+  table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  th, td { padding: 10px 14px; text-align: left; white-space: nowrap; }
+  th { font-weight: 500; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line);
+    cursor: pointer; user-select: none; background: var(--card); }
+  th small { font-weight: 400; opacity: .75; margin-left: 2px; }
+  th:hover { color: var(--fg); }
+  th[data-dir]::after { content: attr(data-dir); margin-left: 4px; color: var(--accent); }
+  td { border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--hover); }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.num { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; }
+  .name a { color: var(--fg); text-decoration: none; font-weight: 500; }
+  .name a:hover { color: var(--accent); }
+  .new { font-size: 11px; color: var(--accent); border: 1px solid currentColor; border-radius: 4px;
+    padding: 0 4px; margin-left: 6px; vertical-align: 1px; }
+  .from { font-size: 11px; color: var(--muted); margin-right: 3px; font-family: system-ui, sans-serif; }
+  .dim { color: var(--muted); }
+  .empty { padding: 40px; text-align: center; color: var(--muted); }
+  .meta { display: none; font-size: 12px; color: var(--muted); }
+  .note { color: var(--muted); font-size: 12px; margin: 10px 2px 0; }
+  @media (max-width: 640px) {
+    main { padding-top: 24px; }
+    table { min-width: 0; }
+    th, td { padding: 10px 10px; }
+    .name { white-space: normal; }
+    .meta { display: block; }
+    .minor { display: none; }
+    .tab { padding: 6px 12px; }
+  }
+  footer { color: var(--muted); font-size: 12px; margin-top: 16px; line-height: 1.7; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1>大模型 API 价格</h1>
+  <p class="sub" id="status">加载中…</p>
+
+  <div class="tabs" role="tablist" id="tabs"></div>
+
+  <div class="bar">
+    <input type="search" id="q" placeholder="搜索模型，如 claude、flux、veo、eleven" autocomplete="off">
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="wrap">
+    <table>
+      <thead><tr id="head"></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <p class="note" id="note"></p>
+
+  <footer>
+    数据来自 <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a> 公开目录。
+    文本、图片、语音价格在页面打开时实时拉取；视频价格只在模型页面上公布，由定时任务每 6 小时抓取一次。
+    各厂商直连价格、国内人民币报价、批量与阶梯优惠可能不同，以官方账单为准。
+  </footer>
+</main>
+
+<script type="module">
+import { SOURCE, CATEGORIES, selectModels } from './select.js';
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const dash = '<span class="dim">—</span>';
+const money = v => v == null ? dash
+  : '$' + (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(2).replace(/\.?0+$/, '') : String(+v.toPrecision(3)));
+const tokens = v => !v ? '—' : v >= 1e6 ? +(v / 1e6).toFixed(2) + 'M' : Math.round(v / 1e3) + 'K';
+const date = s => new Date(s * 1000).toISOString().slice(0, 10);
+const from = m => m.from ? '<span class="from">起</span>' : '';
+
+// 每个大类的列定义。minor 列在手机上隐藏。desc：首次点击时降序。
+const COLUMNS = {
+  text: [
+    { key: 'input', label: '输入', unit: '/M', cell: m => money(m.input) },
+    { key: 'cached', label: '缓存输入', unit: '/M', minor: true, cell: m => money(m.cached) },
+    { key: 'output', label: '输出', unit: '/M', cell: m => money(m.output) },
+    { key: 'context', label: '上下文', minor: true, desc: true, cell: m => tokens(m.context) },
+  ],
+  image: [
+    { key: 'perImage', label: '每张', cell: m => money(m.perImage) },
+    { key: 'input', label: '输入', unit: '/M', minor: true, cell: m => money(m.input) },
+    { key: 'imageOutput', label: '图片输出', unit: '/M', cell: m => money(m.imageOutput) },
+  ],
+  video: [
+    { key: 'perSecond', label: '每秒', cell: m => from(m) + money(m.perSecond) },
+    { key: 'ten', label: '10 秒视频', cell: m => from(m) + money(m.perSecond * 10), value: m => m.perSecond },
+  ],
+  speech: [
+    { key: 'kind', label: '类型', text: true, cell: m => m.kind === 'tts' ? '语音合成' : '语音识别', value: m => m.kind },
+    // 不同单位不能直接比：排序时先按类型、再按单位分组，组内比价格
+    { key: 'unitPrice', label: '按量价格', cell: m => m.unitPrice == null ? dash : `${money(m.unitPrice)}<span class="from"> / ${m.unit}</span>`,
+      value: m => m.unitPrice == null ? null : `${m.kind}|${m.unit}|${String(m.unitPrice.toFixed(6)).padStart(14, '0')}` },
+    { key: 'input', label: '输入', unit: '/M tokens', minor: true, cell: m => money(m.input) },
+    { key: 'output', label: '输出', unit: '/M tokens', cell: m => money(m.output) },
+  ],
+};
+const NOTES = {
+  text: '单位：美元 / 百万 tokens。',
+  image: '按张计费的模型看"每张"；按 token 计费的模型（如 GPT Image、Nano Banana）看"图片输出"，单位美元 / 百万 tokens，每张实际 token 数随分辨率变化。',
+  video: '单位：美元。"起"表示最低档价格，实际价格随分辨率、时长、是否带音频上浮。',
+  speech: '单位：美元。语音合成多按百万字符计费，语音识别多按音频分钟计费；Gemini、GPT-4o 等按 token 计费的模型看"输入 / 输出"列（合成的输出、识别的输入为音频 token）。',
+};
+
+const state = { all: [], cat: 'text', provider: '全部', q: '', key: null, dir: 1, info: {} };
+const startCat = location.hash.slice(1);
+if (CATEGORIES[startCat]) state.cat = startCat;
+
+function columnsFor(cat) {
+  return [
+    { key: 'name', label: '模型', text: true },
+    { key: 'provider', label: '厂商', text: true, minor: true },
+    ...COLUMNS[cat],
+    { key: 'created', label: '发布', minor: true, desc: true },
+  ];
+}
+
+function renderChrome() {
+  const { all, cat } = state;
+  const order = Object.values(CATEGORIES[cat].providers);
+  const models = all.filter(m => m.category === cat);
+  const providers = order.filter(p => models.some(m => m.provider === p));
+  if (!providers.includes(state.provider)) state.provider = '全部';
+
+  $('#tabs').innerHTML = Object.entries(CATEGORIES).map(([k, c]) =>
+    `<button class="tab" role="tab" data-cat="${k}" aria-selected="${k === cat}">${c.label}<span>${all.filter(m => m.category === k).length}</span></button>`).join('');
+  $('#chips').innerHTML = ['全部', ...providers].map(p =>
+    `<button class="chip" aria-pressed="${p === state.provider}">${esc(p)}</button>`).join('');
+  $('#head').innerHTML = columnsFor(cat).map(c =>
+    `<th data-key="${c.key}" class="${c.text ? '' : 'num'} ${c.minor ? 'minor' : ''}">${c.label}${c.unit ? `<small>${c.unit}</small>` : ''}</th>`).join('');
+  $('#note').textContent = NOTES[cat];
+
+  const info = state.info[cat === 'video' ? 'video' : 'main'];
+  if (info) {
+    const when = new Date(info.updated).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' });
+    $('#status').innerHTML = `<span class="dot${info.live ? ' live' : ''}"></span>${info.live ? '实时数据' : '快照数据'} · <b>${providers.length}</b> 家厂商 · <b>${models.length}</b> 个模型 · 更新于 ${when}`;
+  }
+}
+
+function render() {
+  const cols = columnsFor(state.cat);
+  const q = state.q.trim().toLowerCase();
+  const list = state.all.filter(m => m.category === state.cat &&
+    (state.provider === '全部' || m.provider === state.provider) &&
+    (!q || (m.name + ' ' + m.provider + ' ' + m.id).toLowerCase().includes(q)));
+
+  const col = cols.find(c => c.key === state.key);
+  if (col) {
+    const val = col.value || (m => m[col.key]);
+    list.sort((a, b) => {
+      const x = val(a), y = val(b);
+      if (x == null) return 1;
+      if (y == null) return -1;
+      return (typeof x === 'string' ? x.localeCompare(y, 'zh') : x - y) * state.dir;
+    });
+  } else {
+    const order = Object.values(CATEGORIES[state.cat].providers);
+    list.sort((a, b) => order.indexOf(a.provider) - order.indexOf(b.provider) || b.created - a.created);
+  }
+
+  const fresh = Date.now() / 1000 - 30 * 86400;
+  $('#rows').innerHTML = list.length ? list.map(m => `<tr>${cols.map(c => {
+    const cls = `${c.text ? '' : 'num'} ${c.minor ? 'minor' : ''}`;
+    if (c.key === 'name') return `<td class="name"><a href="https://openrouter.ai/${esc(m.id)}" target="_blank" rel="noopener" title="${esc(m.id)}">${esc(m.name)}</a>${m.created > fresh ? '<span class="new">新</span>' : ''}<span class="meta">${esc(m.provider)} · ${date(m.created)}</span></td>`;
+    if (c.key === 'provider') return `<td class="dim ${cls}">${esc(m.provider)}</td>`;
+    if (c.key === 'created') return `<td class="dim ${cls}">${date(m.created)}</td>`;
+    return `<td class="${cls}">${c.cell(m)}</td>`;
+  }).join('')}</tr>`).join('') : `<tr><td colspan="${cols.length}" class="empty">没有匹配的模型</td></tr>`;
+
+  document.querySelectorAll('th').forEach(th => {
+    if (th.dataset.key === state.key) th.dataset.dir = state.dir > 0 ? '↑' : '↓';
+    else delete th.dataset.dir;
+  });
+}
+
+$('#tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.tab');
+  if (!tab || tab.dataset.cat === state.cat) return;
+  Object.assign(state, { cat: tab.dataset.cat, provider: '全部', key: null });
+  history.replaceState(null, '', state.cat === 'text' ? location.pathname : '#' + state.cat);
+  renderChrome(); render();
+});
+$('#chips').addEventListener('click', e => {
+  if (!e.target.matches('.chip')) return;
+  state.provider = e.target.textContent;
+  renderChrome(); render();
+});
+$('#q').addEventListener('input', e => { state.q = e.target.value; render(); });
+$('#head').addEventListener('click', e => {
+  const th = e.target.closest('th');
+  if (!th) return;
+  const c = columnsFor(state.cat).find(c => c.key === th.dataset.key);
+  const first = c.desc ? -1 : 1;
+  if (state.key !== c.key) { state.key = c.key; state.dir = first; }
+  else if (state.dir === first) state.dir = -first;
+  else state.key = null;
+  render();
+});
+
+// 快照先上屏；文本、图片、语音随后用实时数据替换，视频始终用快照。
+const snapshot = fetch('./models.json', { cache: 'no-cache' }).then(r => r.json());
+let liveShown = false;
+
+function show(models, mainInfo, videoInfo) {
+  state.all = models;
+  state.info = { main: mainInfo, video: videoInfo };
+  renderChrome(); render();
+}
+
+const results = await Promise.allSettled([
+  snapshot.then(s => {
+    if (liveShown) return;
+    const info = { updated: s.updated, live: false };
+    show(s.models.map(m => ({ category: 'text', ...m })), info, info);
+  }),
+  (async () => {
+    const res = await fetch(SOURCE, { signal: AbortSignal.timeout(15000) });
+    const { data } = await res.json();
+    const text = selectModels(data, 'text'), image = selectModels(data, 'image'), speech = selectModels(data, 'speech');
+    if (text.length < 10 || image.length < 5 || speech.length < 5) throw new Error('too few');
+    let s = { models: [], updated: null };
+    try { s = await snapshot; } catch {}
+    liveShown = true;
+    show([...text, ...image, ...speech, ...s.models.filter(m => m.category === 'video')],
+      { updated: new Date().toISOString(), live: true },
+      s.updated ? { updated: s.updated, live: false } : null);
+  })(),
+]);
+if (results.every(r => r.status === 'rejected')) $('#status').textContent = '数据加载失败，请稍后刷新。';
+</script>
+</body>
+</html>

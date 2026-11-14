@@ -1,39 +1,45 @@
-# API Pricing
+# 大模型 API 价格
 
-大模型 API 价格对比与预算估算网站，支持模型检索、费用计算、价格变更展示及数据同步。
+一个静态页面，分**文本 / 图片 / 视频 / 语音**四类列出主流厂商最新模型的 API 价格（美元），支持搜索、按厂商筛选、点表头排序。
 
-## 功能
+| 大类 | 价格列 |
+| --- | --- |
+| 文本 | 输入、缓存输入、输出（/ 百万 tokens） |
+| 图片 | 每张（按张计费的模型）；输入、图片输出（按 token 计费的模型，/ 百万 tokens） |
+| 视频 | 每秒起价、10 秒视频起价 |
+| 语音 | 类型（合成 / 识别）；按量价格（合成多为 / 百万字符，识别多为 / 分钟）；输入、输出（按 token 计费的模型） |
 
-- 按模型和供应商浏览价格与能力信息。
-- 对比模型费用，估算不同调用量的预算。
-- 查看价格变更与同步状态。
-- 使用脚本及 GitHub Actions 更新价格数据。
+## 怎么做到"自动更新"
+
+- **页面打开时**：先显示仓库里的 `models.json` 快照，同时浏览器直接请求 OpenRouter 公开模型目录，现场挑出文本、图片、语音主流模型替换快照。
+- **视频价格**：OpenRouter 的 API 里视频价格都是 0，真实价格只写在各模型页面上（"Priced from $0.40 per second"）。浏览器跨域读不了这些页面，所以视频价格由 `scripts/sync.mjs` 抓取后写进快照，GitHub Actions 每 6 小时刷新一次。
+- **新模型**：不维护型号白名单。`select.js` 为每个大类列出厂商，按产品线（去掉版本号的名字）归并，每条产品线保留最新一个，每家取最近几条（文本 5 条，图片和视频 3 条，语音合成和识别各 2 条）。厂商发新一代模型，旧的会被自动替换。
+
+## 文件
+
+| 文件 | 作用 |
+| --- | --- |
+| `index.html` | 页面（样式和脚本都在里面） |
+| `select.js` | 挑选主流模型的规则，页面和同步脚本共用 |
+| `models.json` | 数据快照 |
+| `scripts/sync.mjs` | 刷新快照（含抓取视频价格）；某个大类数据异常（数量骤降、厂商消失）时该大类沿用旧快照 |
+| `scripts/serve.mjs` | 本地预览服务器 |
+
+想加减厂商或多看几个型号，改 `select.js` 里 `CATEGORIES` 对应大类的 `providers` 和 `perProvider`。
 
 ## 本地运行
 
-需要 Node.js 22。
+零依赖，只需 Node 20+：
 
 ```bash
-npm ci
-npm run dev
+npm run sync   # 刷新快照
+npm run dev    # 打开 http://localhost:3000
 ```
-
-访问 `http://localhost:3000`。
-
-## 数据维护与验证
-
-`pricing.json` 保存模型价格数据，`scraper.js` 负责同步与验证，`sync-status.json` 保存同步状态。
-
-```bash
-npm run data:validate
-npm run data:sync
-npm run check
-```
-
-`data:sync` 会访问外部来源并更新本地数据；`check` 包含测试、数据校验、类型检查与构建。自动同步配置见 [.github/workflows/scrape.yml](./.github/workflows/scrape.yml)，说明见 [docs/actions-sync.md](./docs/actions-sync.md)。
 
 ## 部署
 
-这是 Next.js 项目，可从仓库根目录导入 Vercel，也可运行 `npm run build`、`npm start` 自托管。
+纯静态文件，放到 GitHub Pages、Vercel、Cloudflare Pages 任意一处即可，无需构建。
 
-价格数据可能存在更新延迟、计价单位或缓存优惠差异；预算结果仅供估算，实际费用以供应商账单和官方定价为准。
+## 说明
+
+价格来自 OpenRouter 的路由报价，可能与厂商直连价格、国内人民币价格、批量或阶梯优惠不同，以官方账单为准。
