@@ -1,5 +1,7 @@
 # 大模型 API 价格
 
+**在线访问：https://pricing.pddshop.cc/**
+
 一个静态页面，分**文本 / 图片 / 视频 / 语音**四类列出主流厂商最新模型的 API 价格（美元），支持搜索、按厂商筛选、点表头排序。
 
 | 大类 | 价格列 |
@@ -38,7 +40,9 @@ npm run dev    # 打开 http://localhost:3000
 
 ## 部署
 
-纯静态文件，放到 GitHub Pages、Vercel、Cloudflare Pages 任意一处即可，无需构建。
+部署在 Vercel，推送到 `main` 即自动上线；`vercel.json` 已声明为纯静态站点、无需构建。定时任务更新 `models.json` 后也会触发重新部署。
+
+换到 GitHub Pages、Cloudflare Pages 等任意静态托管同样可用。
 
 ## 说明
 

@@ -1,6 +1,8 @@
 {
   "name": "api-pricing",
   "private": true,
+  "description": "主流大模型 API 价格一览：文本、图片、视频、语音",
+  "homepage": "https://pricing.pddshop.cc/",
   "type": "module",
   "scripts": {
     "dev": "node scripts/serve.mjs",
