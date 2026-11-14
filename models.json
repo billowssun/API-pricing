@@ -1,18 +1,18 @@
 {
-  "updated": "2026-11-14T06:08:52.706Z",
-  "checkedAt": "2026-11-14T06:11:04.748Z",
+  "updated": "2026-11-14T13:33:23.725Z",
+  "checkedAt": "2026-11-14T13:33:23.725Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-14T06:11:03.446Z"
+      "lastSeen": "2026-11-14T13:33:22.519Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-14T06:11:03.446Z"
+      "lastSeen": "2026-11-14T13:33:22.519Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-14T06:11:03.446Z"
+      "lastSeen": "2026-11-14T13:33:22.519Z"
     }
   },
   "tiers": {
@@ -31,8 +31,8 @@
         "claude fable"
       ],
       "z-ai|": [
-        "glm",
-        "glm flash"
+        "glm flash",
+        "glm"
       ],
       "openai|": [
         "gpt sol",
