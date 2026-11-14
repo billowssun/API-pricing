@@ -27,8 +27,9 @@
   .sub { color: var(--muted); margin: 0 0 20px; }
   .sub b { color: var(--fg); font-weight: 500; }
   .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
-    background: var(--muted); margin-right: 6px; vertical-align: 1px; }
-  .dot.live { background: #22c55e; }
+    background: #22c55e; margin-right: 6px; vertical-align: 1px; }
+  .dot.late { background: #f59e0b; }
+  .dot.stale { background: #ef4444; }
 
   .tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--chip); margin-bottom: 14px; }
   .tab { border: 0; background: none; color: var(--muted); font: inherit; font-weight: 500;
@@ -185,7 +186,14 @@ function renderChrome() {
   const info = state.info[cat === 'video' ? 'video' : 'main'];
   if (info) {
     const when = new Date(info.updated).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' });
-    $('#status').innerHTML = `<span class="dot${info.live ? ' live' : ''}"></span>${info.live ? '实时数据' : '快照数据'} · <b>${providers.length}</b> 家厂商 · <b>${models.length}</b> 个模型 · ${info.live ? '更新于' : '检查于'} ${when}`;
+    // 圆点表示数据新鲜度：绿 = 实时或 12 小时内同步过（定时任务每 6 小时一次）；
+    // 黄 = 12～48 小时没同步；红 = 超过 48 小时，说明自动同步可能已停止
+    const hours = info.live ? 0 : (Date.now() - Date.parse(info.updated)) / 3600e3;
+    const [cls, label, tip] = hours < 12
+      ? ['', info.live ? '实时数据' : '定时同步', info.live ? '打开页面时从 OpenRouter 实时获取' : '每 6 小时自动同步一次']
+      : hours < 48 ? ['late', '同步稍有延迟', '超过 12 小时未同步，数据可能不是最新']
+      : ['stale', '数据可能已过期', '超过 48 小时未同步，自动同步可能已停止'];
+    $('#status').innerHTML = `<span class="dot ${cls}" title="${tip}"></span>${label} · <b>${providers.length}</b> 家厂商 · <b>${models.length}</b> 个模型 · ${info.live ? '更新于' : '同步于'} ${when}`;
   }
 }
 
