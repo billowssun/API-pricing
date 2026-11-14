@@ -184,7 +184,7 @@ function renderChrome() {
   const info = state.info[cat === 'video' ? 'video' : 'main'];
   if (info) {
     const when = new Date(info.updated).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' });
-    $('#status').innerHTML = `<span class="dot${info.live ? ' live' : ''}"></span>${info.live ? '实时数据' : '快照数据'} · <b>${providers.length}</b> 家厂商 · <b>${models.length}</b> 个模型 · 更新于 ${when}`;
+    $('#status').innerHTML = `<span class="dot${info.live ? ' live' : ''}"></span>${info.live ? '实时数据' : '快照数据'} · <b>${providers.length}</b> 家厂商 · <b>${models.length}</b> 个模型 · ${info.live ? '更新于' : '检查于'} ${when}`;
   }
 }
 
@@ -261,7 +261,7 @@ function show(models, mainInfo, videoInfo) {
 const results = await Promise.allSettled([
   snapshot.then(s => {
     if (liveShown) return;
-    const info = { updated: s.updated, live: false };
+    const info = { updated: s.checkedAt || s.updated, live: false };
     show(s.models.map(m => ({ category: 'text', ...m })), info, info);
   }),
   (async () => {
@@ -274,7 +274,7 @@ const results = await Promise.allSettled([
     liveShown = true;
     show([...text, ...image, ...speech, ...s.models.filter(m => m.category === 'video')],
       { updated: new Date().toISOString(), live: true },
-      s.updated ? { updated: s.updated, live: false } : null);
+      s.updated ? { updated: s.checkedAt || s.updated, live: false } : null);
   })(),
 ]);
 if (results.every(r => r.status === 'rejected')) $('#status').textContent = '数据加载失败，请稍后刷新。';

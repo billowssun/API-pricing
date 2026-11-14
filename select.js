@@ -19,7 +19,11 @@ const perMillion = v => num(v) ? round(num(v) * 1e6) : null;
 export const CATEGORIES = {
   text: {
     label: '文本',
-    perProvider: 5,
+    // 收录该厂商最新模型发布前 150 天内更新过的全部产品线（即"当前这一代"），
+    // 每家最多 8 条；不足 3 条时按发布时间补足。
+    recentDays: 150,
+    minPerProvider: 3,
+    perProvider: 8,
     providers: {
       openai: 'OpenAI', anthropic: 'Anthropic', google: 'Google', 'x-ai': 'xAI',
       deepseek: 'DeepSeek', qwen: '通义千问', moonshotai: 'Kimi', 'z-ai': '智谱 GLM',
@@ -134,7 +138,10 @@ export function selectModels(catalog, category = 'text', now = Date.now()) {
   for (const m of [...families.values()].sort((a, b) => b.created - a.created)) {
     const group = m.provider + (m.kind || '');
     const list = byProvider.get(group) || [];
-    if (list.length < cat.perProvider) list.push(m);
+    const newest = list[0]?.created ?? m.created;   // 已按时间倒序，第一个就是该厂商最新
+    const recent = !cat.recentDays || newest - m.created <= cat.recentDays * 86400;
+    const room = list.length < (recent ? cat.perProvider : cat.minPerProvider || cat.perProvider);
+    if (room) list.push(m);
     byProvider.set(group, list);
   }
   return [...byProvider.values()].flat();
