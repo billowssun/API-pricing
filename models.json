@@ -1,6 +1,242 @@
 {
-  "updated": "2026-11-14T05:58:44.421Z",
-  "checkedAt": "2026-11-14T05:59:11.349Z",
+  "updated": "2026-11-14T06:08:52.706Z",
+  "checkedAt": "2026-11-14T06:08:52.706Z",
+  "vendors": {
+    "tencent": {
+      "name": "Tencent",
+      "lastSeen": "2026-11-14T06:08:50.188Z"
+    },
+    "xiaomi": {
+      "name": "Xiaomi",
+      "lastSeen": "2026-11-14T06:08:50.189Z"
+    },
+    "meta": {
+      "name": "Meta",
+      "lastSeen": "2026-11-14T06:08:50.189Z"
+    }
+  },
+  "tiers": {
+    "text": {
+      "google|": [
+        "gemini flash",
+        "gemini argon",
+        "gemini flash lite",
+        "gemini carbon",
+        "gemini hydrogen"
+      ],
+      "anthropic|": [
+        "claude opus",
+        "claude sonnet",
+        "claude haiku",
+        "claude fable"
+      ],
+      "z-ai|": [
+        "glm",
+        "glm flash"
+      ],
+      "openai|": [
+        "gpt sol",
+        "gpt luna",
+        "gpt astra",
+        "gpt terra"
+      ],
+      "moonshotai|": [
+        "kimi pro",
+        "kimi"
+      ],
+      "minimax|": [
+        "minimax flash",
+        "minimax"
+      ],
+      "deepseek|": [
+        "deepseek flash",
+        "deepseek pro"
+      ],
+      "mistralai|": [
+        "mistral large",
+        "mistral medium"
+      ],
+      "qwen|": [
+        "qwen max",
+        "qwen flash",
+        "qwen max prime"
+      ],
+      "x-ai|": [
+        "grok"
+      ],
+      "bytedance-seed|": [
+        "seed turbo",
+        "seed lite",
+        "seed mini"
+      ],
+      "meta|": [
+        "muse spark contributor",
+        "muse wonder",
+        "muse spark open",
+        "muse ember",
+        "muse spark"
+      ],
+      "tencent|": [
+        "hy"
+      ],
+      "xiaomi|": [
+        "mimo flash",
+        "mimo pro",
+        "mimo pro ultraspeed"
+      ]
+    },
+    "image": {
+      "recraft|": [
+        "recraft flash"
+      ],
+      "tencent|": [],
+      "bytedance-seed|": [
+        "seedream flash",
+        "seedream pro"
+      ],
+      "minimax|": [
+        "minimax h image",
+        "minimax h image highspeed"
+      ],
+      "openai|": [
+        "gpt image sunburst",
+        "gpt image flare",
+        "gpt image"
+      ],
+      "qwen|": [
+        "qwen image turbo",
+        "qwen image pro",
+        "qwen image"
+      ],
+      "black-forest-labs|": [
+        "flux image klein",
+        "flux pro",
+        "flux klein b"
+      ],
+      "google|": [
+        "nano banana",
+        "nano banana lite",
+        "nano banana pro"
+      ],
+      "microsoft|": [
+        "mai image",
+        "mai image flash"
+      ],
+      "x-ai|": [
+        "grok imagine image"
+      ]
+    },
+    "video": {
+      "x-ai|": [
+        "grok imagine video lite",
+        "grok imagine video"
+      ],
+      "black-forest-labs|": [
+        "flux video"
+      ],
+      "minimax|": [
+        "h max",
+        "h"
+      ],
+      "alibaba|": [
+        "wan",
+        "wan prime"
+      ],
+      "bytedance|": [
+        "seedance",
+        "seedance fast",
+        "seedance mini"
+      ],
+      "runway|": [
+        "aleph",
+        "gen"
+      ],
+      "kwaivgi|": [
+        "kling video pro",
+        "kling video standard"
+      ],
+      "google|": [
+        "veo lite",
+        "veo fast",
+        "veo"
+      ]
+    },
+    "speech": {
+      "x-ai|stt": [
+        "grok stt"
+      ],
+      "assemblyai|tts": [
+        "assemblyai tts"
+      ],
+      "mistralai|tts": [
+        "voxtral tts",
+        "voxtral mini tts"
+      ],
+      "mistralai|stt": [
+        "voxtral mini transcribe",
+        "voxtral small transcribe"
+      ],
+      "assemblyai|stt": [
+        "universal pro"
+      ],
+      "fish-audio|tts": [
+        "drama",
+        "s pro"
+      ],
+      "elevenlabs|tts": [
+        "eleven turbo",
+        "eleven"
+      ],
+      "elevenlabs|stt": [
+        "scribe"
+      ],
+      "microsoft|tts": [
+        "mai voice flash",
+        "mai voice"
+      ],
+      "bytedance-seed|tts": [
+        "seed audio"
+      ],
+      "google|stt": [
+        "gemini transcribe",
+        "chirp"
+      ],
+      "fish-audio|stt": [
+        "transcribe pro",
+        "transcribe"
+      ],
+      "google|tts": [
+        "gemini flash tts",
+        "gemini flash lite tts"
+      ],
+      "microsoft|stt": [
+        "mai transcribe"
+      ],
+      "qwen|stt": [],
+      "deepgram|tts": [
+        "aura",
+        "flux tts"
+      ],
+      "openai|stt": [
+        "whisper large turbo",
+        "whisper large"
+      ],
+      "qwen|tts": [
+        "qwen audio tts plus",
+        "qwen audio tts flash"
+      ],
+      "minimax|tts": [
+        "speech turbo",
+        "speech hd"
+      ],
+      "deepgram|stt": [
+        "nova"
+      ],
+      "x-ai|tts": [
+        "grok voice tts"
+      ]
+    }
+  },
   "models": [
     {
       "category": "text",
@@ -103,14 +339,69 @@
     },
     {
       "category": "text",
-      "id": "openai/gpt-6.1-terra-pro",
-      "name": "GPT-6.1 Terra Pro",
-      "provider": "OpenAI",
-      "input": 1,
-      "output": 5,
-      "cached": 0.05,
-      "context": 1050000,
-      "created": 1793038556
+      "id": "meta/muse-ember",
+      "name": "Muse Ember",
+      "provider": "Meta",
+      "input": 0.1,
+      "output": 0.5,
+      "cached": 0.004,
+      "context": 1048576,
+      "created": 1794247648
+    },
+    {
+      "category": "text",
+      "id": "meta/muse-spark-open",
+      "name": "Muse Spark Open",
+      "provider": "Meta",
+      "input": 1.25,
+      "output": 4.25,
+      "cached": 0.15,
+      "context": 1048576,
+      "created": 1792087069
+    },
+    {
+      "category": "text",
+      "id": "meta/muse-wonder",
+      "name": "Muse Wonder",
+      "provider": "Meta",
+      "input": 4,
+      "output": 20,
+      "cached": 0.2,
+      "context": 1048576,
+      "created": 1791807945
+    },
+    {
+      "category": "text",
+      "id": "meta/muse-spark-1.3-contributor",
+      "name": "Muse Spark 1.3 Contributor",
+      "provider": "Meta",
+      "input": 0.1,
+      "output": 0.2,
+      "cached": 0.002,
+      "context": 1048576,
+      "created": 1788381519
+    },
+    {
+      "category": "text",
+      "id": "meta/muse-spark-1.3",
+      "name": "Muse Spark 1.3",
+      "provider": "Meta",
+      "input": 1.25,
+      "output": 4.25,
+      "cached": 0.15,
+      "context": 1048576,
+      "created": 1788378359
+    },
+    {
+      "category": "text",
+      "id": "tencent/hy4",
+      "name": "Hy4",
+      "provider": "Tencent",
+      "input": 0.417,
+      "output": 1.2505,
+      "cached": 0.021,
+      "context": 1048576,
+      "created": 1793766031
     },
     {
       "category": "text",
@@ -125,17 +416,6 @@
     },
     {
       "category": "text",
-      "id": "openai/gpt-6.1-sol-pro",
-      "name": "GPT-6.1 Sol Pro",
-      "provider": "OpenAI",
-      "input": 2,
-      "output": 10,
-      "cached": 0.1,
-      "context": 1050000,
-      "created": 1790702886
-    },
-    {
-      "category": "text",
       "id": "openai/gpt-6.1-sol",
       "name": "GPT-6.1 Sol",
       "provider": "OpenAI",
@@ -144,17 +424,6 @@
       "cached": 0.1,
       "context": 1050000,
       "created": 1790702882
-    },
-    {
-      "category": "text",
-      "id": "openai/gpt-6-luna-pro",
-      "name": "GPT-6 Luna Pro",
-      "provider": "OpenAI",
-      "input": 0.1,
-      "output": 0.5,
-      "cached": 0.01,
-      "context": 1050000,
-      "created": 1790100791
     },
     {
       "category": "text",
@@ -180,17 +449,6 @@
     },
     {
       "category": "text",
-      "id": "openai/gpt-6-astra-pro",
-      "name": "GPT-6 Astra Pro",
-      "provider": "OpenAI",
-      "input": 10,
-      "output": 50,
-      "cached": 1,
-      "context": 1050000,
-      "created": 1788552835
-    },
-    {
-      "category": "text",
       "id": "moonshotai/kimi-k3.1-pro",
       "name": "Kimi K3.1 Pro",
       "provider": "Kimi",
@@ -210,17 +468,6 @@
       "cached": 0.182,
       "context": 1048576,
       "created": 1784215858
-    },
-    {
-      "category": "text",
-      "id": "moonshotai/kimi-k2.7-code",
-      "name": "Kimi K2.7 Code",
-      "provider": "Kimi",
-      "input": 0.6,
-      "output": 3.5,
-      "cached": 0.16,
-      "context": 262144,
-      "created": 1781266361
     },
     {
       "category": "text",
@@ -290,39 +537,6 @@
     },
     {
       "category": "text",
-      "id": "mistralai/mistral-small-2603",
-      "name": "Mistral Small 4",
-      "provider": "Mistral",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
-      "context": 262144,
-      "created": 1773695685
-    },
-    {
-      "category": "text",
-      "id": "z-ai/glm-5.3-prime",
-      "name": "GLM 5.3 Prime",
-      "provider": "智谱 GLM",
-      "input": 2.8,
-      "output": 8.8,
-      "cached": 0.56,
-      "context": 1000000,
-      "created": 1790199651
-    },
-    {
-      "category": "text",
-      "id": "z-ai/glm-5.3-flashx",
-      "name": "GLM 5.3 FlashX",
-      "provider": "智谱 GLM",
-      "input": 0.37,
-      "output": 1.25,
-      "cached": 0.075,
-      "context": 1048576,
-      "created": 1789744020
-    },
-    {
-      "category": "text",
       "id": "z-ai/glm-5.3-flash",
       "name": "GLM 5.3 Flash",
       "provider": "智谱 GLM",
@@ -378,14 +592,36 @@
     },
     {
       "category": "text",
-      "id": "qwen/qwen3.7-plus",
-      "name": "Qwen3.7 Plus",
-      "provider": "通义千问",
-      "input": 0.32,
-      "output": 1.28,
-      "cached": 0.064,
-      "context": 1000000,
-      "created": 1780491783
+      "id": "xiaomi/mimo-v2.6-pro-ultraspeed",
+      "name": "MiMo-V2.6-Pro-UltraSpeed",
+      "provider": "Xiaomi",
+      "input": 4.35,
+      "output": 8.7,
+      "cached": 0.036,
+      "context": 1048576,
+      "created": 1790021267
+    },
+    {
+      "category": "text",
+      "id": "xiaomi/mimo-v2.6-flash",
+      "name": "MiMo-V2.6-Flash",
+      "provider": "Xiaomi",
+      "input": 0.14,
+      "output": 0.28,
+      "cached": 0.0028,
+      "context": 1050000,
+      "created": 1790021264
+    },
+    {
+      "category": "text",
+      "id": "xiaomi/mimo-v2.6-pro",
+      "name": "MiMo-V2.6-Pro",
+      "provider": "Xiaomi",
+      "input": 0.435,
+      "output": 0.87,
+      "cached": 0.0036,
+      "context": 1050000,
+      "created": 1790021259
     },
     {
       "category": "text",
@@ -397,17 +633,6 @@
       "cached": 0.5,
       "context": 500000,
       "created": 1790007541
-    },
-    {
-      "category": "text",
-      "id": "x-ai/grok-build-0.1",
-      "name": "Grok Build 0.1",
-      "provider": "xAI",
-      "input": 1,
-      "output": 2,
-      "cached": 0.2,
-      "context": 256000,
-      "created": 1779298123
     },
     {
       "category": "text",
@@ -452,30 +677,6 @@
     },
     {
       "category": "image",
-      "id": "recraft/recraft-v4-styles-pro",
-      "name": "Recraft V4 Styles Pro",
-      "provider": "Recraft",
-      "perImage": 0.1,
-      "created": 1787742640
-    },
-    {
-      "category": "image",
-      "id": "recraft/recraft-v4-styles-vector",
-      "name": "Recraft V4 Styles Vector",
-      "provider": "Recraft",
-      "perImage": 0.05,
-      "created": 1787742635
-    },
-    {
-      "category": "image",
-      "id": "bytedance-seed/seedream-5-5",
-      "name": "Seedream 5.5",
-      "provider": "字节跳动",
-      "perImage": 0.02,
-      "created": 1794517601
-    },
-    {
-      "category": "image",
       "id": "bytedance-seed/seedream-5-0-flash",
       "name": "Seedream 5.0 Flash",
       "provider": "字节跳动",
@@ -484,11 +685,11 @@
     },
     {
       "category": "image",
-      "id": "bytedance-seed/seedream-5-0-lite",
-      "name": "Seedream 5.0 Lite",
+      "id": "bytedance-seed/seedream-5-0-pro",
+      "name": "Seedream 5.0 Pro",
       "provider": "字节跳动",
-      "perImage": 0.035,
-      "created": 1786650094
+      "perImage": 0.045,
+      "created": 1786578139
     },
     {
       "category": "image",
@@ -569,11 +770,19 @@
     },
     {
       "category": "image",
-      "id": "black-forest-labs/flux-3-image",
-      "name": "FLUX 3 Image",
+      "id": "black-forest-labs/flux.2-klein-4b",
+      "name": "FLUX.2 Klein 4B",
       "provider": "FLUX",
-      "perImage": 0.041,
-      "created": 1790885807
+      "perImage": 0.0143,
+      "created": 1768429228
+    },
+    {
+      "category": "image",
+      "id": "black-forest-labs/flux.2-pro",
+      "name": "FLUX.2 Pro",
+      "provider": "FLUX",
+      "perImage": 0.0306,
+      "created": 1764030274
     },
     {
       "category": "image",
@@ -622,15 +831,6 @@
     },
     {
       "category": "image",
-      "id": "microsoft/mai-image-2.5-pro",
-      "name": "MAI-Image-2.5 Pro",
-      "provider": "Microsoft",
-      "input": 5,
-      "imageOutput": 108,
-      "created": 1784827701
-    },
-    {
-      "category": "image",
       "id": "x-ai/grok-imagine-image-2.0",
       "name": "Grok Imagine Image 2.0",
       "provider": "xAI",
@@ -675,15 +875,6 @@
     },
     {
       "category": "video",
-      "id": "minimax/hailuo-2.3",
-      "name": "Hailuo 2.3",
-      "provider": "MiniMax 海螺",
-      "perSecond": 0.0817,
-      "created": 1776702740,
-      "from": false
-    },
-    {
-      "category": "video",
       "id": "alibaba/wan-3.0-prime",
       "name": "Wan 3.0 Prime",
       "provider": "阿里万相",
@@ -698,15 +889,6 @@
       "provider": "阿里万相",
       "perSecond": 0.0425,
       "created": 1787603856,
-      "from": true
-    },
-    {
-      "category": "video",
-      "id": "alibaba/happyhorse-1.1",
-      "name": "HappyHorse 1.1",
-      "provider": "阿里万相",
-      "perSecond": 0.0988,
-      "created": 1782269643,
       "from": true
     },
     {
@@ -780,15 +962,6 @@
       "perSecond": 0.126,
       "created": 1777496205,
       "from": true
-    },
-    {
-      "category": "video",
-      "id": "kwaivgi/kling-video-o1",
-      "name": "Kling Video O1",
-      "provider": "可灵 Kling",
-      "perSecond": 0.112,
-      "created": 1776704777,
-      "from": false
     },
     {
       "category": "video",
@@ -899,8 +1072,8 @@
     },
     {
       "category": "speech",
-      "id": "fish-audio/s1",
-      "name": "S1",
+      "id": "fish-audio/s2-pro",
+      "name": "S2 Pro",
       "provider": "Fish Audio",
       "kind": "tts",
       "unitPrice": 15,
@@ -1059,23 +1232,23 @@
     },
     {
       "category": "speech",
-      "id": "openai/gpt-transcribe",
-      "name": "GPT Transcribe",
+      "id": "openai/whisper-large-v3",
+      "name": "Whisper Large V3",
       "provider": "OpenAI",
       "kind": "stt",
-      "unitPrice": 0.0045,
+      "unitPrice": 0.00045,
       "unit": "分钟",
-      "created": 1785973897
+      "created": 1777642266
     },
     {
       "category": "speech",
-      "id": "openai/gpt-4o-mini-transcribe",
-      "name": "GPT-4o Mini Transcribe",
+      "id": "openai/whisper-large-v3-turbo",
+      "name": "Whisper Large V3 Turbo",
       "provider": "OpenAI",
       "kind": "stt",
-      "input": 1.25,
-      "output": 5,
-      "created": 1777658151
+      "unitPrice": 0.0002,
+      "unit": "分钟",
+      "created": 1777642266
     },
     {
       "category": "speech",

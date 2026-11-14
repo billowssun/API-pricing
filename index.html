@@ -102,6 +102,7 @@
 
   <footer>
     数据来自 <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a> 公开目录。
+    收录规则全自动：按各厂商近期真实使用量判断哪些挡位是主流，每个挡位展示其最新版本；新厂商、新产品线会自动出现，没人用的旧挡位自动淘汰。
     文本、图片、语音价格在页面打开时实时拉取；视频价格只在模型页面上公布，由定时任务每 6 小时抓取一次。
     各厂商直连价格、国内人民币报价、批量与阶梯优惠可能不同，以官方账单为准。
     · <a href="https://github.com/billowssun/API-pricing" target="_blank" rel="noopener">GitHub</a>
@@ -249,7 +250,12 @@ $('#head').addEventListener('click', e => {
 });
 
 // 快照先上屏；文本、图片、语音随后用实时数据替换，视频始终用快照。
-const snapshot = fetch('./models.json', { cache: 'no-cache' }).then(r => r.json());
+// 快照里的 vendors（自动发现的厂商）和 tiers（按使用量算出的主流挡位）决定"收录哪些"，
+// 实时数据只负责"每个挡位的最新版本和价格"，以及快照之后才出现的新产品线。
+const snapshot = fetch('./models.json', { cache: 'no-cache' }).then(r => r.json()).then(s => {
+  for (const [author, v] of Object.entries(s.vendors || {})) CATEGORIES.text.providers[author] ??= v.name;
+  return s;
+});
 let liveShown = false;
 
 function show(models, mainInfo, videoInfo) {
@@ -267,10 +273,12 @@ const results = await Promise.allSettled([
   (async () => {
     const res = await fetch(SOURCE, { signal: AbortSignal.timeout(15000) });
     const { data } = await res.json();
-    const text = selectModels(data, 'text'), image = selectModels(data, 'image'), speech = selectModels(data, 'speech');
-    if (text.length < 10 || image.length < 5 || speech.length < 5) throw new Error('too few');
     let s = { models: [], updated: null };
     try { s = await snapshot; } catch {}
+    const since = s.checkedAt ? Date.parse(s.checkedAt) / 1000 : undefined;
+    const pick = c => selectModels(data, c, { tiers: s.tiers?.[c], since });
+    const text = pick('text'), image = pick('image'), speech = pick('speech');
+    if (text.length < 10 || image.length < 5 || speech.length < 5) throw new Error('too few');
     liveShown = true;
     show([...text, ...image, ...speech, ...s.models.filter(m => m.category === 'video')],
       { updated: new Date().toISOString(), live: true },
