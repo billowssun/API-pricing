@@ -1,18 +1,18 @@
 {
   "updated": "2026-11-14T06:08:52.706Z",
-  "checkedAt": "2026-11-14T06:08:52.706Z",
+  "checkedAt": "2026-11-14T06:11:04.748Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-14T06:08:50.188Z"
+      "lastSeen": "2026-11-14T06:11:03.446Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-14T06:08:50.189Z"
+      "lastSeen": "2026-11-14T06:11:03.446Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-14T06:08:50.189Z"
+      "lastSeen": "2026-11-14T06:11:03.446Z"
     }
   },
   "tiers": {
