@@ -1,18 +1,18 @@
 {
-  "updated": "2026-11-14T22:25:37.824Z",
-  "checkedAt": "2026-11-14T22:25:37.824Z",
+  "updated": "2026-11-15T06:34:54.062Z",
+  "checkedAt": "2026-11-15T06:34:54.062Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-14T22:25:37.340Z"
+      "lastSeen": "2026-11-15T06:34:53.502Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-14T22:25:37.340Z"
+      "lastSeen": "2026-11-15T06:34:53.502Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-14T22:25:37.340Z"
+      "lastSeen": "2026-11-15T06:34:53.502Z"
     }
   },
   "tiers": {
@@ -49,8 +49,7 @@
         "minimax"
       ],
       "deepseek|": [
-        "deepseek flash",
-        "deepseek pro"
+        "deepseek flash"
       ],
       "mistralai|": [
         "mistral large",
@@ -58,8 +57,7 @@
       ],
       "qwen|": [
         "qwen max",
-        "qwen flash",
-        "qwen max prime"
+        "qwen flash"
       ],
       "x-ai|": [
         "grok"
@@ -72,8 +70,8 @@
       "meta|": [
         "muse spark contributor",
         "muse wonder",
-        "muse spark open",
         "muse ember",
+        "muse spark open",
         "muse spark"
       ],
       "tencent|": [
@@ -92,6 +90,7 @@
       "tencent|": [],
       "bytedance-seed|": [
         "seedream flash",
+        "seedream",
         "seedream pro"
       ],
       "minimax|": [
@@ -135,8 +134,8 @@
         "flux video"
       ],
       "minimax|": [
-        "h max",
-        "h"
+        "h",
+        "h max"
       ],
       "alibaba|": [
         "wan",
@@ -184,8 +183,8 @@
         "s pro"
       ],
       "elevenlabs|tts": [
-        "eleven turbo",
-        "eleven flash"
+        "eleven flash",
+        "eleven turbo"
       ],
       "elevenlabs|stt": [
         "scribe"
@@ -452,8 +451,8 @@
       "id": "moonshotai/kimi-k3.1-pro",
       "name": "Kimi K3.1 Pro",
       "provider": "Kimi",
-      "input": 2,
-      "output": 10,
+      "input": 0.2375,
+      "output": 8.4114,
       "cached": 0.2,
       "context": 1048576,
       "created": 1792778188
@@ -474,9 +473,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.075,
-      "output": 0.3,
-      "cached": 0.0075,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
       "context": 1048576,
       "created": 1792379569
     },
@@ -496,22 +495,11 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.038,
-      "output": 0.5,
-      "cached": 0.01,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.003,
       "context": 1048576,
       "created": 1792225624
-    },
-    {
-      "category": "text",
-      "id": "deepseek/deepseek-v4-pro-0813",
-      "name": "DeepSeek V4 Pro 0813",
-      "provider": "DeepSeek",
-      "input": 0.111,
-      "output": 4.44,
-      "cached": 0.097,
-      "context": 1048576,
-      "created": 1786549364
     },
     {
       "category": "text",
@@ -556,17 +544,6 @@
       "cached": 0.079,
       "context": 1048576,
       "created": 1787086655
-    },
-    {
-      "category": "text",
-      "id": "qwen/qwen3.8-max-prime",
-      "name": "Qwen3.8 Max Prime",
-      "provider": "通义千问",
-      "input": 4,
-      "output": 12,
-      "cached": 0.5,
-      "context": 1000000,
-      "created": 1790191228
     },
     {
       "category": "text",
@@ -674,6 +651,14 @@
       "provider": "Recraft",
       "perImage": 0.007,
       "created": 1794608385
+    },
+    {
+      "category": "image",
+      "id": "bytedance-seed/seedream-5-5",
+      "name": "Seedream 5.5",
+      "provider": "字节跳动",
+      "perImage": 0.02,
+      "created": 1794517601
     },
     {
       "category": "image",
