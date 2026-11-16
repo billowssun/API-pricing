@@ -1,18 +1,18 @@
 {
-  "updated": "2026-11-15T18:52:27.083Z",
-  "checkedAt": "2026-11-15T18:52:27.083Z",
+  "updated": "2026-11-16T06:32:05.534Z",
+  "checkedAt": "2026-11-16T06:32:05.534Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-15T18:52:26.364Z"
+      "lastSeen": "2026-11-16T06:32:04.846Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-15T18:52:26.364Z"
+      "lastSeen": "2026-11-16T06:32:04.846Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-15T18:52:26.364Z"
+      "lastSeen": "2026-11-16T06:32:04.846Z"
     }
   },
   "tiers": {
@@ -35,8 +35,8 @@
         "glm"
       ],
       "openai|": [
-        "gpt sol",
         "gpt luna",
+        "gpt sol",
         "gpt astra",
         "gpt terra"
       ],
@@ -49,8 +49,7 @@
         "minimax"
       ],
       "deepseek|": [
-        "deepseek flash",
-        "deepseek pro"
+        "deepseek flash"
       ],
       "mistralai|": [
         "mistral large",
@@ -72,8 +71,8 @@
         "muse spark contributor",
         "muse wonder",
         "muse ember",
-        "muse spark open",
-        "muse spark"
+        "muse spark",
+        "muse spark open"
       ],
       "tencent|": [
         "hy"
@@ -238,6 +237,28 @@
     }
   },
   "models": [
+    {
+      "category": "text",
+      "id": "qwen/qwen4-max",
+      "name": "Qwen4 Max",
+      "provider": "通义千问",
+      "input": 1.5,
+      "output": 4.5,
+      "cached": 0.075,
+      "context": 1000000,
+      "created": 1794795526
+    },
+    {
+      "category": "text",
+      "id": "qwen/qwen3.8-flash",
+      "name": "Qwen3.8 Flash",
+      "provider": "通义千问",
+      "input": 0.15,
+      "output": 0.47,
+      "cached": 0.016,
+      "context": 1000000,
+      "created": 1787773060
+    },
     {
       "category": "text",
       "id": "google/gemini-4-hydrogen",
@@ -452,8 +473,8 @@
       "id": "moonshotai/kimi-k3.1-pro",
       "name": "Kimi K3.1 Pro",
       "provider": "Kimi",
-      "input": 2,
-      "output": 10,
+      "input": 0.2403,
+      "output": 8.4023,
       "cached": 0.2,
       "context": 1048576,
       "created": 1792778188
@@ -474,9 +495,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.075,
-      "output": 0.3,
-      "cached": 0.0075,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
       "context": 1048576,
       "created": 1792379569
     },
@@ -496,22 +517,11 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.02,
-      "output": 0.108,
-      "cached": 0.007,
+      "input": 0.3,
+      "output": 1.2,
+      "cached": 0.006,
       "context": 1048576,
       "created": 1792225624
-    },
-    {
-      "category": "text",
-      "id": "deepseek/deepseek-v4-pro-0813",
-      "name": "DeepSeek V4 Pro 0813",
-      "provider": "DeepSeek",
-      "input": 0.111,
-      "output": 4.44,
-      "cached": 0.097,
-      "context": 1048576,
-      "created": 1786549364
     },
     {
       "category": "text",
@@ -551,33 +561,11 @@
       "id": "z-ai/glm-5.3",
       "name": "GLM 5.3",
       "provider": "智谱 GLM",
-      "input": 0.084,
-      "output": 3.6,
-      "cached": 0.079,
+      "input": 0.0699,
+      "output": 1.4,
+      "cached": 0.0689,
       "context": 1048576,
       "created": 1787086655
-    },
-    {
-      "category": "text",
-      "id": "qwen/qwen3.8-max-0902",
-      "name": "Qwen3.8 Max",
-      "provider": "通义千问",
-      "input": 2,
-      "output": 6,
-      "cached": 0.25,
-      "context": 1000000,
-      "created": 1788469704
-    },
-    {
-      "category": "text",
-      "id": "qwen/qwen3.8-flash",
-      "name": "Qwen3.8 Flash",
-      "provider": "通义千问",
-      "input": 0.15,
-      "output": 0.47,
-      "cached": 0.016,
-      "context": 1000000,
-      "created": 1787773060
     },
     {
       "category": "text",
