@@ -1,25 +1,25 @@
 {
-  "updated": "2026-11-17T07:56:21.974Z",
-  "checkedAt": "2026-11-17T07:56:21.974Z",
+  "updated": "2026-11-17T20:56:52.468Z",
+  "checkedAt": "2026-11-17T20:56:52.468Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-17T07:56:20.831Z"
+      "lastSeen": "2026-11-17T20:56:50.845Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-17T07:56:20.831Z"
+      "lastSeen": "2026-11-17T20:56:50.844Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-17T07:56:20.831Z"
+      "lastSeen": "2026-11-17T20:56:50.845Z"
     }
   },
   "tiers": {
     "text": {
       "google|": [
-        "gemini flash",
         "gemini carbon",
+        "gemini flash",
         "gemini argon",
         "gemini flash lite",
         "gemini hydrogen"
@@ -72,8 +72,8 @@
         "muse spark contributor",
         "muse wonder",
         "muse ember",
-        "muse spark",
-        "muse spark open"
+        "muse spark open",
+        "muse spark"
       ],
       "tencent|": [
         "hy",
@@ -239,6 +239,50 @@
     }
   },
   "models": [
+    {
+      "category": "text",
+      "id": "openai/gpt-6.2-astra",
+      "name": "GPT-6.2 Astra",
+      "provider": "OpenAI",
+      "input": 8,
+      "output": 40,
+      "cached": 0.4,
+      "context": 1050000,
+      "created": 1794938423
+    },
+    {
+      "category": "text",
+      "id": "openai/gpt-6.2-sol",
+      "name": "GPT-6.2 Sol",
+      "provider": "OpenAI",
+      "input": 2,
+      "output": 10,
+      "cached": 0.1,
+      "context": 1050000,
+      "created": 1794938371
+    },
+    {
+      "category": "text",
+      "id": "openai/gpt-6.1-terra",
+      "name": "GPT-6.1 Terra",
+      "provider": "OpenAI",
+      "input": 1,
+      "output": 5,
+      "cached": 0.05,
+      "context": 1050000,
+      "created": 1793038409
+    },
+    {
+      "category": "text",
+      "id": "openai/gpt-6-luna",
+      "name": "GPT-6 Luna",
+      "provider": "OpenAI",
+      "input": 0.1,
+      "output": 0.5,
+      "cached": 0.01,
+      "context": 1050000,
+      "created": 1790100786
+    },
     {
       "category": "text",
       "id": "tencent/hy4-flash",
@@ -439,50 +483,6 @@
     },
     {
       "category": "text",
-      "id": "openai/gpt-6.1-terra",
-      "name": "GPT-6.1 Terra",
-      "provider": "OpenAI",
-      "input": 1,
-      "output": 5,
-      "cached": 0.05,
-      "context": 1050000,
-      "created": 1793038409
-    },
-    {
-      "category": "text",
-      "id": "openai/gpt-6.1-sol",
-      "name": "GPT-6.1 Sol",
-      "provider": "OpenAI",
-      "input": 2,
-      "output": 10,
-      "cached": 0.1,
-      "context": 1050000,
-      "created": 1790702882
-    },
-    {
-      "category": "text",
-      "id": "openai/gpt-6-luna",
-      "name": "GPT-6 Luna",
-      "provider": "OpenAI",
-      "input": 0.1,
-      "output": 0.5,
-      "cached": 0.01,
-      "context": 1050000,
-      "created": 1790100786
-    },
-    {
-      "category": "text",
-      "id": "openai/gpt-6-astra",
-      "name": "GPT-6 Astra",
-      "provider": "OpenAI",
-      "input": 10,
-      "output": 50,
-      "cached": 1,
-      "context": 1050000,
-      "created": 1788552838
-    },
-    {
-      "category": "text",
       "id": "moonshotai/kimi-k3.1-pro",
       "name": "Kimi K3.1 Pro",
       "provider": "Kimi",
@@ -508,9 +508,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
+      "input": 0.075,
+      "output": 0.3,
+      "cached": 0.0075,
       "context": 1048576,
       "created": 1792379569
     },
@@ -574,8 +574,8 @@
       "id": "z-ai/glm-5.3-flash",
       "name": "GLM 5.3 Flash",
       "provider": "智谱 GLM",
-      "input": 0.0399,
-      "output": 0.0784,
+      "input": 0.15,
+      "output": 0.5,
       "cached": 0.03,
       "context": 1048576,
       "created": 1787752741
@@ -656,6 +656,24 @@
       "cached": null,
       "context": 262144,
       "created": 1772131107
+    },
+    {
+      "category": "image",
+      "id": "microsoft/mai-image-2.7-flash",
+      "name": "MAI-Image-2.7 Flash",
+      "provider": "Microsoft",
+      "input": 1.75,
+      "imageOutput": 10,
+      "created": 1794938265
+    },
+    {
+      "category": "image",
+      "id": "microsoft/mai-image-2.7",
+      "name": "MAI-Image-2.7",
+      "provider": "Microsoft",
+      "input": 5,
+      "imageOutput": 34,
+      "created": 1794938261
     },
     {
       "category": "image",
@@ -808,24 +826,6 @@
       "input": 2,
       "imageOutput": 120,
       "created": 1781754054
-    },
-    {
-      "category": "image",
-      "id": "microsoft/mai-image-2.6",
-      "name": "MAI-Image-2.6",
-      "provider": "Microsoft",
-      "input": 5,
-      "imageOutput": 38,
-      "created": 1788550742
-    },
-    {
-      "category": "image",
-      "id": "microsoft/mai-image-2.6-flash",
-      "name": "MAI-Image-2.6 Flash",
-      "provider": "Microsoft",
-      "input": 1.75,
-      "imageOutput": 19,
-      "created": 1788550735
     },
     {
       "category": "image",
