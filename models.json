@@ -1,18 +1,18 @@
 {
-  "updated": "2026-11-17T20:56:52.468Z",
-  "checkedAt": "2026-11-17T20:56:52.468Z",
+  "updated": "2026-11-18T07:30:14.663Z",
+  "checkedAt": "2026-11-18T07:30:14.663Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-17T20:56:50.845Z"
+      "lastSeen": "2026-11-18T07:30:13.855Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-17T20:56:50.844Z"
+      "lastSeen": "2026-11-18T07:30:13.855Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-17T20:56:50.845Z"
+      "lastSeen": "2026-11-18T07:30:13.855Z"
     }
   },
   "tiers": {
@@ -110,8 +110,8 @@
       ],
       "black-forest-labs|": [
         "flux image klein",
-        "flux pro",
-        "flux klein b"
+        "flux klein b",
+        "flux pro"
       ],
       "google|": [
         "nano banana",
@@ -186,7 +186,7 @@
       ],
       "elevenlabs|tts": [
         "eleven flash",
-        "eleven turbo"
+        "eleven"
       ],
       "elevenlabs|stt": [
         "scribe"
@@ -508,9 +508,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.075,
-      "output": 0.3,
-      "cached": 0.0075,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
       "context": 1048576,
       "created": 1792379569
     },
@@ -574,8 +574,8 @@
       "id": "z-ai/glm-5.3-flash",
       "name": "GLM 5.3 Flash",
       "provider": "智谱 GLM",
-      "input": 0.15,
-      "output": 0.5,
+      "input": 0.0399,
+      "output": 0.0784,
       "cached": 0.03,
       "context": 1048576,
       "created": 1787752741
@@ -867,7 +867,7 @@
       "id": "bytedance/seedance-2.0-fast",
       "name": "Seedance 2.0 Fast",
       "provider": "字节 Seedance",
-      "perSecond": 0.04035,
+      "perSecond": 0.0538,
       "created": 1776211362,
       "from": true
     },
@@ -1089,13 +1089,13 @@
     },
     {
       "category": "speech",
-      "id": "elevenlabs/eleven-v4-turbo",
-      "name": "Eleven v4 Turbo",
+      "id": "elevenlabs/eleven-v4",
+      "name": "Eleven v4",
       "provider": "ElevenLabs",
       "kind": "tts",
-      "unitPrice": 40,
+      "unitPrice": 80,
       "unit": "M 字符",
-      "created": 1791386280
+      "created": 1791386285
     },
     {
       "category": "speech",
