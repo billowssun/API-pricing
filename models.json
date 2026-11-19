@@ -1,18 +1,18 @@
 {
-  "updated": "2026-11-19T07:27:39.125Z",
-  "checkedAt": "2026-11-19T07:27:39.125Z",
+  "updated": "2026-11-19T20:38:54.350Z",
+  "checkedAt": "2026-11-19T20:38:54.350Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-19T07:27:38.567Z"
+      "lastSeen": "2026-11-19T20:38:53.265Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-19T07:27:38.567Z"
+      "lastSeen": "2026-11-19T20:38:53.265Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-19T07:27:38.567Z"
+      "lastSeen": "2026-11-19T20:38:53.265Z"
     }
   },
   "tiers": {
@@ -54,7 +54,8 @@
       ],
       "mistralai|": [
         "mistral large",
-        "mistral medium"
+        "mistral medium",
+        "mistral small"
       ],
       "qwen|": [
         "qwen max",
@@ -72,8 +73,8 @@
         "muse spark contributor",
         "muse wonder",
         "muse ember",
-        "muse spark open",
-        "muse spark"
+        "muse spark",
+        "muse spark open"
       ],
       "tencent|": [
         "hy flash",
@@ -519,9 +520,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
+      "input": 0.075,
+      "output": 0.3,
+      "cached": 0.0075,
       "context": 1048576,
       "created": 1792379569
     },
@@ -541,9 +542,9 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.3,
-      "output": 1.2,
-      "cached": 0.006,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.003,
       "context": 1048576,
       "created": 1792225624
     },
@@ -568,6 +569,17 @@
       "cached": null,
       "context": 262144,
       "created": 1777570439
+    },
+    {
+      "category": "text",
+      "id": "mistralai/mistral-small-2603",
+      "name": "Mistral Small 4",
+      "provider": "Mistral",
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
+      "context": 262144,
+      "created": 1773695685
     },
     {
       "category": "text",
