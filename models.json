@@ -1,6 +1,6 @@
 {
-  "updated": "2026-11-21T07:10:18.213Z",
-  "checkedAt": "2026-11-21T07:10:18.213Z",
+  "updated": "2026-11-21T19:17:45.470Z",
+  "checkedAt": "2026-11-21T19:17:45.470Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
@@ -8,11 +8,11 @@
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-21T07:10:16.998Z"
+      "lastSeen": "2026-11-21T19:17:44.855Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-21T07:10:16.998Z"
+      "lastSeen": "2026-11-21T19:17:44.855Z"
     }
   },
   "tiers": {
@@ -68,8 +68,8 @@
       ],
       "bytedance-seed|": [
         "seed turbo",
-        "seed mini",
-        "seed lite"
+        "seed lite",
+        "seed mini"
       ],
       "meta|": [
         "muse spark contributor",
@@ -567,9 +567,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
+      "input": 0.075,
+      "output": 0.3,
+      "cached": 0.0075,
       "context": 1048576,
       "created": 1792379569
     },
