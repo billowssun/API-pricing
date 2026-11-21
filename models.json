@@ -1,6 +1,6 @@
 {
-  "updated": "2026-11-20T20:23:28.250Z",
-  "checkedAt": "2026-11-20T20:23:28.250Z",
+  "updated": "2026-11-21T07:10:18.213Z",
+  "checkedAt": "2026-11-21T07:10:18.213Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
@@ -8,11 +8,11 @@
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-20T20:23:27.595Z"
+      "lastSeen": "2026-11-21T07:10:16.998Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-20T20:23:27.595Z"
+      "lastSeen": "2026-11-21T07:10:16.998Z"
     }
   },
   "tiers": {
@@ -22,8 +22,8 @@
         "gemini flash",
         "gemini argon",
         "gemini flash lite",
-        "gemini hydrogen",
-        "gemini neon"
+        "gemini neon",
+        "gemini hydrogen"
       ],
       "anthropic|": [
         "claude opus",
@@ -68,8 +68,8 @@
       ],
       "bytedance-seed|": [
         "seed turbo",
-        "seed lite",
-        "seed mini"
+        "seed mini",
+        "seed lite"
       ],
       "meta|": [
         "muse spark contributor",
@@ -202,8 +202,8 @@
         "seed audio"
       ],
       "google|stt": [
-        "gemini transcribe",
-        "chirp"
+        "chirp",
+        "gemini transcribe"
       ],
       "fish-audio|stt": [
         "transcribe pro",
@@ -567,9 +567,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.075,
-      "output": 0.3,
-      "cached": 0.0075,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
       "context": 1048576,
       "created": 1792379569
     },
@@ -589,9 +589,9 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.036,
-      "output": 0.5,
-      "cached": 0.01,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.003,
       "context": 1048576,
       "created": 1792225624
     },
