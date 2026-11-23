@@ -1,18 +1,18 @@
 {
-  "updated": "2026-11-22T19:42:17.191Z",
-  "checkedAt": "2026-11-22T19:42:17.191Z",
+  "updated": "2026-11-23T07:40:53.357Z",
+  "checkedAt": "2026-11-23T07:40:53.357Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-22T19:42:16.041Z"
+      "lastSeen": "2026-11-23T07:40:52.801Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
-      "lastSeen": "2026-11-22T19:42:16.041Z"
+      "lastSeen": "2026-11-23T07:40:52.801Z"
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-22T19:42:16.041Z"
+      "lastSeen": "2026-11-23T07:40:52.801Z"
     }
   },
   "tiers": {
@@ -20,8 +20,8 @@
       "google|": [
         "gemini carbon",
         "gemini flash",
-        "gemini argon",
         "gemini neon",
+        "gemini argon",
         "gemini flash lite",
         "gemini hydrogen"
       ],
@@ -32,8 +32,8 @@
         "claude fable"
       ],
       "z-ai|": [
-        "glm",
-        "glm flash"
+        "glm flash",
+        "glm"
       ],
       "openai|": [
         "gpt luna",
@@ -56,6 +56,7 @@
       "mistralai|": [
         "mistral large",
         "mistral medium",
+        "mistral small",
         "pixtral large"
       ],
       "qwen|": [
@@ -67,8 +68,8 @@
       ],
       "bytedance-seed|": [
         "seed turbo",
-        "seed mini",
-        "seed lite"
+        "seed lite",
+        "seed mini"
       ],
       "meta|": [
         "muse spark contributor",
@@ -145,8 +146,8 @@
       ],
       "bytedance|": [
         "seedance",
-        "seedance fast",
         "seedance mini",
+        "seedance fast",
         "seedance flash"
       ],
       "runway|": [
@@ -159,8 +160,7 @@
       ],
       "google|": [
         "veo lite",
-        "veo fast",
-        "veo"
+        "veo fast"
       ]
     },
     "speech": {
@@ -193,8 +193,8 @@
         "scribe"
       ],
       "microsoft|tts": [
-        "mai voice",
-        "mai voice flash"
+        "mai voice flash",
+        "mai voice"
       ],
       "bytedance-seed|tts": [
         "seed audio"
@@ -273,6 +273,17 @@
       "cached": null,
       "context": 262144,
       "created": 1777570439
+    },
+    {
+      "category": "text",
+      "id": "mistralai/mistral-small-2603",
+      "name": "Mistral Small 4",
+      "provider": "Mistral",
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
+      "context": 262144,
+      "created": 1773695685
     },
     {
       "category": "text",
@@ -554,9 +565,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.075,
-      "output": 0.3,
-      "cached": 0.0075,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
       "context": 1048576,
       "created": 1792379569
     },
@@ -576,9 +587,9 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.003,
+      "input": 0.3,
+      "output": 1.2,
+      "cached": 0.006,
       "context": 1048576,
       "created": 1792225624
     },
@@ -1001,15 +1012,6 @@
       "provider": "Google",
       "perSecond": 0.05,
       "created": 1776978818,
-      "from": true
-    },
-    {
-      "category": "video",
-      "id": "google/veo-3.1",
-      "name": "Veo 3.1",
-      "provider": "Google",
-      "perSecond": 0.4,
-      "created": 1774277148,
       "from": true
     },
     {
