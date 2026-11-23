@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-23T07:40:53.357Z",
-  "checkedAt": "2026-11-23T07:40:53.357Z",
+  "updated": "2026-11-23T23:54:57.693Z",
+  "checkedAt": "2026-11-23T23:54:57.693Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-23T07:40:52.801Z"
+      "lastSeen": "2026-11-23T23:54:56.938Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
@@ -12,7 +12,7 @@
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-23T07:40:52.801Z"
+      "lastSeen": "2026-11-23T23:54:56.938Z"
     }
   },
   "tiers": {
@@ -56,7 +56,6 @@
       "mistralai|": [
         "mistral large",
         "mistral medium",
-        "mistral small",
         "pixtral large"
       ],
       "qwen|": [
@@ -186,8 +185,8 @@
         "s pro"
       ],
       "elevenlabs|tts": [
-        "eleven flash",
-        "eleven"
+        "eleven",
+        "eleven flash"
       ],
       "elevenlabs|stt": [
         "scribe"
@@ -273,17 +272,6 @@
       "cached": null,
       "context": 262144,
       "created": 1777570439
-    },
-    {
-      "category": "text",
-      "id": "mistralai/mistral-small-2603",
-      "name": "Mistral Small 4",
-      "provider": "Mistral",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
-      "context": 262144,
-      "created": 1773695685
     },
     {
       "category": "text",
@@ -565,9 +553,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
+      "input": 0.075,
+      "output": 0.3,
+      "cached": 0.0075,
       "context": 1048576,
       "created": 1792379569
     },
@@ -587,9 +575,9 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.3,
-      "output": 1.2,
-      "cached": 0.006,
+      "input": 0.03,
+      "output": 0.2,
+      "cached": 0.001,
       "context": 1048576,
       "created": 1792225624
     },
@@ -598,9 +586,9 @@
       "id": "deepseek/deepseek-v4-pro-0813",
       "name": "DeepSeek V4 Pro 0813",
       "provider": "DeepSeek",
-      "input": 1.32,
-      "output": 3.96,
-      "cached": 0.044,
+      "input": 0.111,
+      "output": 4.44,
+      "cached": 0.097,
       "context": 1048576,
       "created": 1786549364
     },
@@ -609,8 +597,8 @@
       "id": "z-ai/glm-5.3-flash",
       "name": "GLM 5.3 Flash",
       "provider": "智谱 GLM",
-      "input": 0.0399,
-      "output": 0.0784,
+      "input": 0.15,
+      "output": 0.5,
       "cached": 0.03,
       "context": 1048576,
       "created": 1787752741
