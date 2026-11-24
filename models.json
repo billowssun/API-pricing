@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-24T09:56:01.503Z",
-  "checkedAt": "2026-11-24T09:56:01.503Z",
+  "updated": "2026-11-24T22:28:03.985Z",
+  "checkedAt": "2026-11-24T22:28:03.985Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-24T09:56:00.814Z"
+      "lastSeen": "2026-11-24T22:28:03.303Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
@@ -12,7 +12,7 @@
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-24T09:56:00.814Z"
+      "lastSeen": "2026-11-24T22:28:03.303Z"
     }
   },
   "tiers": {
@@ -83,7 +83,8 @@
       ],
       "xiaomi|": [
         "mimo flash",
-        "mimo pro"
+        "mimo pro",
+        "mimo pro ultraspeed"
       ]
     },
     "image": {
@@ -198,8 +199,8 @@
         "seed audio"
       ],
       "google|stt": [
-        "chirp",
-        "gemini transcribe"
+        "gemini transcribe",
+        "chirp"
       ],
       "fish-audio|stt": [
         "transcribe pro",
@@ -552,9 +553,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
+      "input": 0.075,
+      "output": 0.3,
+      "cached": 0.0075,
       "context": 1048576,
       "created": 1792379569
     },
@@ -585,9 +586,9 @@
       "id": "deepseek/deepseek-v4-pro-0813",
       "name": "DeepSeek V4 Pro 0813",
       "provider": "DeepSeek",
-      "input": 0.19,
-      "output": 8,
-      "cached": 0.15,
+      "input": 0.111,
+      "output": 4.44,
+      "cached": 0.097,
       "context": 1048576,
       "created": 1786549364
     },
@@ -596,9 +597,9 @@
       "id": "z-ai/glm-5.3-flash",
       "name": "GLM 5.3 Flash",
       "provider": "智谱 GLM",
-      "input": 0.12,
-      "output": 0.38,
-      "cached": 0.02,
+      "input": 0.15,
+      "output": 0.5,
+      "cached": 0.03,
       "context": 1048576,
       "created": 1787752741
     },
@@ -612,6 +613,17 @@
       "cached": 0.0689,
       "context": 1048576,
       "created": 1787086655
+    },
+    {
+      "category": "text",
+      "id": "xiaomi/mimo-v2.6-pro-ultraspeed",
+      "name": "MiMo-V2.6-Pro-UltraSpeed",
+      "provider": "Xiaomi",
+      "input": 4.35,
+      "output": 8.7,
+      "cached": 0.036,
+      "context": 1048576,
+      "created": 1790021267
     },
     {
       "category": "text",
