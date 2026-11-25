@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-25T08:37:10.950Z",
-  "checkedAt": "2026-11-25T08:37:10.950Z",
+  "updated": "2026-11-25T21:42:58.459Z",
+  "checkedAt": "2026-11-25T21:42:58.459Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-25T08:37:10.369Z"
+      "lastSeen": "2026-11-25T21:42:57.741Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
@@ -12,7 +12,7 @@
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-25T08:37:10.369Z"
+      "lastSeen": "2026-11-25T21:42:57.741Z"
     }
   },
   "tiers": {
@@ -66,8 +66,8 @@
         "grok"
       ],
       "bytedance-seed|": [
-        "seed turbo",
         "seed lite",
+        "seed turbo",
         "seed mini"
       ],
       "meta|": [
@@ -95,8 +95,7 @@
       "tencent|": [],
       "bytedance-seed|": [
         "seedream",
-        "seedream flash",
-        "seedream pro"
+        "seedream flash"
       ],
       "minimax|": [
         "minimax h image",
@@ -118,7 +117,8 @@
       ],
       "google|": [
         "nano banana",
-        "nano banana lite"
+        "nano banana lite",
+        "nano banana pro"
       ],
       "microsoft|": [
         "mai image flash",
@@ -609,9 +609,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
+      "input": 0.075,
+      "output": 0.3,
+      "cached": 0.0075,
       "context": 1048576,
       "created": 1792379569
     },
@@ -631,9 +631,9 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.3,
-      "output": 1.2,
-      "cached": 0.006,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.003,
       "context": 1048576,
       "created": 1792225624
     },
@@ -747,14 +747,6 @@
     },
     {
       "category": "image",
-      "id": "bytedance-seed/seedream-5-0-pro",
-      "name": "Seedream 5.0 Pro",
-      "provider": "字节跳动",
-      "perImage": 0.045,
-      "created": 1786578139
-    },
-    {
-      "category": "image",
       "id": "minimax/minimax-h3-image-highspeed",
       "name": "MiniMax H3 Image Highspeed",
       "provider": "MiniMax",
@@ -855,6 +847,15 @@
       "input": 0.25,
       "imageOutput": 30,
       "created": 1782837225
+    },
+    {
+      "category": "image",
+      "id": "google/gemini-3-pro-image",
+      "name": "Nano Banana Pro",
+      "provider": "Google",
+      "input": 2,
+      "imageOutput": 120,
+      "created": 1781754054
     },
     {
       "category": "image",
