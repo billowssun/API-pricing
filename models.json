@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-25T21:42:58.459Z",
-  "checkedAt": "2026-11-25T21:42:58.459Z",
+  "updated": "2026-11-26T08:20:45.354Z",
+  "checkedAt": "2026-11-26T08:20:45.354Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-25T21:42:57.741Z"
+      "lastSeen": "2026-11-26T08:20:44.710Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
@@ -12,7 +12,7 @@
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-25T21:42:57.741Z"
+      "lastSeen": "2026-11-26T08:20:44.710Z"
     }
   },
   "tiers": {
@@ -117,8 +117,8 @@
       ],
       "google|": [
         "nano banana",
-        "nano banana lite",
-        "nano banana pro"
+        "nano banana pro",
+        "nano banana lite"
       ],
       "microsoft|": [
         "mai image flash",
@@ -186,8 +186,8 @@
         "s pro"
       ],
       "elevenlabs|tts": [
-        "eleven",
-        "eleven turbo"
+        "eleven turbo",
+        "eleven"
       ],
       "elevenlabs|stt": [
         "scribe"
@@ -197,7 +197,8 @@
         "mai voice"
       ],
       "bytedance-seed|tts": [
-        "seed audio"
+        "seed audio",
+        "seed tts"
       ],
       "google|stt": [
         "gemini transcribe",
@@ -609,9 +610,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.075,
-      "output": 0.3,
-      "cached": 0.0075,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
       "context": 1048576,
       "created": 1792379569
     },
@@ -631,9 +632,9 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.003,
+      "input": 0.3,
+      "output": 1.2,
+      "cached": 0.006,
       "context": 1048576,
       "created": 1792225624
     },
@@ -642,9 +643,9 @@
       "id": "z-ai/glm-5.3-flash",
       "name": "GLM 5.3 Flash",
       "provider": "智谱 GLM",
-      "input": 0.12,
-      "output": 0.38,
-      "cached": 0.02,
+      "input": 0.15,
+      "output": 0.5,
+      "cached": 0.03,
       "context": 1048576,
       "created": 1787752741
     },
@@ -1020,6 +1021,26 @@
     },
     {
       "category": "speech",
+      "id": "bytedance-seed/seed-tts-3-0",
+      "name": "Seed-TTS 3.0",
+      "provider": "字节跳动",
+      "kind": "tts",
+      "unitPrice": 20,
+      "unit": "M 字符",
+      "created": 1795635744
+    },
+    {
+      "category": "speech",
+      "id": "bytedance-seed/seed-audio-1-0",
+      "name": "Seed Audio 1.0",
+      "provider": "字节跳动",
+      "kind": "tts",
+      "unitPrice": 0.15,
+      "unit": "分钟",
+      "created": 1790372476
+    },
+    {
+      "category": "speech",
       "id": "google/gemini-2.5-pro-tts",
       "name": "Gemini 2.5 Pro TTS",
       "provider": "Google",
@@ -1187,16 +1208,6 @@
       "unitPrice": 22,
       "unit": "M 字符",
       "created": 1790870467
-    },
-    {
-      "category": "speech",
-      "id": "bytedance-seed/seed-audio-1-0",
-      "name": "Seed Audio 1.0",
-      "provider": "字节跳动",
-      "kind": "tts",
-      "unitPrice": 0.15,
-      "unit": "分钟",
-      "created": 1790372476
     },
     {
       "category": "speech",
