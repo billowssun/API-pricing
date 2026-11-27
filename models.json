@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-27T08:36:20.520Z",
-  "checkedAt": "2026-11-27T08:36:20.520Z",
+  "updated": "2026-11-27T21:19:07.911Z",
+  "checkedAt": "2026-11-27T21:19:07.911Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-27T08:36:20.015Z"
+      "lastSeen": "2026-11-27T21:19:07.357Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
@@ -12,7 +12,7 @@
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-27T08:36:20.015Z"
+      "lastSeen": "2026-11-27T21:19:07.358Z"
     }
   },
   "tiers": {
@@ -246,9 +246,9 @@
       "id": "xiaomi/mimo-v2.6-flash-mopd",
       "name": "MiMo-V2.6-Flash-MOPD",
       "provider": "Xiaomi",
-      "input": 0.35,
-      "output": 0.7,
-      "cached": 0.035,
+      "input": 0.5,
+      "output": 1,
+      "cached": 0.05,
       "context": 1048576,
       "created": 1795456634
     },
@@ -609,9 +609,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.15,
-      "output": 0.6,
-      "cached": 0.015,
+      "input": 0.075,
+      "output": 0.3,
+      "cached": 0.0075,
       "context": 1048576,
       "created": 1792379569
     },
@@ -631,9 +631,9 @@
       "id": "deepseek/deepseek-v4.1-flash-1017",
       "name": "DeepSeek V4.1 Flash 1017",
       "provider": "DeepSeek",
-      "input": 0.3,
-      "output": 1.2,
-      "cached": 0.006,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.003,
       "context": 1048576,
       "created": 1792225624
     },
