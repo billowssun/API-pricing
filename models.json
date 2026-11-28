@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-27T21:19:07.911Z",
-  "checkedAt": "2026-11-27T21:19:07.911Z",
+  "updated": "2026-11-28T07:51:09.975Z",
+  "checkedAt": "2026-11-28T07:51:09.975Z",
   "vendors": {
     "tencent": {
       "name": "Tencent",
-      "lastSeen": "2026-11-27T21:19:07.357Z"
+      "lastSeen": "2026-11-28T07:51:08.883Z"
     },
     "xiaomi": {
       "name": "Xiaomi",
@@ -12,7 +12,7 @@
     },
     "meta": {
       "name": "Meta",
-      "lastSeen": "2026-11-27T21:19:07.358Z"
+      "lastSeen": "2026-11-28T07:51:08.883Z"
     }
   },
   "tiers": {
@@ -27,8 +27,8 @@
       ],
       "anthropic|": [
         "claude opus",
-        "claude sonnet",
         "claude haiku",
+        "claude sonnet",
         "claude fable"
       ],
       "z-ai|": [
@@ -90,7 +90,8 @@
     },
     "image": {
       "recraft|": [
-        "recraft flash"
+        "recraft flash",
+        "recraft"
       ],
       "tencent|": [],
       "bytedance-seed|": [
@@ -187,7 +188,7 @@
       ],
       "elevenlabs|tts": [
         "eleven",
-        "eleven turbo"
+        "eleven flash"
       ],
       "elevenlabs|stt": [
         "scribe"
@@ -226,10 +227,10 @@
         "whisper large"
       ],
       "qwen|tts": [
-        "qwen audio tts plus"
+        "qwen audio tts plus",
+        "qwen audio tts flash"
       ],
       "minimax|tts": [
-        "speech turbo",
         "speech hd"
       ],
       "deepgram|stt": [
@@ -609,9 +610,9 @@
       "id": "minimax/minimax-m3.1-flash",
       "name": "MiniMax M3.1 Flash",
       "provider": "MiniMax",
-      "input": 0.075,
-      "output": 0.3,
-      "cached": 0.0075,
+      "input": 0.15,
+      "output": 0.6,
+      "cached": 0.015,
       "context": 1048576,
       "created": 1792379569
     },
@@ -728,6 +729,14 @@
       "provider": "Recraft",
       "perImage": 0.007,
       "created": 1794608385
+    },
+    {
+      "category": "image",
+      "id": "recraft/recraft-v4.1",
+      "name": "Recraft V4.1",
+      "provider": "Recraft",
+      "perImage": 0.035,
+      "created": 1778707381
     },
     {
       "category": "image",
@@ -1170,13 +1179,13 @@
     },
     {
       "category": "speech",
-      "id": "elevenlabs/eleven-v4-turbo",
-      "name": "Eleven v4 Turbo",
+      "id": "elevenlabs/eleven-flash-v2.5",
+      "name": "Eleven Flash v2.5",
       "provider": "ElevenLabs",
       "kind": "tts",
       "unitPrice": 40,
       "unit": "M 字符",
-      "created": 1791386280
+      "created": 1791386250
     },
     {
       "category": "speech",
@@ -1300,6 +1309,16 @@
     },
     {
       "category": "speech",
+      "id": "qwen/qwen-audio-3.0-tts-flash",
+      "name": "Qwen-Audio-3.0-TTS Flash",
+      "provider": "通义千问",
+      "kind": "tts",
+      "unitPrice": 15,
+      "unit": "M 字符",
+      "created": 1784817207
+    },
+    {
+      "category": "speech",
       "id": "qwen/qwen-audio-3.0-tts-plus",
       "name": "Qwen-Audio-3.0-TTS Plus",
       "provider": "通义千问",
@@ -1317,16 +1336,6 @@
       "unitPrice": 100,
       "unit": "M 字符",
       "created": 1784164001
-    },
-    {
-      "category": "speech",
-      "id": "minimax/speech-2.8-turbo",
-      "name": "Speech 2.8 Turbo",
-      "provider": "MiniMax",
-      "kind": "tts",
-      "unitPrice": 60,
-      "unit": "M 字符",
-      "created": 1784164000
     },
     {
       "category": "speech",
